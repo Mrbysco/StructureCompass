@@ -2,6 +2,7 @@ package com.mrbysco.structurecompass.items;
 
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.StructureCompass;
+import com.mrbysco.structurecompass.config.StructureConfig;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,6 +22,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,8 +31,8 @@ import java.util.List;
 
 public class ItemStructureCompass extends Item {
     private String structure;
-    private static String structure_found = Reference.MOD_PREFIX + "structureFound";
-    private static String structure_location = Reference.MOD_PREFIX + "structurePosition";
+    private static final String structure_found = Reference.MOD_PREFIX + "structureFound";
+    private static final String structure_location = Reference.MOD_PREFIX + "structurePosition";
 
     public ItemStructureCompass(Item.Properties builder, String structureName) {
         super(builder.group(StructureCompass.tabCompass));
@@ -105,16 +107,23 @@ public class ItemStructureCompass extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
         ItemStack stack = playerIn.getHeldItem(hand);
         if(!worldIn.isRemote) {
-            stack = locateStructure(playerIn, worldIn, stack);
+            locateStructure(playerIn, (WorldServer)worldIn, stack);
         }
         return super.onItemRightClick(worldIn, playerIn, hand);
     }
 
-    private ItemStack locateStructure(Entity entityIn, World worldIn, ItemStack stack) {
-        NBTTagCompound tag = stack.getTag();
+    /*
+     * Locates nearby structures
+     */
+    private void locateStructure(Entity entityIn, WorldServer worldIn, ItemStack stack) {
+        NBTTagCompound tag = new NBTTagCompound();
 
-        BlockPos entityPos = new BlockPos(entityIn.getPosition());
-        BlockPos structurePos = worldIn.findNearestStructure(structure, entityPos, 300, false);
+        boolean findUnexplored = false;
+        if (StructureConfig.COMMON.locateUnexplored.get() != null) {
+            findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
+        }
+
+        BlockPos structurePos = worldIn.findNearestStructure(structure, entityIn.getPosition(), 300, findUnexplored);
         if (structurePos == null) {
             BlockPos spawnPos = worldIn.getSpawnPoint();
             tag.setBoolean(structure_found, false);
@@ -125,7 +134,6 @@ public class ItemStructureCompass extends Item {
         }
 
         stack.setTag(tag);
-        return stack;
     }
 
     @Override
