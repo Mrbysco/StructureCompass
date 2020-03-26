@@ -17,6 +17,7 @@
   "item.structurecompass.ocean_ruin_compass": "Ocean Ruin Compass",
   "item.structurecompass.buried_treasure_compass": "Burried Treasure Compass",
   "item.structurecompass.shipwreck_compass": "Shipwreck Compass",
+  "item.structurecompass.pillager_outpost_compass": "Pillager Outpost Compass",
 
   "_comment": "tooltips",
   "structurecompass.structure.found.tooltip": "%s has been located, compass is pointing towards the found %s",

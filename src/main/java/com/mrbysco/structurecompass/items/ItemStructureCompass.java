@@ -98,7 +98,7 @@ public class ItemStructureCompass extends Item {
             @OnlyIn(Dist.CLIENT)
             private double getSpawnToAngle(IWorld worldIn, Entity entityIn, ItemStack stack) {
                 BlockPos pos = getBlockPos(stack, worldIn.getWorld());
-                return Math.atan2((double)pos.getZ() - entityIn.posZ, (double)pos.getX() - entityIn.posX);
+                return Math.atan2((double)pos.getZ() - entityIn.getPosZ(), (double)pos.getX() - entityIn.getPosX());
             }
         });
     }

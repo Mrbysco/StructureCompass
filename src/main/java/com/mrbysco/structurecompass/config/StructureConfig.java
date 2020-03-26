@@ -20,7 +20,7 @@ public class StructureConfig {
                     .push("general");
 
             compassRange = builder
-                    .comment("Sets the range in which the strucute compasses can check for structures [default: 300]")
+                    .comment("Sets the range in which the structure compasses can check for structures [default: 300]")
                     .defineInRange("compassRange", 300, 0, Integer.MAX_VALUE);
 
             locateUnexplored = builder
@@ -45,7 +45,7 @@ public class StructureConfig {
     }
 
     @SubscribeEvent
-    public static void onFileChange(final ModConfig.ConfigReloading configEvent) {
+    public static void onFileChange(final ModConfig.Reloading configEvent) {
         StructureCompass.LOGGER.fatal(CORE, "Statues' config just got changed on the file system!");
     }
 }

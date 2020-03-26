@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class StructureItems {
     public static ItemStructureCompass village_compass, mineshaft_compass, mansion_compass, igloo_compass,
             desert_pyramid_compass, jungle_pyramid_compass, swamp_hut_compass, stronghold_compass,
-            monument_compass, fortress_compass, end_city_compass, ocean_ruin_compass, buried_treasure_compass,
+            monument_compass, fortress_compass, end_city_compass, ocean_ruin_compass, pillager_outpost_compass, buried_treasure_compass,
             shipwreck_compass;
 
     public static ArrayList<Item> ITEMS = new ArrayList<>();
@@ -28,20 +28,21 @@ public class StructureItems {
     {
         IForgeRegistry<Item> registry = event.getRegistry();
 
-        village_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Village"), "village_compass");
-        mineshaft_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Mineshaft"), "mineshaft_compass");
-        mansion_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Manson"), "mansion_compass");
-        igloo_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Igloo"), "igloo_compass");
-        desert_pyramid_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Desert_Pyramid"), "desert_pyramid_compass");
-        jungle_pyramid_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Jungle_Pyramid"), "jungle_pyramid_compass");
-        swamp_hut_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Swamp_Hut"), "swamp_hut_compass");
-        stronghold_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Stronghold"), "stronghold_compass");
-        monument_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Monument"), "monument_compass");
-        fortress_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Fortress"), "fortress_compass");
-        end_city_compass = registerItem(new ItemStructureCompass(itemBuilder(), "EndCity"), "end_city_compass");
-        ocean_ruin_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Ocean_Ruin"), "ocean_ruin_compass");
         buried_treasure_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Buried_Treasure"), "buried_treasure_compass");
+        desert_pyramid_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Desert_Pyramid"), "desert_pyramid_compass");
+        end_city_compass = registerItem(new ItemStructureCompass(itemBuilder(), "EndCity"), "end_city_compass");
+        fortress_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Fortress"), "fortress_compass");
+        igloo_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Igloo"), "igloo_compass");
+        jungle_pyramid_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Jungle_Pyramid"), "jungle_pyramid_compass");
+        mansion_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Manson"), "mansion_compass");
+        mineshaft_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Mineshaft"), "mineshaft_compass");
+        monument_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Monument"), "monument_compass");
+        ocean_ruin_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Ocean_Ruin"), "ocean_ruin_compass");
+        pillager_outpost_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Pillager_Outpost"), "pillager_outpost_compass");
         shipwreck_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Shipwreck"), "shipwreck_compass");
+        stronghold_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Stronghold"), "stronghold_compass");
+        swamp_hut_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Swamp_Hut"), "swamp_hut_compass");
+        village_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Village"), "village_compass");
 
         registry.registerAll(ITEMS.toArray(new Item[0]));
     }

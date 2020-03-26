@@ -1,27 +1,13 @@
 modLoader="javafml"
-loaderVersion="[28,)"
-issueTrackerURL="https://github.com/svennieke/StatuesMod/issues"
+loaderVersion="[31,)"
+issueTrackerURL="https://github.com/Mrbysco/StructureCompass/issues"
 
 [[mods]]
 modId="structurecompass"
 version="${file.jarVersion}"
 displayName="Structure Compass Mod"
-displayURL="https://minecraft.curseforge.com/projects/statues"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/structure-compass"
 authors="Mrbysco"
 description='''
 Adds compasses that point to their individual structures.
 '''
-
-[[dependencies.structurecompass]]
-modId="forge"
-mandatory=true
-versionRange="[28,)"
-ordering="NONE"
-side="BOTH"
-
-[[dependencies.structurecompass]]
-modId="minecraft"
-mandatory=true
-versionRange="[1.14.4]"
-ordering="NONE"
-side="BOTH"
