@@ -10,17 +10,23 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-//apply plugin: 'eclipse'
-//apply plugin: 'maven-publish'
 
-version = '1.2'
-group = 'com.mrbysco.structurecompass' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'StructureCompass-1.15'
+version = "${version}"
+group = "com.mrbysco.structurecompass"
+archivesBaseName = "StructureCompass-${mc_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
+}
+
 minecraft {
-    mappings channel: 'snapshot', version: '20200325-1.15.1'
+    mappings  channel: "${mcp_channel}", version: "${mcp_mappings}"
     runs {
         client {
             workingDirectory project.file('run')
@@ -32,7 +38,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                structurecompass {
                     source sourceSets.main
                 }
             }
@@ -48,7 +54,25 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                structurecompass {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            // property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'structurecompass', '--all', '--output', file('src/generated/resources/'), '--existing', sourceSets.main.resources.srcDirs[0]
+
+            mods {
+                structurecompass {
                     source sourceSets.main
                 }
             }
@@ -56,8 +80,19 @@ minecraft {
     }
 }
 
+repositories {
+    maven {
+        url 'https://maven.mcmoddev.com'
+    }
+    maven {
+        url "http://maven.blamejared.com"
+    }
+}
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.27'
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    compile fg.deobf("net.darkhax.bookshelf:Bookshelf-${mc_version}:${bookshelf_version}")
+    compile fg.deobf("net.darkhax.gamestages:GameStages-${mc_version}:${gamestages_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

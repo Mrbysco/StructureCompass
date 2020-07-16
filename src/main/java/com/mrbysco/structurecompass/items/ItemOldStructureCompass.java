@@ -2,9 +2,7 @@ package com.mrbysco.structurecompass.items;
 
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.StructureCompass;
-import com.mrbysco.structurecompass.client.screens.CompassScreen;
-import com.mrbysco.structurecompass.util.StructureUtil;
-import net.minecraft.client.Minecraft;
+import com.mrbysco.structurecompass.config.StructureConfig;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -24,16 +22,22 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemStructureCompass extends Item {
+public class ItemOldStructureCompass extends Item {
+    private String structure;
+    private static final String structure_found = Reference.MOD_PREFIX + "structureFound";
+    private static final String structure_location = Reference.MOD_PREFIX + "structurePosition";
 
-    public ItemStructureCompass(Properties builder, String structureName) {
+    public ItemOldStructureCompass(Item.Properties builder, String structureName) {
         super(builder.group(StructureCompass.tabCompass));
+
+        this.structure = structureName;
 
         this.addPropertyOverride(new ResourceLocation("angle"), new IItemPropertyGetter() {
             @OnlyIn(Dist.CLIENT)
@@ -102,10 +106,8 @@ public class ItemStructureCompass extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
         ItemStack stack = playerIn.getHeldItem(hand);
-        if(worldIn.isRemote) {
-            Minecraft.getInstance().displayGuiScreen(new CompassScreen(playerIn, stack, hand, StructureUtil.getAvailableStructures()));
-
-            //locateStructure(playerIn, (ServerWorld)worldIn, stack);
+        if(!worldIn.isRemote) {
+            locateStructure(playerIn, (ServerWorld)worldIn, stack);
         }
         return super.onItemRightClick(worldIn, playerIn, hand);
     }
@@ -113,34 +115,34 @@ public class ItemStructureCompass extends Item {
     /*
      * Locates nearby structures
      */
-//    private void locateStructure(Entity entityIn, ServerWorld worldIn, ItemStack stack) {
-//        CompoundNBT tag = new CompoundNBT();
-//
-//        boolean findUnexplored = false;
-//        if (StructureConfig.COMMON.locateUnexplored.get() != null) {
-//            findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
-//        }
-//
-//        BlockPos structurePos = worldIn.findNearestStructure(structure, entityIn.getPosition(), 300, findUnexplored);
-//        if (structurePos == null) {
-//            BlockPos spawnPos = worldIn.getSpawnPoint();
-//            tag.putBoolean(structure_found, false);
-//            tag.putLong(structure_location, spawnPos.toLong());
-//        } else {
-//            tag.putBoolean(structure_found, true);
-//            tag.putLong(structure_location, structurePos.toLong());
-//        }
-//
-//        stack.setTag(tag);
-//    }
+    private void locateStructure(Entity entityIn, ServerWorld worldIn, ItemStack stack) {
+        CompoundNBT tag = new CompoundNBT();
+
+        boolean findUnexplored = false;
+        if (StructureConfig.COMMON.locateUnexplored.get() != null) {
+            findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
+        }
+
+        BlockPos structurePos = worldIn.findNearestStructure(structure, entityIn.getPosition(), 300, findUnexplored);
+        if (structurePos == null) {
+            BlockPos spawnPos = worldIn.getSpawnPoint();
+            tag.putBoolean(structure_found, false);
+            tag.putLong(structure_location, spawnPos.toLong());
+        } else {
+            tag.putBoolean(structure_found, true);
+            tag.putLong(structure_location, structurePos.toLong());
+        }
+
+        stack.setTag(tag);
+    }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        String structureName = "".replace("_", " ");
+        String structureName = structure.replace("_", " ");
         if(stack.hasTag())
         {
             CompoundNBT tag = stack.getTag();
-            boolean structureFound = tag.getBoolean(Reference.structure_found);
+            boolean structureFound = tag.getBoolean(structure_found);
             if(structureFound) {
                 tooltip.add(new TranslationTextComponent("structurecompass.structure.found.tooltip", new Object[] {structureName, structureName}).applyTextStyle(TextFormatting.GREEN));
             } else {
@@ -154,9 +156,9 @@ public class ItemStructureCompass extends Item {
     public BlockPos getBlockPos(ItemStack stack, World world) {
         if(stack.hasTag()) {
             CompoundNBT tag = stack.getTag();
-            if(tag.contains(Reference.structure_found)) {
-                if(tag.getBoolean(Reference.structure_found)) {
-                    Long structureLong = tag.getLong(Reference.structure_location);
+            if(tag.contains(structure_found)) {
+                if(tag.getBoolean(structure_found)) {
+                    Long structureLong = tag.getLong(structure_location);
                     return BlockPos.fromLong(structureLong);
                 } else {
                     return world.getSpawnPoint();

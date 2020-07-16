@@ -1,60 +1,33 @@
 package com.mrbysco.structurecompass.init;
 
-import com.google.common.base.Preconditions;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.items.ItemStructureCompass;
+import com.mrbysco.structurecompass.items.ItemOldStructureCompass;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-@ObjectHolder(Reference.MOD_ID)
 public class StructureItems {
-    public static ItemStructureCompass village_compass, mineshaft_compass, mansion_compass, igloo_compass,
-            desert_pyramid_compass, jungle_pyramid_compass, swamp_hut_compass, stronghold_compass,
-            monument_compass, fortress_compass, end_city_compass, ocean_ruin_compass, pillager_outpost_compass, buried_treasure_compass,
-            shipwreck_compass;
+    public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
-    public static ArrayList<Item> ITEMS = new ArrayList<>();
+    public static final RegistryObject<Item> test_compass = ITEMS.register("test_compass", () -> new ItemStructureCompass(itemBuilder(), "Igloo"));
 
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event)
-    {
-        IForgeRegistry<Item> registry = event.getRegistry();
-
-        buried_treasure_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Buried_Treasure"), "buried_treasure_compass");
-        desert_pyramid_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Desert_Pyramid"), "desert_pyramid_compass");
-        end_city_compass = registerItem(new ItemStructureCompass(itemBuilder(), "EndCity"), "end_city_compass");
-        fortress_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Fortress"), "fortress_compass");
-        igloo_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Igloo"), "igloo_compass");
-        jungle_pyramid_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Jungle_Pyramid"), "jungle_pyramid_compass");
-        mansion_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Manson"), "mansion_compass");
-        mineshaft_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Mineshaft"), "mineshaft_compass");
-        monument_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Monument"), "monument_compass");
-        ocean_ruin_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Ocean_Ruin"), "ocean_ruin_compass");
-        pillager_outpost_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Pillager_Outpost"), "pillager_outpost_compass");
-        shipwreck_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Shipwreck"), "shipwreck_compass");
-        stronghold_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Stronghold"), "stronghold_compass");
-        swamp_hut_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Swamp_Hut"), "swamp_hut_compass");
-        village_compass = registerItem(new ItemStructureCompass(itemBuilder(), "Village"), "village_compass");
-
-        registry.registerAll(ITEMS.toArray(new Item[0]));
-    }
-
-    public static <T extends Item> T registerItem(T item, String name)
-    {
-        ITEMS.add(item);
-
-        item.setRegistryName(new ResourceLocation(Reference.MOD_ID, name));
-        Preconditions.checkNotNull(item, "registryName");
-        return item;
-    }
+    public static final RegistryObject<Item> buried_treasure_compass = ITEMS.register("buried_treasure_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Buried_Treasure"));
+    public static final RegistryObject<Item> desert_pyramid_compass = ITEMS.register("desert_pyramid_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Desert_Pyramid"));
+    public static final RegistryObject<Item> end_city_compass = ITEMS.register("end_city_compass", () -> new ItemOldStructureCompass(itemBuilder(), "EndCity"));
+    public static final RegistryObject<Item> fortress_compass = ITEMS.register("fortress_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Fortress"));
+    public static final RegistryObject<Item> igloo_compass = ITEMS.register("igloo_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Igloo"));
+    public static final RegistryObject<Item> jungle_pyramid_compass = ITEMS.register("jungle_pyramid_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Jungle_Pyramid"));
+    public static final RegistryObject<Item> mansion_compass = ITEMS.register("mansion_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Manson"));
+    public static final RegistryObject<Item> mineshaft_compass = ITEMS.register("mineshaft_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Mineshaft"));
+    public static final RegistryObject<Item> monument_compass = ITEMS.register("monument_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Monument"));
+    public static final RegistryObject<Item> ocean_ruin_compass = ITEMS.register("ocean_ruin_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Ocean_Ruin"));
+    public static final RegistryObject<Item> pillager_outpost_compass = ITEMS.register("pillager_outpost_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Pillager_Outpost"));
+    public static final RegistryObject<Item> shipwreck_compass = ITEMS.register("shipwreck_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Shipwreck"));
+    public static final RegistryObject<Item> stronghold_compass = ITEMS.register("stronghold_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Stronghold"));
+    public static final RegistryObject<Item> swamp_hut_compass = ITEMS.register("swamp_hut_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Swamp_Hut"));
+    public static final RegistryObject<Item> village_compass = ITEMS.register("village_compass", () -> new ItemOldStructureCompass(itemBuilder(), "Village"));
 
     private static Item.Properties itemBuilder()
     {

@@ -3,17 +3,20 @@ package com.mrbysco.structurecompass.config;
 import com.mrbysco.structurecompass.StructureCompass;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
-import static net.minecraftforge.fml.Logging.CORE;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StructureConfig {
     public static class Common {
         public final IntValue compassRange;
         public final BooleanValue locateUnexplored;
+        public final ConfigValue<List<? extends String>> structureBlacklist;
 
         Common(ForgeConfigSpec.Builder builder) {
             builder.comment("General settings")
@@ -26,6 +29,10 @@ public class StructureConfig {
             locateUnexplored = builder
                     .comment("Defines if the structure compass should locate unexplored structures [default: false]")
                     .define("locateUnexplored", false);
+
+            structureBlacklist = builder
+                    .comment("")
+                    .defineList("structureBlacklist", new ArrayList<>(), o -> (o instanceof String));
 
             builder.pop();
         }
@@ -41,11 +48,11 @@ public class StructureConfig {
 
     @SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent) {
-        StructureCompass.LOGGER.debug(StructureCompass.STRUCTURECOMPASS, "Loaded Statues' config file {}", configEvent.getConfig().getFileName());
+        StructureCompass.LOGGER.debug("Loaded Structure Compass' config file {}", configEvent.getConfig().getFileName());
     }
 
     @SubscribeEvent
     public static void onFileChange(final ModConfig.Reloading configEvent) {
-        StructureCompass.LOGGER.fatal(CORE, "Statues' config just got changed on the file system!");
+        StructureCompass.LOGGER.fatal("Structure Compass' config just got changed on the file system!");
     }
 }
