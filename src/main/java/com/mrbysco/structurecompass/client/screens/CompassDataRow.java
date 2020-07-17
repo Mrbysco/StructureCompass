@@ -19,7 +19,6 @@ public class CompassDataRow {
     this.index = index;
   }
 
-
   public boolean isVisible(int sliderIndex, String text) {
     //sliderIndex starts at zero, so start there
     if(index < sliderIndex) {
@@ -32,19 +31,12 @@ public class CompassDataRow {
 
   // could be better with regex. compare overlap of my display vs input (from text or whatever)
   public boolean compareSearch(String input) {
-    if(input==null || input.isEmpty()) {return true;}
+    if(input == null || input.isEmpty()) {
+      return true;
+    }
     return input.toLowerCase().contains(display) || 
         display.toLowerCase().contains(input);
   }
-  
-  public boolean isInside(int mouseX, int mouseY) {
-    int loffset = 36;
-    int roffset = 36;
-    return loffset + x < mouseX && mouseX < x + width - roffset &&
-        y < mouseY && mouseY < y + height;
-  }
-
-
  
 
 }
