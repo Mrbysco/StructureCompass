@@ -2,6 +2,7 @@ package com.mrbysco.structurecompass.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrbysco.structurecompass.Reference;
+import com.mrbysco.structurecompass.StructureCompass;
 import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -18,8 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CompassScreen extends Screen {
-    private static final int SCROLLHEIGHT = 600;
-    private static final int SCROLLWIDTH = 200;
     private final PlayerEntity editingPlayer;
     private final ItemStack compass;
     private final Hand hand;
@@ -51,7 +50,6 @@ public class CompassScreen extends Screen {
           }
         }
         listEnd = StructureUtil.getAvailableStructureList().size();
-        
         
         if(compassIn.hasTag() && compassIn.getTag().contains(Reference.structure_tag)) {
             this.defaultInputFieldText = compassIn.getTag().getString(Reference.structure_tag);
@@ -94,9 +92,6 @@ public class CompassScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mx, double my, int key) {
- 
-      System.out.println(mx +"  , "+my);
-
       for(CompassDataRow row : this.allRows) {
         if(isMouseOver(row, mx, my)) {
           this.clicked(row);
@@ -108,7 +103,7 @@ public class CompassScreen extends Screen {
 
     private void clicked(CompassDataRow row) {
       //if you need this
-      System.out.println(row.id + " clicked on this row");
+      StructureCompass.LOGGER.info(row.id + " clicked on this row");
     }
 
     private boolean isMouseOver(CompassDataRow row, double mx, double my) {
@@ -120,18 +115,17 @@ public class CompassScreen extends Screen {
     public boolean mouseScrolled(double mx, double my, double key) {
        
       //TODO: could check mx,my vs  GUILEFT, GUITOP to see if i am in a "scrollable area" rectangle 
-      if(key < 0) {
-        //System.out.println(key+"scrolled negative");
+      // scrolling logic
+      if (key < 0) {
         sliderIndex--;
-        if(sliderIndex < 0) {
+        if (sliderIndex < 0) {
           sliderIndex = 0;
         }
       }
-      if(key > 0) {
-        //System.out.println(key+"scrolled positive");
+      if (key > 0) {
         sliderIndex++;
-        if(sliderIndex >= listEnd-1 ) {
-          sliderIndex = listEnd-1;
+        if (sliderIndex >= listEnd - 1) {
+          sliderIndex = listEnd - 1;
         }
       }
       return super.mouseScrolled(mx, my, key);
@@ -139,26 +133,24 @@ public class CompassScreen extends Screen {
     
     private void renderRows() {
       int drawn = 0;
-      for(CompassDataRow row : this.allRows) {
+      for (CompassDataRow row : this.allRows) {
 
         // distance above, then the height of myself
         row.y = GUITOP + row.height * drawn;
         
-        if(row.isVisible(this.sliderIndex, this.inputField.getText())) {
+        if (row.isVisible(this.sliderIndex, this.inputField.getText())) {
          this.render(row);
          drawn++;
         }
-        if(drawn > PAGESIZE) {
+        if (drawn > PAGESIZE) {
           break;//lol yup this is hacky way
         }
       }
   }
 
     private void render(CompassDataRow row) {
-      this.font.drawString(row.display
-//          +String.format(" (%d,%d) || wxh = %d x %d", row.x, row.y, row.width, row.height)
-          , row.x, row.y, 4209792);
-      //draw button, texture, whatever here
+      // render everything we need for this row
+      this.font.drawString(row.display, row.x, row.y, 4209792);
     }
 
 }
