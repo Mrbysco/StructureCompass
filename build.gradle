@@ -10,6 +10,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
 
 version = "${version}"
 group = "com.mrbysco.structurecompass"
@@ -26,7 +27,7 @@ sourceSets {
 }
 
 minecraft {
-    mappings  channel: "${mcp_channel}", version: "${mcp_mappings}"
+    mappings  channel: "${mcp_channel}", version: mcp_mappings
     runs {
         client {
             workingDirectory project.file('run')
@@ -87,12 +88,24 @@ repositories {
     maven {
         url "http://maven.blamejared.com"
     }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+    maven {
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        url = "https://modmaven.k-4u.nl"
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
     compile fg.deobf("net.darkhax.bookshelf:Bookshelf-${mc_version}:${bookshelf_version}")
     compile fg.deobf("net.darkhax.gamestages:GameStages-${mc_version}:${gamestages_version}")
+	
+    compile fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+    compile fg.deobf("top.theillusivec4.curios:curios:FORGE-${mc_version}-${curios_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
