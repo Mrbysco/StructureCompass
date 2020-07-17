@@ -89,9 +89,6 @@ repositories {
         url "http://maven.blamejared.com"
     }
     maven {
-        url = "https://maven.theillusivec4.top/"
-    }
-    maven {
         url = "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
@@ -105,7 +102,6 @@ dependencies {
     compile fg.deobf("net.darkhax.gamestages:GameStages-${mc_version}:${gamestages_version}")
 	
     compile fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
-    compile fg.deobf("top.theillusivec4.curios:curios:FORGE-${mc_version}-${curios_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
