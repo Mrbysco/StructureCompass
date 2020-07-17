@@ -103,6 +103,9 @@ public class CompassScreen extends Screen {
 
     private void clicked(CompassDataRow row) {
       //if you need this
+        if (row.isVisible(this.sliderIndex, this.inputField.getText())) {
+            StructureCompass.LOGGER.info(row.id + "  is visible");
+        }
       StructureCompass.LOGGER.info(row.id + " clicked on this row");
     }
 
@@ -134,12 +137,12 @@ public class CompassScreen extends Screen {
     private void renderRows() {
       int drawn = 0;
       for (CompassDataRow row : this.allRows) {
-
         // distance above, then the height of myself
         row.y = GUITOP + row.height * drawn;
         
         if (row.isVisible(this.sliderIndex, this.inputField.getText())) {
          this.render(row);
+//         System.out.println(row.id);
          drawn++;
         }
         if (drawn > PAGESIZE) {
