@@ -23,6 +23,22 @@ public class StructureUtil {
         return structureList;
     }
 
+    public static List<ResourceLocation> getAvailableStructureList() {
+        List<ResourceLocation> structureList = new ArrayList<>();
+
+        for(ResourceLocation structure : GameData.getStructureFeatures().keySet()) {
+          String structureLocation = structure.toString();
+            if(!isBlacklisted(structureLocation)) {
+                if(structureList.isEmpty() || !structureList.contains(structureLocation)) {
+                    structureList.add(structure);
+                }
+            }
+        }
+
+        return structureList;
+    }
+
+    
     public static boolean isBlacklisted(String structureLocation) {
         return StructureConfig.COMMON.structureBlacklist.get().isEmpty() ? false : StructureConfig.COMMON.structureBlacklist.get().contains(structureLocation);
     }
