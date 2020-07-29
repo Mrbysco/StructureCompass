@@ -103,7 +103,7 @@ public class ItemStructureCompass extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
         ItemStack stack = playerIn.getHeldItem(hand);
         if(worldIn.isRemote) {
-            Minecraft.getInstance().displayGuiScreen(new CompassScreen(playerIn, stack, hand, StructureUtil.getAvailableStructures()));
+            Minecraft.getInstance().displayGuiScreen(new CompassScreen(playerIn, stack, hand, StructureUtil.getAvailableStructureList()));
 
             //locateStructure(playerIn, (ServerWorld)worldIn, stack);
         }

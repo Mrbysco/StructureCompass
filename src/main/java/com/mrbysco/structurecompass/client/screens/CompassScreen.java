@@ -3,9 +3,7 @@ package com.mrbysco.structurecompass.client.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.StructureCompass;
-import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resources.I18n;
@@ -14,8 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CompassScreen extends Screen {
@@ -36,20 +34,20 @@ public class CompassScreen extends Screen {
     private String defaultInputFieldText = "";
     protected TextFieldWidget inputField;
 
-    public CompassScreen(PlayerEntity player, ItemStack compassIn, Hand handIn, List<String> availableStructureList) {
+    public CompassScreen(PlayerEntity player, ItemStack compassIn, Hand handIn, List<ResourceLocation> availableStructureList) {
         super(new TranslationTextComponent(Reference.MOD_PREFIX + "compass.screen"));
         this.editingPlayer = player;
         this.compass = compassIn;
         this.hand = handIn;
         
         int index = 0;
-        for(ResourceLocation id : StructureUtil.getAvailableStructureList()) {
+        for(ResourceLocation id : availableStructureList) {
           if(id != null && doesPlayerGamestageAllowStruct(id)) { 
             allRows.add(new CompassDataRow(id, GUILEFT, 0, index));
             index++;
           }
         }
-        listEnd = StructureUtil.getAvailableStructureList().size();
+        listEnd = availableStructureList.size();
         
         if(compassIn.hasTag() && compassIn.getTag().contains(Reference.structure_tag)) {
             this.defaultInputFieldText = compassIn.getTag().getString(Reference.structure_tag);
@@ -103,9 +101,6 @@ public class CompassScreen extends Screen {
 
     private void clicked(CompassDataRow row) {
       //if you need this
-        if (row.isVisible(this.sliderIndex, this.inputField.getText())) {
-            StructureCompass.LOGGER.info(row.id + "  is visible");
-        }
       StructureCompass.LOGGER.info(row.id + " clicked on this row");
     }
 
