@@ -10,6 +10,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class StructureConfig {
@@ -31,8 +32,8 @@ public class StructureConfig {
                     .define("locateUnexplored", false);
 
             structureBlacklist = builder
-                    .comment("")
-                    .defineList("structureBlacklist", new ArrayList<>(), o -> (o instanceof String));
+                    .comment("Defines which structures can't be searched with the Structure Compass")
+                    .defineListAllowEmpty(Collections.singletonList("structureBlacklist"), () -> Collections.singletonList(""), o -> (o instanceof String));
 
             builder.pop();
         }

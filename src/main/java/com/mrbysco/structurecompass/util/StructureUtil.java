@@ -2,35 +2,20 @@ package com.mrbysco.structurecompass.util;
 
 import com.mrbysco.structurecompass.config.StructureConfig;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.GameData;
+import net.minecraft.world.gen.feature.structure.Structure;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StructureUtil {
-    public static List<String> getAvailableStructures() {
-        List<String> structureList = new ArrayList<>();
-
-        for(ResourceLocation structure : GameData.getStructureFeatures().keySet()) {
-            String structureLocation = structure.toString();
-            if(!isBlacklisted(structureLocation)) {
-                if(structureList.isEmpty() || !structureList.contains(structureLocation)) {
-                    structureList.add(structureLocation);
-                }
-            }
-        }
-
-        return structureList;
-    }
-
     public static List<ResourceLocation> getAvailableStructureList() {
         List<ResourceLocation> structureList = new ArrayList<>();
 
-        for(ResourceLocation structure : GameData.getStructureFeatures().keySet()) {
-          String structureLocation = structure.toString();
-            if(!isBlacklisted(structureLocation)) {
-                if(structureList.isEmpty() || !structureList.contains(structureLocation)) {
-                    structureList.add(structure);
+        for (Structure<?> structureFeature : net.minecraftforge.registries.ForgeRegistries.STRUCTURE_FEATURES) {
+            ResourceLocation location = structureFeature.getRegistryName();
+            if(location != null) {
+                if(!isBlacklisted(location.toString()) && !structureList.contains(structureFeature.getRegistryName())) {
+                    structureList.add(structureFeature.getRegistryName());
                 }
             }
         }
@@ -38,8 +23,7 @@ public class StructureUtil {
         return structureList;
     }
 
-    
     public static boolean isBlacklisted(String structureLocation) {
-        return StructureConfig.COMMON.structureBlacklist.get().isEmpty() ? false : StructureConfig.COMMON.structureBlacklist.get().contains(structureLocation);
+        return !StructureConfig.COMMON.structureBlacklist.get().isEmpty() && StructureConfig.COMMON.structureBlacklist.get().contains(structureLocation);
     }
 }

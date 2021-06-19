@@ -2,25 +2,22 @@
   "_comment": "Creative Tab Name",
   "itemGroup.structurecompass": "Structure Compass",
 
+
+  "_comment": "Screen",
+  "structurecompass.screen.selection.title": "Structure Selection",
+  "structurecompass.screen.selection.load": "Load",
+  "structurecompass.screen.search": "Search",
+  "structurecompass.screen.search.a_to_z": "A-Z",
+  "structurecompass.screen.search.z_to_a": "Z-A",
+
   "_comment": "Item names",
-  "item.structurecompass.village_compass": "Village Compass",
-  "item.structurecompass.mineshaft_compass": "Mineshaft Compass",
-  "item.structurecompass.mansion_compass": "Mansion Compass",
-  "item.structurecompass.igloo_compass": "Igloo Compass",
-  "item.structurecompass.desert_pyramid_compass": "Desert Pyramid Compass",
-  "item.structurecompass.jungle_pyramid_compass": "Jungle Pyramid Compass",
-  "item.structurecompass.swamp_hut_compass": "Swamp Hut Compass",
-  "item.structurecompass.stronghold_compass": "Stronghold Compass",
-  "item.structurecompass.monument_compass": "Monument Compass",
-  "item.structurecompass.fortress_compass": "Fortress Compass",
-  "item.structurecompass.end_city_compass": "End City Compass",
-  "item.structurecompass.ocean_ruin_compass": "Ocean Ruin Compass",
-  "item.structurecompass.buried_treasure_compass": "Burried Treasure Compass",
-  "item.structurecompass.shipwreck_compass": "Shipwreck Compass",
-  "item.structurecompass.pillager_outpost_compass": "Pillager Outpost Compass",
+  "item.structurecompass.structure_compass": "Structure Compass",
+
+  "_comment": "Messages",
+  "structurecompass.locate.invalid": "Bound structure invalid. Please re-bind",
 
   "_comment": "tooltips",
-  "structurecompass.structure.found.tooltip": "%s has been located, compass is pointing towards the found %s",
-  "structurecompass.structure.failed.tooltip": "%s can not be located, perhaps try again later.",
-  "structurecompass.structure.unset.tooltip": "%s location has not been set yet, right-click the compass to check for a nearby %s"
+  "structurecompass.structure.found.tooltip": "%s has been located, compass is pointing towards the structure",
+  "structurecompass.structure.failed.tooltip": "%s can not be located, perhaps try again later",
+  "structurecompass.structure.unset.tooltip": "No structure has been set, right-click to select a structure"
 }
