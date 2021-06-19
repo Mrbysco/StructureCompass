@@ -1,10 +1,7 @@
 package com.mrbysco.structurecompass.items;
 
 import com.mrbysco.structurecompass.Reference;
-import com.mrbysco.structurecompass.StructureCompass;
-import com.mrbysco.structurecompass.client.screen.CompassScreen;
 import com.mrbysco.structurecompass.config.StructureConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -29,16 +26,15 @@ import java.util.List;
 public class StructureCompassItem extends Item {
 
     public StructureCompassItem(Properties builder) {
-        super(builder.tab(StructureCompass.tabCompass));
+        super(builder);
     }
-
 
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand hand) {
         ItemStack stack = playerIn.getItemInHand(hand);
         if(playerIn.isShiftKeyDown()) {
             if(worldIn.isClientSide) {
-                Minecraft.getInstance().setScreen(new CompassScreen(playerIn, hand, stack));
+                com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(playerIn, hand, stack);
             }
         } else {
             locateStructure(stack, playerIn);
@@ -75,7 +71,7 @@ public class StructureCompassItem extends Item {
                             tag.putBoolean(Reference.structure_found, false);
                             tag.putLong(Reference.structure_location, spawnPos.asLong());
 
-                            player.sendMessage(new TranslationTextComponent("structurecompass.structure.failed.tooltip", boundStructure).withStyle(TextFormatting.GOLD), Util.NIL_UUID);
+                            player.sendMessage(new TranslationTextComponent("structurecompass.structure.failed", boundStructure).withStyle(TextFormatting.GOLD), Util.NIL_UUID);
                         } else {
                             tag.putBoolean(Reference.structure_found, true);
                             tag.putLong(Reference.structure_location, structurePos.asLong());
@@ -84,7 +80,7 @@ public class StructureCompassItem extends Item {
                         stack.setTag(tag);
                     }
                 } else {
-                    player.sendMessage(new TranslationTextComponent("structurecompass.locate.invalid").withStyle(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("structurecompass.locate.fail").withStyle(TextFormatting.RED), Util.NIL_UUID);
                 }
             } else {
                 player.sendMessage(new TranslationTextComponent("structurecompass.structure.unset.tooltip").withStyle(TextFormatting.YELLOW), Util.NIL_UUID);

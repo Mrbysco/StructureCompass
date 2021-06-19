@@ -2,15 +2,18 @@ package com.mrbysco.structurecompass.client;
 
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.init.StructureItems;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -22,7 +25,6 @@ import javax.annotation.Nullable;
 
 public class ClientHandler {
 	public static void onClientSetup(final FMLClientSetupEvent event) {
-
 		ItemModelsProperties.register(StructureItems.STRUCTURE_COMPASS.get(), new ResourceLocation("angle"), new IItemPropertyGetter() {
 			@OnlyIn(Dist.CLIENT)
 			private double rotation;
@@ -100,5 +102,9 @@ public class ClientHandler {
 				return world.dimensionType().natural() ? world.getSharedSpawnPos() : null;
 			}
 		});
+	}
+
+	public static void openStructureScreen(PlayerEntity playerIn, Hand hand, ItemStack stack) {
+		Minecraft.getInstance().setScreen(new com.mrbysco.structurecompass.client.screen.CompassScreen(playerIn, hand, stack));
 	}
 }
