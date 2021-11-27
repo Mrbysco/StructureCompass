@@ -10,4 +10,4 @@ Structure Compass adds a compass dedicated to locating structures
   - [![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat)](http://opensource.org/licenses/MIT)
   
 ## Downloads ##
-Downloads will be available on [curseforge](https://www.curseforge.com/minecraft/mc-mods/structure-compass)
+Downloads will be available on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/structure-compass)
