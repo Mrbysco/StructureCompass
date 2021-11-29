@@ -2,22 +2,22 @@ package com.mrbysco.structurecompass.items;
 
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.config.StructureConfig;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -30,11 +30,11 @@ public class StructureCompassItem extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         ItemStack stack = playerIn.getItemInHand(hand);
         if(playerIn.isShiftKeyDown()) {
             if(worldIn.isClientSide) {
-                com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(playerIn, hand, stack);
+                com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(hand, stack);
             }
         } else {
             locateStructure(stack, playerIn);
@@ -46,17 +46,17 @@ public class StructureCompassItem extends Item {
     /*
      * Locates nearby structures
      */
-    private void locateStructure(ItemStack stack, PlayerEntity player) {
+    private void locateStructure(ItemStack stack, Player player) {
         if(!player.level.isClientSide) {
             if(stack.hasTag() && stack.getTag().contains(Reference.structure_tag)) {
-                ServerWorld worldIn = (ServerWorld) player.level;
-                CompoundNBT tag = stack.getTag();
+                ServerLevel worldIn = (ServerLevel) player.level;
+                CompoundTag tag = stack.getTag();
 
                 String boundStructure = tag.getString(Reference.structure_tag);
                 ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
                 if(structureLocation != null) {
-                    Structure<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(structureLocation);
+                    StructureFeature<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(structureLocation);
                     if(structure != null) {
                         int searchRange = StructureConfig.COMMON.compassRange.get();
 
@@ -71,7 +71,7 @@ public class StructureCompassItem extends Item {
                             tag.putBoolean(Reference.structure_found, false);
                             tag.putLong(Reference.structure_location, spawnPos.asLong());
 
-                            player.sendMessage(new TranslationTextComponent("structurecompass.structure.failed", boundStructure).withStyle(TextFormatting.GOLD), Util.NIL_UUID);
+                            player.sendMessage(new TranslatableComponent("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
                         } else {
                             tag.putBoolean(Reference.structure_found, true);
                             tag.putLong(Reference.structure_location, structurePos.asLong());
@@ -80,27 +80,27 @@ public class StructureCompassItem extends Item {
                         stack.setTag(tag);
                     }
                 } else {
-                    player.sendMessage(new TranslationTextComponent("structurecompass.locate.fail").withStyle(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("structurecompass.locate.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
             } else {
-                player.sendMessage(new TranslationTextComponent("structurecompass.structure.unset.tooltip").withStyle(TextFormatting.YELLOW), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
             }
         }
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if(stack.hasTag()) {
-            CompoundNBT tag = stack.getTag();
+            CompoundTag tag = stack.getTag();
             String structureName = tag.getString(Reference.structure_tag);
             boolean structureFound = tag.getBoolean(Reference.structure_found);
             if(structureFound) {
-                tooltip.add(new TranslationTextComponent("structurecompass.structure.found.tooltip", structureName, structureName).withStyle(TextFormatting.GREEN));
+                tooltip.add(new TranslatableComponent("structurecompass.structure.found.tooltip", structureName, structureName).withStyle(ChatFormatting.GREEN));
             } else {
-                tooltip.add(new TranslationTextComponent("structurecompass.structure.failed.tooltip", structureName).withStyle(TextFormatting.GOLD));
+                tooltip.add(new TranslatableComponent("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.GOLD));
             }
         } else {
-            tooltip.add(new TranslationTextComponent("structurecompass.structure.unset.tooltip").withStyle(TextFormatting.GOLD));
+            tooltip.add(new TranslatableComponent("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.GOLD));
         }
     }
 }

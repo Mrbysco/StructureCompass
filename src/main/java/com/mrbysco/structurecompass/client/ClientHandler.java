@@ -3,20 +3,19 @@ package com.mrbysco.structurecompass.client;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.init.StructureItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -25,7 +24,7 @@ import javax.annotation.Nullable;
 
 public class ClientHandler {
 	public static void onClientSetup(final FMLClientSetupEvent event) {
-		ItemModelsProperties.register(StructureItems.STRUCTURE_COMPASS.get(), new ResourceLocation("angle"), new IItemPropertyGetter() {
+		ItemProperties.register(StructureItems.STRUCTURE_COMPASS.get(), new ResourceLocation("angle"), new ItemPropertyFunction() {
 			@OnlyIn(Dist.CLIENT)
 			private double rotation;
 			@OnlyIn(Dist.CLIENT)
@@ -34,20 +33,20 @@ public class ClientHandler {
 			private long lastUpdateTick;
 
 			@OnlyIn(Dist.CLIENT)
-			public float call(ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity livingBaseIn) {
+			public float call(ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity livingBaseIn, int p_174679_) {
 				if (livingBaseIn == null && !stack.isFramed()) {
 					return 0.0F;
 				} else {
 					boolean livingExists = livingBaseIn != null;
 					Entity entity = livingExists ? livingBaseIn : stack.getFrame();
-					if (worldIn == null && entity.level instanceof ClientWorld) {
-						worldIn = (ClientWorld)entity.level;
+					if (worldIn == null && entity.level instanceof ClientLevel) {
+						worldIn = (ClientLevel)entity.level;
 					}
 
 					double d0;
 					if (worldIn.dimensionType().natural()) {
-						double d1 = livingExists ? (double)entity.yRot : this.getFrameRotation((ItemFrameEntity)entity);
-						d1 = MathHelper.positiveModulo(d1 / 360.0D, 1.0D);
+						double d1 = livingExists ? (double)entity.getYRot() : this.getFrameRotation((ItemFrame)entity);
+						d1 = Mth.positiveModulo(d1 / 360.0D, 1.0D);
 						double d2 = this.getSpawnToAngle(worldIn, (Entity)entity, stack) / (double)((float)Math.PI * 2F);
 						d0 = 0.5D - (d1 - 0.25D - d2);
 					} else {
@@ -58,40 +57,40 @@ public class ClientHandler {
 						d0 = this.wobble(worldIn, d0);
 					}
 
-					return MathHelper.positiveModulo((float)d0, 1.0F);
+					return Mth.positiveModulo((float)d0, 1.0F);
 				}
 			}
 
 			@OnlyIn(Dist.CLIENT)
-			private double wobble(ClientWorld worldIn, double p_185093_2_) {
+			private double wobble(ClientLevel worldIn, double p_185093_2_) {
 				if (worldIn.getGameTime() != this.lastUpdateTick) {
 					this.lastUpdateTick = worldIn.getGameTime();
 					double d0 = p_185093_2_ - this.rotation;
-					d0 = MathHelper.positiveModulo(d0 + 0.5D, 1.0D) - 0.5D;
+					d0 = Mth.positiveModulo(d0 + 0.5D, 1.0D) - 0.5D;
 					this.rota += d0 * 0.1D;
 					this.rota *= 0.8D;
-					this.rotation = MathHelper.positiveModulo(this.rotation + this.rota, 1.0D);
+					this.rotation = Mth.positiveModulo(this.rotation + this.rota, 1.0D);
 				}
 
 				return this.rotation;
 			}
 
 			@OnlyIn(Dist.CLIENT)
-			private double getFrameRotation(ItemFrameEntity itemFrame) {
+			private double getFrameRotation(ItemFrame itemFrame) {
 				Direction direction = itemFrame.getDirection();
 				int i = direction.getAxis().isVertical() ? 90 * direction.getAxisDirection().getStep() : 0;
-				return (double)MathHelper.wrapDegrees(180 + direction.get2DDataValue() * 90 + itemFrame.getRotation() * 45 + i);
+				return (double)Mth.wrapDegrees(180 + direction.get2DDataValue() * 90 + itemFrame.getRotation() * 45 + i);
 			}
 
 			@OnlyIn(Dist.CLIENT)
-			private double getSpawnToAngle(ClientWorld worldIn, Entity entityIn, ItemStack stack) {
+			private double getSpawnToAngle(ClientLevel worldIn, Entity entityIn, ItemStack stack) {
 				BlockPos pos = getBlockPos(stack, worldIn);
 				return Math.atan2((double)pos.getZ() - entityIn.getZ(), (double)pos.getX() - entityIn.getX());
 			}
 
-			public BlockPos getBlockPos(ItemStack stack, ClientWorld world) {
+			public BlockPos getBlockPos(ItemStack stack, ClientLevel world) {
 				if(stack.hasTag()) {
-					CompoundNBT tag = stack.getTag();
+					CompoundTag tag = stack.getTag();
 					if (tag != null && tag.contains(Reference.structure_found)) {
 						if (tag.getBoolean(Reference.structure_found)) {
 							long structureLong = tag.getLong(Reference.structure_location);
@@ -104,7 +103,7 @@ public class ClientHandler {
 		});
 	}
 
-	public static void openStructureScreen(PlayerEntity playerIn, Hand hand, ItemStack stack) {
-		Minecraft.getInstance().setScreen(new com.mrbysco.structurecompass.client.screen.CompassScreen(playerIn, hand, stack));
+	public static void openStructureScreen(InteractionHand hand, ItemStack stack) {
+		Minecraft.getInstance().setScreen(new com.mrbysco.structurecompass.client.screen.CompassScreen(hand, stack));
 	}
 }
