@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.loading.StringUtils;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -151,7 +151,7 @@ public class CompassScreen extends Screen {
 			if(sortType == SortType.A_TO_Z) {
 				Collections.sort(structures);
 			} else if(sortType == SortType.Z_TO_A) {
-				Collections.sort(structures, Collections.reverseOrder());
+				structures.sort(Collections.reverseOrder());
 			}
 			checkStages();
 			structureWidget.refreshList();
