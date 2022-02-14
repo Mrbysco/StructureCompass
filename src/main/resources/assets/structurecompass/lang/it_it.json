@@ -14,11 +14,11 @@
   "item.structurecompass.structure_compass": "Compasso della struttura",
 
   "_comment": "Messages",
-  "structurecompass.locate.invalid": "Bound structure invalid. Please re-bind",
-  "structurecompass.locate.fail": "Structure can't be located nearby",
+  "structurecompass.locate.invalid": "Struttura legata invalida. Si prega di rilegare",
+  "structurecompass.locate.fail": "Impossibile localizzare La struttura nelle vicinanze non può essere localizzata nelle vicinanze",
 
   "_comment": "tooltips",
   "structurecompass.structure.found.tooltip": "%s è stato/a localizzato/a, il compasso sta puntando verso la struttura",
   "structurecompass.structure.failed.tooltip": "Impossibile localizzare %s, riprova più tardi",
-  "structurecompass.structure.unset.tooltip": "No structure has been set, right-click to select a structure"
+  "structurecompass.structure.unset.tooltip": "Nessuna struttura è stata impostata, fare clic con il pulsante destro per selezionare una struttura"
 }
