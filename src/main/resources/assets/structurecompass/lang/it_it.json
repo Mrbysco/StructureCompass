@@ -1,0 +1,24 @@
+{
+  "_comment": "Creative Tab Name",
+  "itemGroup.structurecompass": "Structure Compass",
+
+
+  "_comment": "Screen",
+  "structurecompass.screen.selection.title": "Selezione della struttura",
+  "structurecompass.screen.selection.load": "Carica",
+  "structurecompass.screen.search": "Cerca",
+  "structurecompass.screen.search.a_to_z": "A-Z",
+  "structurecompass.screen.search.z_to_a": "Z-A",
+
+  "_comment": "Item names",
+  "item.structurecompass.structure_compass": "Compasso della struttura",
+
+  "_comment": "Messages",
+  "structurecompass.locate.invalid": "Bound structure invalid. Please re-bind",
+  "structurecompass.locate.fail": "Structure can't be located nearby",
+
+  "_comment": "tooltips",
+  "structurecompass.structure.found.tooltip": "%s è stato/a localizzato/a, il compasso sta puntando verso la struttura",
+  "structurecompass.structure.failed.tooltip": "Impossibile localizzare %s, riprova più tardi",
+  "structurecompass.structure.unset.tooltip": "No structure has been set, right-click to select a structure"
+}
