@@ -1,5 +1,6 @@
 package com.mrbysco.structurecompass;
 
+import com.mojang.logging.LogUtils;
 import com.mrbysco.structurecompass.client.ClientHandler;
 import com.mrbysco.structurecompass.config.StructureConfig;
 import com.mrbysco.structurecompass.init.StructureItems;
@@ -15,12 +16,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 @Mod(Reference.MOD_ID)
 public class StructureCompass {
-    public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final CreativeModeTab tabCompass = new CreativeModeTab(Reference.MOD_ID) {
         @Override

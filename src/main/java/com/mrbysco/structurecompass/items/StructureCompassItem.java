@@ -1,13 +1,19 @@
 package com.mrbysco.structurecompass.items;
 
+import com.mojang.datafixers.util.Pair;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.config.StructureConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -17,11 +23,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class StructureCompassItem extends Item {
 
@@ -49,15 +57,19 @@ public class StructureCompassItem extends Item {
     private void locateStructure(ItemStack stack, Player player) {
         if(!player.level.isClientSide) {
             if(stack.hasTag() && stack.getTag().contains(Reference.structure_tag)) {
-                ServerLevel worldIn = (ServerLevel) player.level;
+                ServerLevel level = (ServerLevel) player.level;
                 CompoundTag tag = stack.getTag();
 
                 String boundStructure = tag.getString(Reference.structure_tag);
                 ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
                 if(structureLocation != null) {
-                    StructureFeature<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(structureLocation);
-                    if(structure != null) {
+                    ResourceKey<ConfiguredStructureFeature<?, ?>> structureKey = ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, structureLocation);
+                    Registry<ConfiguredStructureFeature<?, ?>> registry = level.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
+                    HolderSet<ConfiguredStructureFeature<?, ?>> featureHolderSet = registry.getHolder(structureKey).map((holders) -> {
+                        return HolderSet.direct(holders);
+                    }).orElse(null);
+                    if(featureHolderSet != null) {
                         int searchRange = StructureConfig.COMMON.compassRange.get();
 
                         boolean findUnexplored = false;
@@ -65,9 +77,12 @@ public class StructureCompassItem extends Item {
                             findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
                         }
 
-                        BlockPos structurePos = worldIn.findNearestMapFeature(structure, player.blockPosition(), searchRange, findUnexplored);
+
+                        Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> pair =
+                                level.getChunkSource().getGenerator().findNearestMapFeature(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
+                        BlockPos structurePos = pair != null ? pair.getFirst() : null;
                         if (structurePos == null) {
-                            BlockPos spawnPos = worldIn.getSharedSpawnPos();
+                            BlockPos spawnPos = level.getSharedSpawnPos();
                             tag.putBoolean(Reference.structure_found, false);
                             tag.putLong(Reference.structure_location, spawnPos.asLong());
 

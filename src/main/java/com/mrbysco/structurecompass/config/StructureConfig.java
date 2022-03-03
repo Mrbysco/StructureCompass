@@ -53,6 +53,6 @@ public class StructureConfig {
 
     @SubscribeEvent
     public static void onFileChange(final ModConfigEvent.Reloading configEvent) {
-        StructureCompass.LOGGER.fatal("Structure Compass' config just got changed on the file system!");
+        StructureCompass.LOGGER.warn("Structure Compass' config just got changed on the file system!");
     }
 }
