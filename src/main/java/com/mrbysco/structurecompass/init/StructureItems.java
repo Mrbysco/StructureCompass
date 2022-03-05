@@ -9,13 +9,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class StructureItems {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
+	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
-    public static final RegistryObject<Item> STRUCTURE_COMPASS = ITEMS.register("structure_compass", () ->
-            new StructureCompassItem(itemBuilder().stacksTo(1).tab(StructureCompass.tabCompass)));
+	public static final RegistryObject<Item> STRUCTURE_COMPASS = ITEMS.register("structure_compass", () ->
+			new StructureCompassItem(itemBuilder().stacksTo(1).tab(StructureCompass.tabCompass)));
 
-    private static Item.Properties itemBuilder()
-    {
-        return new Item.Properties();
-    }
+	private static Item.Properties itemBuilder() {
+		return new Item.Properties();
+	}
 }

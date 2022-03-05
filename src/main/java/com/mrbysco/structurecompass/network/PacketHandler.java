@@ -1,6 +1,7 @@
 package com.mrbysco.structurecompass.network;
 
 import com.mrbysco.structurecompass.Reference;
+import com.mrbysco.structurecompass.network.message.OpenCompassMessage;
 import com.mrbysco.structurecompass.network.message.SetStructureMessage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
@@ -17,7 +18,8 @@ public class PacketHandler {
 
 	private static int id = 0;
 
-	public static void init(){
+	public static void init() {
 		CHANNEL.registerMessage(id++, SetStructureMessage.class, SetStructureMessage::encode, SetStructureMessage::decode, SetStructureMessage::handle);
+		CHANNEL.registerMessage(id++, OpenCompassMessage.class, OpenCompassMessage::encode, OpenCompassMessage::decode, OpenCompassMessage::handle);
 	}
 }

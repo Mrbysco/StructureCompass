@@ -20,28 +20,28 @@ import org.slf4j.Logger;
 
 @Mod(Reference.MOD_ID)
 public class StructureCompass {
-    public static final Logger LOGGER = LogUtils.getLogger();
+	public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final CreativeModeTab tabCompass = new CreativeModeTab(Reference.MOD_ID) {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(Items.COMPASS);
-        }
-    };
+	public static final CreativeModeTab tabCompass = new CreativeModeTab(Reference.MOD_ID) {
+		@Override
+		public ItemStack makeIcon() {
+			return new ItemStack(Items.COMPASS);
+		}
+	};
 
-    public StructureCompass() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureConfig.commonSpec);
-        eventBus.register(StructureConfig.class);
+	public StructureCompass() {
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureConfig.commonSpec);
+		eventBus.register(StructureConfig.class);
 
-        eventBus.addListener(this::setup);
+		eventBus.addListener(this::setup);
 
-        StructureItems.ITEMS.register(eventBus);
+		StructureItems.ITEMS.register(eventBus);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientHandler::onClientSetup));
-    }
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientHandler::onClientSetup));
+	}
 
-    private void setup(final FMLCommonSetupEvent event) {
-        PacketHandler.init();
-    }
+	private void setup(final FMLCommonSetupEvent event) {
+		PacketHandler.init();
+	}
 }

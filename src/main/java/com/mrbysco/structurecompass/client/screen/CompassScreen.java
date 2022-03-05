@@ -5,7 +5,6 @@ import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
 import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.SetStructureMessage;
-import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
@@ -61,15 +60,14 @@ public class CompassScreen extends Screen {
 	private boolean sorted = false;
 	private SortType sortType = SortType.NORMAL;
 
-	public CompassScreen(InteractionHand hand, ItemStack compass) {
+	public CompassScreen(InteractionHand hand, ItemStack compass, List<ResourceLocation> allStructures) {
 		super(new TranslatableComponent(Reference.MOD_PREFIX + "compass.screen"));
 		this.usedHand = hand;
 		this.compassStack = compass;
 
-		List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList();
 		List<ResourceLocation> structureList = new ArrayList<>();
-		for(ResourceLocation id : allStructures) {
-			if(id != null) {
+		for (ResourceLocation id : allStructures) {
+			if (id != null) {
 				structureList.add(id);
 			}
 		}
@@ -93,7 +91,7 @@ public class CompassScreen extends Screen {
 		for (ResourceLocation structureLocation : structures) {
 			listWidth = Math.max(listWidth, getFontRenderer().width(structureLocation.toString()) + 10);
 		}
-		listWidth = Math.max(Math.min(listWidth, width/3), 200);
+		listWidth = Math.max(Math.min(listWidth, width / 3), 200);
 		listWidth += listWidth % numButtons != 0 ? (numButtons - listWidth % numButtons) : 0;
 		int structureWidth = this.width - this.listWidth - (PADDING * 3);
 		int closeButtonWidth = Math.min(structureWidth, 200);
@@ -104,7 +102,7 @@ public class CompassScreen extends Screen {
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.loadButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
 				new TranslatableComponent("structurecompass.screen.selection.load"), b -> {
-			if(selected != null) {
+			if (selected != null) {
 				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
 			}
 		}));
@@ -121,7 +119,7 @@ public class CompassScreen extends Screen {
 		addWidget(structureWidget);
 		search.setFocus(false);
 		search.setCanLoseFocus(true);
-		if(this.compassStack.hasTag() && this.compassStack.getTag().contains(Reference.structure_tag)) {
+		if (this.compassStack.hasTag() && this.compassStack.getTag().contains(Reference.structure_tag)) {
 			String structure = this.compassStack.getTag().getString(Reference.structure_tag);
 			search.setValue(structure);
 		}
@@ -148,9 +146,9 @@ public class CompassScreen extends Screen {
 
 		if (!sorted) {
 			reloadStructures();
-			if(sortType == SortType.A_TO_Z) {
+			if (sortType == SortType.A_TO_Z) {
 				Collections.sort(structures);
-			} else if(sortType == SortType.Z_TO_A) {
+			} else if (sortType == SortType.Z_TO_A) {
 				structures.sort(Collections.reverseOrder());
 			}
 			checkStages();
@@ -164,7 +162,7 @@ public class CompassScreen extends Screen {
 	}
 
 	public <T extends ObjectSelectionList.Entry<T>> void buildStructureList(Consumer<T> ListViewConsumer, Function<ResourceLocation, T> newEntry) {
-		structures.forEach(mod->ListViewConsumer.accept(newEntry.apply(mod)));
+		structures.forEach(mod -> ListViewConsumer.accept(newEntry.apply(mod)));
 	}
 
 	private void reloadStructures() {
@@ -198,7 +196,7 @@ public class CompassScreen extends Screen {
 		drawCenteredString(poseStack, getFontRenderer(), text, this.width / 2 + PADDING,
 				search.y - getFontRenderer().lineHeight - 2, 0xFFFFFF);
 
-		this.search.render(poseStack, mouseX , mouseY, partialTicks);
+		this.search.render(poseStack, mouseX, mouseY, partialTicks);
 
 		super.render(poseStack, mouseX, mouseY, partialTicks);
 	}

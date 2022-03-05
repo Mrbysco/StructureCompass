@@ -16,7 +16,7 @@ public class SetStructureMessage {
 	public InteractionHand hand;
 	public ResourceLocation structureLocation;
 
-	public SetStructureMessage(InteractionHand hand, ResourceLocation structureLocation){
+	public SetStructureMessage(InteractionHand hand, ResourceLocation structureLocation) {
 		this.hand = hand;
 		this.structureLocation = structureLocation;
 	}
@@ -35,7 +35,7 @@ public class SetStructureMessage {
 		ctx.enqueueWork(() -> {
 			if (ctx.getDirection().getReceptionSide().isServer() && ctx.getSender() != null) {
 				ItemStack stack = ctx.getSender().getItemInHand(hand);
-				if(stack.getItem() instanceof StructureCompassItem) {
+				if (stack.getItem() instanceof StructureCompassItem) {
 					CompoundTag tag = new CompoundTag();
 					tag.putString(Reference.structure_tag, structureLocation.toString());
 					stack.setTag(tag);
