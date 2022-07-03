@@ -12,7 +12,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +35,7 @@ public class CompassScreen extends Screen {
 		Button button;
 
 		Component getButtonText() {
-			return new TranslatableComponent("structurecompass.screen.search." + name().toLowerCase(Locale.ROOT));
+			return Component.translatable("structurecompass.screen.search." + name().toLowerCase(Locale.ROOT));
 		}
 	}
 
@@ -61,7 +60,7 @@ public class CompassScreen extends Screen {
 	private SortType sortType = SortType.NORMAL;
 
 	public CompassScreen(InteractionHand hand, ItemStack compass, List<ResourceLocation> allStructures) {
-		super(new TranslatableComponent(Reference.MOD_PREFIX + "compass.screen"));
+		super(Component.translatable(Reference.MOD_PREFIX + "compass.screen"));
 		this.usedHand = hand;
 		this.compassStack = compass;
 
@@ -97,11 +96,11 @@ public class CompassScreen extends Screen {
 		int closeButtonWidth = Math.min(structureWidth, 200);
 		int y = this.height - 20 - PADDING;
 		this.addRenderableWidget(new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				new TranslatableComponent("gui.cancel"), b -> CompassScreen.this.onClose()));
+				Component.translatable("gui.cancel"), b -> CompassScreen.this.onClose()));
 
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.loadButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				new TranslatableComponent("structurecompass.screen.selection.load"), b -> {
+				Component.translatable("structurecompass.screen.selection.load"), b -> {
 			if (selected != null) {
 				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
 			}
@@ -109,7 +108,7 @@ public class CompassScreen extends Screen {
 
 		y -= 14 + PADDING;
 		search = new EditBox(getFontRenderer(), centerWidth - listWidth / 2 + PADDING + 1, y, listWidth - 2, 14,
-				new TranslatableComponent("structurecompass.screen.search"));
+				Component.translatable("structurecompass.screen.search"));
 
 		int fullButtonHeight = PADDING + 20 + PADDING;
 		this.structureWidget = new StructureListWidget(this, width, fullButtonHeight, search.y - getFontRenderer().lineHeight - PADDING);
@@ -192,7 +191,7 @@ public class CompassScreen extends Screen {
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		this.structureWidget.render(poseStack, mouseX, mouseY, partialTicks);
 
-		Component text = new TranslatableComponent("structurecompass.screen.search");
+		Component text = Component.translatable("structurecompass.screen.search");
 		drawCenteredString(poseStack, getFontRenderer(), text, this.width / 2 + PADDING,
 				search.y - getFontRenderer().lineHeight - 2, 0xFFFFFF);
 

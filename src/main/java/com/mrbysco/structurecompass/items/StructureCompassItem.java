@@ -7,14 +7,12 @@ import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.OpenCompassMessage;
 import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -66,11 +64,9 @@ public class StructureCompassItem extends Item {
 				ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
-					ResourceKey<ConfiguredStructureFeature<?, ?>> structureKey = ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, structureLocation);
-					Registry<ConfiguredStructureFeature<?, ?>> registry = level.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
-					HolderSet<ConfiguredStructureFeature<?, ?>> featureHolderSet = registry.getHolder(structureKey).map((holders) -> {
-						return HolderSet.direct(holders);
-					}).orElse(null);
+					Registry<Structure> registry = player.getLevel().registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
+					ResourceKey<Structure> structureKey = ResourceKey.create(Registry.STRUCTURE_REGISTRY, structureLocation);
+					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {
 						int searchRange = StructureConfig.COMMON.compassRange.get();
 
@@ -80,15 +76,15 @@ public class StructureCompassItem extends Item {
 						}
 
 
-						Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> pair =
-								level.getChunkSource().getGenerator().findNearestMapFeature(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
+						Pair<BlockPos, Holder<Structure>> pair =
+								level.getChunkSource().getGenerator().findNearestMapStructure(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
 						BlockPos structurePos = pair != null ? pair.getFirst() : null;
 						if (structurePos == null) {
 							BlockPos spawnPos = level.getSharedSpawnPos();
 							tag.putBoolean(Reference.structure_found, false);
 							tag.putLong(Reference.structure_location, spawnPos.asLong());
 
-							player.sendMessage(new TranslatableComponent("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.GOLD));
 						} else {
 							tag.putBoolean(Reference.structure_found, true);
 							tag.putLong(Reference.structure_location, structurePos.asLong());
@@ -97,10 +93,10 @@ public class StructureCompassItem extends Item {
 						stack.setTag(tag);
 					}
 				} else {
-					player.sendMessage(new TranslatableComponent("structurecompass.locate.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+					player.sendSystemMessage(Component.translatable("structurecompass.locate.fail").withStyle(ChatFormatting.RED));
 				}
 			} else {
-				player.sendMessage(new TranslatableComponent("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
+				player.sendSystemMessage(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW));
 			}
 		}
 	}
@@ -112,12 +108,12 @@ public class StructureCompassItem extends Item {
 			String structureName = tag.getString(Reference.structure_tag);
 			boolean structureFound = tag.getBoolean(Reference.structure_found);
 			if (structureFound) {
-				tooltip.add(new TranslatableComponent("structurecompass.structure.found.tooltip", structureName, structureName).withStyle(ChatFormatting.GREEN));
+				tooltip.add(Component.translatable("structurecompass.structure.found.tooltip", structureName, structureName).withStyle(ChatFormatting.GREEN));
 			} else {
-				tooltip.add(new TranslatableComponent("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.GOLD));
+				tooltip.add(Component.translatable("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.GOLD));
 			}
 		} else {
-			tooltip.add(new TranslatableComponent("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.GOLD));
+			tooltip.add(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.GOLD));
 		}
 	}
 }

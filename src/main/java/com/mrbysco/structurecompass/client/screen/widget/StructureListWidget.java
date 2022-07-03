@@ -8,7 +8,6 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class StructureListWidget extends ObjectSelectionList<ListEntry> {
@@ -54,7 +53,7 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 		@Override
 		public void render(PoseStack mStack, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
 			String structureName = structureLocation.toString();
-			Component name = new TextComponent(structureName);
+			Component name = Component.literal(structureName);
 			Font font = this.parent.getFontRenderer();
 			font.draw(mStack, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
 					(this.parent.width / 2) - (font.width(structureName) / 2) + 3, top + 6, 0xFFFFFF);
@@ -73,7 +72,7 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 
 		@Override
 		public Component getNarration() {
-			return new TextComponent(getStructureLocation().getPath());
+			return Component.literal(getStructureLocation().getPath());
 		}
 	}
 }

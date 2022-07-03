@@ -4,7 +4,7 @@ import com.mrbysco.structurecompass.config.StructureConfig;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.List;
 public class StructureUtil {
 	public static List<ResourceLocation> getAvailableStructureList(Level level) {
 		List<ResourceLocation> structureList = new ArrayList<>();
-		Registry<ConfiguredStructureFeature<?, ?>> configuredRegistry = level.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
-		configuredRegistry.keySet().forEach(location -> {
+		Registry<Structure> registry = level.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
+		registry.keySet().forEach(location -> {
 			if (!isBlacklisted(location) && !structureList.contains(location)) {
 				structureList.add(location);
 			}
