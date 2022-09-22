@@ -68,9 +68,7 @@ public class StructureCompassItem extends Item {
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
 					ResourceKey<ConfiguredStructureFeature<?, ?>> structureKey = ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, structureLocation);
 					Registry<ConfiguredStructureFeature<?, ?>> registry = level.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
-					HolderSet<ConfiguredStructureFeature<?, ?>> featureHolderSet = registry.getHolder(structureKey).map((holders) -> {
-						return HolderSet.direct(holders);
-					}).orElse(null);
+					HolderSet<ConfiguredStructureFeature<?, ?>> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {
 						int searchRange = StructureConfig.COMMON.compassRange.get();
 
@@ -88,7 +86,7 @@ public class StructureCompassItem extends Item {
 							tag.putBoolean(Reference.structure_found, false);
 							tag.putLong(Reference.structure_location, spawnPos.asLong());
 
-							player.sendMessage(new TranslatableComponent("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+							player.sendMessage(new TranslatableComponent("structurecompass.structure.failed.tooltip", boundStructure).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
 						} else {
 							tag.putBoolean(Reference.structure_found, true);
 							tag.putLong(Reference.structure_location, structurePos.asLong());
@@ -112,7 +110,7 @@ public class StructureCompassItem extends Item {
 			String structureName = tag.getString(Reference.structure_tag);
 			boolean structureFound = tag.getBoolean(Reference.structure_found);
 			if (structureFound) {
-				tooltip.add(new TranslatableComponent("structurecompass.structure.found.tooltip", structureName, structureName).withStyle(ChatFormatting.GREEN));
+				tooltip.add(new TranslatableComponent("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
 			} else {
 				tooltip.add(new TranslatableComponent("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.GOLD));
 			}

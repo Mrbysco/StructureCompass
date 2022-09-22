@@ -3,6 +3,7 @@ package com.mrbysco.structurecompass.client.screen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
+import com.mrbysco.structurecompass.compat.gamestages.GameStagesHelper;
 import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.SetStructureMessage;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.StringUtils;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -71,9 +73,10 @@ public class CompassScreen extends Screen {
 				structureList.add(id);
 			}
 		}
-//		if(ModList.get().isLoaded("gamestages")) { TODO: Re-implement once GameStages is back
-//			structureList.removeIf((location) -> !GameStagesHelper.doesPlayerHaveRequiredStage(this.editingPlayer, location));
-//		}
+		if (ModList.get().isLoaded("gamestages")) {
+			structureList.removeIf((location) -> !GameStagesHelper.doesPlayerHaveRequiredStage(this.getMinecraft().player, location));
+		}
+
 		Collections.sort(structureList);
 
 		this.structures = Collections.unmodifiableList(structureList);
@@ -173,9 +176,9 @@ public class CompassScreen extends Screen {
 	}
 
 	private void checkStages() {
-//		if(ModList.get().isLoaded("gamestages")) { TODO: Re-implement once GameStages is back
-//			this.structures.removeIf((location) -> !GameStagesHelper.doesPlayerHaveRequiredStage(this.editingPlayer, location));
-//		}
+		if (ModList.get().isLoaded("gamestages")) {
+			this.structures.removeIf((location) -> !GameStagesHelper.doesPlayerHaveRequiredStage(this.getMinecraft().player, location));
+		}
 	}
 
 	private void resortStructures(SortType newSort) {
