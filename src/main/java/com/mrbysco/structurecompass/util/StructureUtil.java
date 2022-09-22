@@ -1,5 +1,6 @@
 package com.mrbysco.structurecompass.util;
 
+import com.mrbysco.structurecompass.StructureCompass;
 import com.mrbysco.structurecompass.config.StructureConfig;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -23,11 +24,25 @@ public class StructureUtil {
 	}
 
 	public static boolean isBlacklisted(ResourceLocation structureLocation) {
-		return isBlacklisted(structureLocation.toString());
-	}
-
-	public static boolean isBlacklisted(String structureLocation) {
-		return !StructureConfig.COMMON.structureBlacklist.get().isEmpty() &&
-				StructureConfig.COMMON.structureBlacklist.get().contains(structureLocation);
+		if (structureLocation == null) {
+			StructureCompass.LOGGER.error("Checking blacklist but fed location is null!");
+			return false;
+		}
+		if (!StructureConfig.COMMON.structureBlacklist.get().isEmpty()) {
+			if (StructureConfig.COMMON.structureBlacklist.get().contains(structureLocation.toString())) {
+				return true;
+			}
+			List<? extends String> wildcardList = StructureConfig.COMMON.structureBlacklist.get().stream()
+					.filter(value -> value.contains(":") && value.contains("*")).toList();
+			for (String wildcard : wildcardList) {
+				String[] blacklistSplit = wildcard.split(":");
+				if ((blacklistSplit[0].equals("*") && structureLocation.getPath().equals(blacklistSplit[1])) ||
+						blacklistSplit[1].equals("*") && structureLocation.getNamespace().equals(blacklistSplit[0])
+				) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

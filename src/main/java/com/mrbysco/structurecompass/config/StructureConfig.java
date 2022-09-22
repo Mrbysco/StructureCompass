@@ -30,7 +30,8 @@ public class StructureConfig {
 					.define("locateUnexplored", false);
 
 			structureBlacklist = builder
-					.comment("Defines which structures can't be searched with the Structure Compass")
+					.comment("Defines which structures can't be searched with the Structure Compass\n" +
+							"(Supports wildcard *, Example: 'minecraft:*' will blacklist anything in the minecraft domain)")
 					.defineListAllowEmpty(List.of("structureBlacklist"), () -> List.of(""), o -> (o instanceof String));
 
 			builder.pop();

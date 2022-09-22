@@ -76,15 +76,14 @@ public class StructureCompassItem extends Item {
 						}
 
 
-						Pair<BlockPos, Holder<Structure>> pair =
-								level.getChunkSource().getGenerator().findNearestMapStructure(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
+						Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
 						BlockPos structurePos = pair != null ? pair.getFirst() : null;
 						if (structurePos == null) {
 							BlockPos spawnPos = level.getSharedSpawnPos();
 							tag.putBoolean(Reference.structure_found, false);
 							tag.putLong(Reference.structure_location, spawnPos.asLong());
 
-							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.GOLD));
+							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed.tooltip", boundStructure).withStyle(ChatFormatting.GOLD));
 						} else {
 							tag.putBoolean(Reference.structure_found, true);
 							tag.putLong(Reference.structure_location, structurePos.asLong());
@@ -108,7 +107,7 @@ public class StructureCompassItem extends Item {
 			String structureName = tag.getString(Reference.structure_tag);
 			boolean structureFound = tag.getBoolean(Reference.structure_found);
 			if (structureFound) {
-				tooltip.add(Component.translatable("structurecompass.structure.found.tooltip", structureName, structureName).withStyle(ChatFormatting.GREEN));
+				tooltip.add(Component.translatable("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
 			} else {
 				tooltip.add(Component.translatable("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.GOLD));
 			}
