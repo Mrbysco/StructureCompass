@@ -27,6 +27,7 @@ public class StructureUtil {
 	}
 
 	public static boolean isBlacklisted(String structureLocation) {
-		return !StructureConfig.COMMON.structureBlacklist.get().isEmpty() && StructureConfig.COMMON.structureBlacklist.get().contains(structureLocation);
+		return !StructureConfig.COMMON.structureBlacklist.get().isEmpty() &&
+				StructureConfig.COMMON.structureBlacklist.get().contains(structureLocation);
 	}
 }

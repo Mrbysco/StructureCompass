@@ -9,7 +9,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Collections;
 import java.util.List;
 
 public class StructureConfig {
@@ -32,7 +31,7 @@ public class StructureConfig {
 
 			structureBlacklist = builder
 					.comment("Defines which structures can't be searched with the Structure Compass")
-					.defineListAllowEmpty(Collections.singletonList("structureBlacklist"), () -> Collections.singletonList(""), o -> (o instanceof String));
+					.defineListAllowEmpty(List.of("structureBlacklist"), () -> List.of(""), o -> (o instanceof String));
 
 			builder.pop();
 		}
