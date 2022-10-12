@@ -1,6 +1,7 @@
 package com.mrbysco.structurecompass.client;
 
 import com.mrbysco.structurecompass.Reference;
+import com.mrbysco.structurecompass.client.screen.CompassScreen;
 import com.mrbysco.structurecompass.init.StructureItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -107,6 +108,7 @@ public class ClientHandler {
 	}
 
 	public static void openStructureScreen(InteractionHand hand, ItemStack stack, List<ResourceLocation> allStructures) {
-		Minecraft.getInstance().setScreen(new com.mrbysco.structurecompass.client.screen.CompassScreen(hand, stack, allStructures));
+		CompassScreen screen = new CompassScreen(hand, stack, allStructures);
+		Minecraft.getInstance().setScreen(screen);
 	}
 }
