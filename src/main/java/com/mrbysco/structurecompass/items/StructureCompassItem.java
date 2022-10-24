@@ -75,18 +75,19 @@ public class StructureCompassItem extends Item {
 							findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
 						}
 
-
 						Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
 						BlockPos structurePos = pair != null ? pair.getFirst() : null;
 						if (structurePos == null) {
-							BlockPos spawnPos = level.getSharedSpawnPos();
 							tag.putBoolean(Reference.structure_found, false);
-							tag.putLong(Reference.structure_location, spawnPos.asLong());
-
-							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed.tooltip", boundStructure).withStyle(ChatFormatting.GOLD));
+							tag.remove(Reference.structure_location);
+							tag.remove(Reference.structure_dimension);
+							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.RED));
 						} else {
 							tag.putBoolean(Reference.structure_found, true);
 							tag.putLong(Reference.structure_location, structurePos.asLong());
+							tag.putString(Reference.structure_dimension, level.dimension().location().toString());
+							int distance = player.blockPosition().distManhattan(structurePos);
+							player.sendSystemMessage(Component.translatable("structurecompass.structure.found", boundStructure, distance).withStyle(ChatFormatting.GREEN));
 						}
 
 						stack.setTag(tag);
@@ -101,15 +102,20 @@ public class StructureCompassItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
 		if (stack.hasTag()) {
 			CompoundTag tag = stack.getTag();
-			String structureName = tag.getString(Reference.structure_tag);
-			boolean structureFound = tag.getBoolean(Reference.structure_found);
+			final String structureName = tag.getString(Reference.structure_tag);
+			final boolean structureFound = tag.getBoolean(Reference.structure_found);
 			if (structureFound) {
-				tooltip.add(Component.translatable("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
+				final ResourceLocation structureDimension = ResourceLocation.tryParse(tag.getString(Reference.structure_dimension));
+				if (level != null && level.dimension().location().equals(structureDimension)) {
+					tooltip.add(Component.translatable("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
+				} else {
+					tooltip.add(Component.translatable("structurecompass.structure.wrong_dimension.tooltip", structureName).withStyle(ChatFormatting.RED));
+				}
 			} else {
-				tooltip.add(Component.translatable("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.GOLD));
+				tooltip.add(Component.translatable("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.RED));
 			}
 		} else {
 			tooltip.add(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.GOLD));

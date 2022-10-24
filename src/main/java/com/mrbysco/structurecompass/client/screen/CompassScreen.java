@@ -101,7 +101,7 @@ public class CompassScreen extends Screen {
 
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.loadButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				Component.translatable("structurecompass.screen.selection.load"), b -> {
+				Component.translatable("structurecompass.screen.selection.select"), b -> {
 			if (selected != null) {
 				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
 			}

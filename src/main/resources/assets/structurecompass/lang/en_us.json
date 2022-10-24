@@ -2,10 +2,9 @@
   "_comment": "Creative Tab Name",
   "itemGroup.structurecompass": "Structure Compass",
 
-
   "_comment": "Screen",
   "structurecompass.screen.selection.title": "Structure Selection",
-  "structurecompass.screen.selection.load": "Load",
+  "structurecompass.screen.selection.select": "Select",
   "structurecompass.screen.search": "Search",
   "structurecompass.screen.search.a_to_z": "A-Z",
   "structurecompass.screen.search.z_to_a": "Z-A",
@@ -15,10 +14,13 @@
 
   "_comment": "Messages",
   "structurecompass.locate.invalid": "Bound structure invalid. Please re-bind",
-  "structurecompass.locate.fail": "Structure can't be located nearby",
+  "structurecompass.locate.fail": "Bound structure could not be located nearby",
 
   "_comment": "tooltips",
+  "structurecompass.structure.found": "%s has been located %s blocks away, compass is pointing towards the structure",
   "structurecompass.structure.found.tooltip": "%s has been located, compass is pointing towards the structure",
+  "structurecompass.structure.failed": "%s can not be located, perhaps try again later",
   "structurecompass.structure.failed.tooltip": "%s can not be located, perhaps try again later",
+  "structurecompass.structure.wrong_dimension.tooltip": "You are not in the dimension in which %s was found",
   "structurecompass.structure.unset.tooltip": "No structure has been set, right-click to select a structure"
 }
