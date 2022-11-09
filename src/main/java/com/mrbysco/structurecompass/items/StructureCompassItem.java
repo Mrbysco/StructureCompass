@@ -75,7 +75,8 @@ public class StructureCompassItem extends Item {
 							findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
 						}
 
-						Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
+						Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level,
+								featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
 						BlockPos structurePos = pair != null ? pair.getFirst() : null;
 						if (structurePos == null) {
 							tag.putBoolean(Reference.structure_found, false);
