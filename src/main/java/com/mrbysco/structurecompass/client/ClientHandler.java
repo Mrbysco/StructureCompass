@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -34,28 +35,29 @@ public class ClientHandler {
 			private long lastUpdateTick;
 
 			@OnlyIn(Dist.CLIENT)
-			public float call(ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity livingBaseIn, int p_174679_) {
+			public float call(ItemStack stack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingBaseIn, int p_174679_) {
 				if (livingBaseIn == null && !stack.isFramed()) {
 					return 0.0F;
 				} else {
 					boolean livingExists = livingBaseIn != null;
 					Entity entity = livingExists ? livingBaseIn : stack.getFrame();
-					if (worldIn == null && entity.level instanceof ClientLevel) {
-						worldIn = (ClientLevel) entity.level;
+					if (clientLevel == null && entity.level instanceof ClientLevel) {
+						clientLevel = (ClientLevel) entity.level;
 					}
 
 					double d0;
-					if (worldIn.dimensionType().natural()) {
+					StructurePos globalPos = getStructurePos(stack);
+					if (globalPos != null && clientLevel.dimension().location().equals(globalPos.dimensionLocation())) {
 						double d1 = livingExists ? (double) entity.getYRot() : this.getFrameRotation((ItemFrame) entity);
 						d1 = Mth.positiveModulo(d1 / 360.0D, 1.0D);
-						double d2 = this.getSpawnToAngle(worldIn, (Entity) entity, stack) / (double) ((float) Math.PI * 2F);
+						double d2 = this.getSpawnToAngle((Entity) entity, globalPos.pos()) / (double) ((float) Math.PI * 2F);
 						d0 = 0.5D - (d1 - 0.25D - d2);
 					} else {
 						d0 = Math.random();
 					}
 
 					if (livingExists) {
-						d0 = this.wobble(worldIn, d0);
+						d0 = this.wobble(clientLevel, d0);
 					}
 
 					return Mth.positiveModulo((float) d0, 1.0F);
@@ -84,27 +86,30 @@ public class ClientHandler {
 			}
 
 			@OnlyIn(Dist.CLIENT)
-			private double getSpawnToAngle(ClientLevel worldIn, Entity entityIn, ItemStack stack) {
-				BlockPos pos = getBlockPos(stack, worldIn);
+			private double getSpawnToAngle(Entity entityIn, @NotNull BlockPos pos) {
 				return Math.atan2((double) pos.getZ() - entityIn.getZ(), (double) pos.getX() - entityIn.getX());
 			}
 
-			public BlockPos getBlockPos(ItemStack stack, ClientLevel world) {
+			public StructurePos getStructurePos(ItemStack stack) {
 				if (stack.hasTag()) {
-					CompoundTag tag = stack.getTag();
-					if (tag != null && tag.contains(Reference.structure_found)) {
-						if (tag.getBoolean(Reference.structure_found)) {
-							long structureLong = tag.getLong(Reference.structure_location);
-							return BlockPos.of(structureLong);
+					final CompoundTag tag = stack.getTag();
+					if (tag != null && tag.contains(Reference.structure_found) && tag.getBoolean(Reference.structure_found)) {
+						if (tag.contains(Reference.structure_location) && tag.contains(Reference.structure_dimension)) {
+							final BlockPos structurePos = BlockPos.of(tag.getLong(Reference.structure_location));
+							final ResourceLocation dimensionLoc = ResourceLocation.tryParse(tag.getString(Reference.structure_dimension));
+							return new StructurePos(structurePos, dimensionLoc);
 						}
 					}
 				}
-				return world.dimensionType().natural() ? world.getSharedSpawnPos() : null;
+				return null;
 			}
 		});
 	}
 
 	public static void openStructureScreen(InteractionHand hand, ItemStack stack, List<ResourceLocation> allStructures) {
 		Minecraft.getInstance().setScreen(new com.mrbysco.structurecompass.client.screen.CompassScreen(hand, stack, allStructures));
+	}
+
+	public record StructurePos(BlockPos pos, ResourceLocation dimensionLocation) {
 	}
 }

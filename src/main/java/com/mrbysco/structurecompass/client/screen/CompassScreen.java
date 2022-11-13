@@ -74,7 +74,7 @@ public class CompassScreen extends Screen {
 			}
 		}
 		if (ModList.get().isLoaded("gamestages")) {
-			structureList.removeIf((location) -> !GameStagesHelper.doesPlayerHaveRequiredStage(this.getMinecraft().player, location));
+			structureList.removeIf((location) -> !com.mrbysco.structurecompass.compat.gamestages.GameStagesHelper.doesPlayerHaveRequiredStage(location));
 		}
 
 		Collections.sort(structureList);
@@ -104,7 +104,7 @@ public class CompassScreen extends Screen {
 
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.loadButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				new TranslatableComponent("structurecompass.screen.selection.load"), b -> {
+				new TranslatableComponent("structurecompass.screen.selection.select"), b -> {
 			if (selected != null) {
 				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
 			}
@@ -177,7 +177,7 @@ public class CompassScreen extends Screen {
 
 	private void checkStages() {
 		if (ModList.get().isLoaded("gamestages")) {
-			this.structures.removeIf((location) -> !GameStagesHelper.doesPlayerHaveRequiredStage(this.getMinecraft().player, location));
+			this.structures.removeIf((location) -> !GameStagesHelper.doesPlayerHaveRequiredStage(location));
 		}
 	}
 

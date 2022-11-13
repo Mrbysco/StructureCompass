@@ -68,7 +68,8 @@ public class StructureCompassItem extends Item {
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
 					ResourceKey<ConfiguredStructureFeature<?, ?>> structureKey = ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, structureLocation);
 					Registry<ConfiguredStructureFeature<?, ?>> registry = level.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
-					HolderSet<ConfiguredStructureFeature<?, ?>> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
+					HolderSet<ConfiguredStructureFeature<?, ?>> featureHolderSet = registry.getHolder(structureKey).map((holders) ->
+							HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {
 						int searchRange = StructureConfig.COMMON.compassRange.get();
 
@@ -82,14 +83,16 @@ public class StructureCompassItem extends Item {
 								level.getChunkSource().getGenerator().findNearestMapFeature(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
 						BlockPos structurePos = pair != null ? pair.getFirst() : null;
 						if (structurePos == null) {
-							BlockPos spawnPos = level.getSharedSpawnPos();
 							tag.putBoolean(Reference.structure_found, false);
-							tag.putLong(Reference.structure_location, spawnPos.asLong());
-
-							player.sendMessage(new TranslatableComponent("structurecompass.structure.failed.tooltip", boundStructure).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+							tag.remove(Reference.structure_location);
+							tag.remove(Reference.structure_dimension);
+							player.sendMessage(new TranslatableComponent("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.RED), Util.NIL_UUID);
 						} else {
 							tag.putBoolean(Reference.structure_found, true);
 							tag.putLong(Reference.structure_location, structurePos.asLong());
+							tag.putString(Reference.structure_dimension, level.dimension().location().toString());
+							int distance = player.blockPosition().distManhattan(structurePos);
+							player.sendMessage(new TranslatableComponent("structurecompass.structure.found", boundStructure, distance).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
 						}
 
 						stack.setTag(tag);
@@ -104,15 +107,20 @@ public class StructureCompassItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
 		if (stack.hasTag()) {
 			CompoundTag tag = stack.getTag();
-			String structureName = tag.getString(Reference.structure_tag);
-			boolean structureFound = tag.getBoolean(Reference.structure_found);
+			final String structureName = tag.getString(Reference.structure_tag);
+			final boolean structureFound = tag.getBoolean(Reference.structure_found);
 			if (structureFound) {
-				tooltip.add(new TranslatableComponent("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
+				final ResourceLocation structureDimension = ResourceLocation.tryParse(tag.getString(Reference.structure_dimension));
+				if (level != null && level.dimension().location().equals(structureDimension)) {
+					tooltip.add(new TranslatableComponent("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
+				} else {
+					tooltip.add(new TranslatableComponent("structurecompass.structure.wrong_dimension.tooltip", structureName).withStyle(ChatFormatting.RED));
+				}
 			} else {
-				tooltip.add(new TranslatableComponent("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.GOLD));
+				tooltip.add(new TranslatableComponent("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.RED));
 			}
 		} else {
 			tooltip.add(new TranslatableComponent("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.GOLD));
