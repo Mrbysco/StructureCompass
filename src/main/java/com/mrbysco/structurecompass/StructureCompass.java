@@ -2,6 +2,7 @@ package com.mrbysco.structurecompass;
 
 import com.mojang.logging.LogUtils;
 import com.mrbysco.structurecompass.client.ClientHandler;
+import com.mrbysco.structurecompass.client.KeyHandler;
 import com.mrbysco.structurecompass.config.StructureConfig;
 import com.mrbysco.structurecompass.init.StructureItems;
 import com.mrbysco.structurecompass.network.PacketHandler;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -38,7 +40,12 @@ public class StructureCompass {
 
 		StructureItems.ITEMS.register(eventBus);
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientHandler::onClientSetup));
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			eventBus.addListener(ClientHandler::onClientSetup);
+			eventBus.addListener(ClientHandler::registerKeyMappings);
+
+			MinecraftForge.EVENT_BUS.register(new KeyHandler());
+		});
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

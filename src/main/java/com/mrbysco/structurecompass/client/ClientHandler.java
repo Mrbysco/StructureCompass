@@ -1,8 +1,10 @@
 package com.mrbysco.structurecompass.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.CompassScreen;
 import com.mrbysco.structurecompass.init.StructureItems;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -19,13 +21,22 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ClientHandler {
+
+	public static KeyMapping KEY_TOGGLE = new KeyMapping(
+			"key." + Reference.MOD_ID + ".hide",
+			InputConstants.Type.KEYSYM,
+			GLFW.GLFW_KEY_UNKNOWN,
+			"category." + Reference.MOD_ID + ".main");
+
 	public static void onClientSetup(final FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
 			ItemProperties.register(StructureItems.STRUCTURE_COMPASS.get(), new ResourceLocation("angle"), new ItemPropertyFunction() {
@@ -107,6 +118,10 @@ public class ClientHandler {
 				}
 			});
 		});
+	}
+
+	public static void registerKeyMappings(final RegisterKeyMappingsEvent event) {
+		event.register(KEY_TOGGLE);
 	}
 
 	public static void openStructureScreen(InteractionHand hand, ItemStack stack, List<ResourceLocation> allStructures) {

@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ActionSetStructureStaging implements IUndoableAction {
@@ -26,7 +27,7 @@ public class ActionSetStructureStaging implements IUndoableAction {
 	@Override
 	public void undo() {
 		Set<String> stages = GameStagesHelper.STRUCTURE_STAGES.computeIfAbsent(structureLocation, s -> new HashSet<>());
-		stages.removeAll(Arrays.asList(stages));
+		stages.removeAll(List.of(stages));
 	}
 
 	@Override
