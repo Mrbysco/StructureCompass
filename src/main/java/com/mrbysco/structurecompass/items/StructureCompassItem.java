@@ -92,6 +92,7 @@ public class StructureCompassItem extends Item {
 						}
 
 						stack.setTag(tag);
+						player.getCooldowns().addCooldown(this, 100);
 					}
 				} else {
 					player.sendSystemMessage(Component.translatable("structurecompass.locate.fail").withStyle(ChatFormatting.RED));
