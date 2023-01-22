@@ -68,15 +68,14 @@ public class StructureCompassItem extends Item {
 					ResourceKey<Structure> structureKey = ResourceKey.create(Registry.STRUCTURE_REGISTRY, structureLocation);
 					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {
-						int searchRange = StructureConfig.COMMON.compassRange.get();
 
 						boolean findUnexplored = false;
 						if (StructureConfig.COMMON.locateUnexplored.get() != null) {
 							findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
 						}
 
-						Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level,
-								featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
+						Pair<BlockPos, Holder<Structure>> pair = StructureUtil.findNearestMapStructure(level,
+								featureHolderSet, player.blockPosition(), 100, findUnexplored);
 						BlockPos structurePos = pair != null ? pair.getFirst() : null;
 						if (structurePos == null) {
 							tag.putBoolean(Reference.structure_found, false);

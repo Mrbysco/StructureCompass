@@ -22,8 +22,8 @@ public class StructureConfig {
 					.push("general");
 
 			compassRange = builder
-					.comment("Sets the range in which the structure compasses can check for structures [default: 300]")
-					.defineInRange("compassRange", 300, 0, Integer.MAX_VALUE);
+					.comment("Sets the range in blocks in which the structure compasses can locate structures [default: 10000]")
+					.defineInRange("compassRange", 10000, 0, Integer.MAX_VALUE);
 
 			locateUnexplored = builder
 					.comment("Defines if the structure compass should locate unexplored structures [default: false]")
