@@ -71,8 +71,6 @@ public class StructureCompassItem extends Item {
 					HolderSet<ConfiguredStructureFeature<?, ?>> featureHolderSet = registry.getHolder(structureKey).map((holders) ->
 							HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {
-						int searchRange = StructureConfig.COMMON.compassRange.get();
-
 						boolean findUnexplored = false;
 						if (StructureConfig.COMMON.locateUnexplored.get() != null) {
 							findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
@@ -80,7 +78,7 @@ public class StructureCompassItem extends Item {
 
 
 						Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> pair =
-								level.getChunkSource().getGenerator().findNearestMapFeature(level, featureHolderSet, player.blockPosition(), searchRange, findUnexplored);
+								StructureUtil.findNearestMapFeature(level, featureHolderSet, player.blockPosition(), 100, findUnexplored);
 						BlockPos structurePos = pair != null ? pair.getFirst() : null;
 						if (structurePos == null) {
 							tag.putBoolean(Reference.structure_found, false);
@@ -96,6 +94,7 @@ public class StructureCompassItem extends Item {
 						}
 
 						stack.setTag(tag);
+						player.getCooldowns().addCooldown(this, 100);
 					}
 				} else {
 					player.sendMessage(new TranslatableComponent("structurecompass.locate.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
