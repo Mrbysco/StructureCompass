@@ -23,5 +23,5 @@
   "structurecompass.structure.failed": "%s can not be located, perhaps try again later",
   "structurecompass.structure.failed.tooltip": "%s can not be located, perhaps try again later",
   "structurecompass.structure.wrong_dimension.tooltip": "You are not in the dimension in which %s was found",
-  "structurecompass.structure.unset.tooltip": "No structure has been set, right-click to select a structure"
+  "structurecompass.structure.unset.tooltip": "No structure has been set, shift right-click to select a structure"
 }
