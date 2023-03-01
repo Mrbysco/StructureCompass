@@ -1,0 +1,32 @@
+{
+    "_comment": "Creative Tab Name",
+    "itemGroup.structurecompass": "Bússola de Estrutura",
+  
+    "_comment": "Screen",
+    "structurecompass.screen.selection.title": "Seleção de estrutura",
+    "structurecompass.screen.selection.select": "Selecione",
+    "structurecompass.screen.search": "Procurar",
+    "structurecompass.screen.search.a_to_z": "A-Z",
+    "structurecompass.screen.search.z_to_a": "Z-A",
+  
+    "_comment": "Item names",
+    "item.structurecompass.structure_compass": "Bússola de Estrutura",
+  
+    "_comment": "Messages",
+    "structurecompass.locate.invalid": "Estrutura vinculada inválida. Por favor, volte a ligar",
+    "structurecompass.locate.fail": "A estrutura vinculada não pôde ser localizada nas proximidades",
+    "structurecompass.locate.distance": "A estrutura vinculada está a %s quarteirões de distância",
+    "structurecompass.locate.toggled": "Bússola de Estrutura hud alternada %s",
+  
+    "_comment": "tooltips",
+    "structurecompass.structure.found": "%s foi localizado a %s quarteirões de distância, a bússola está apontando para a estrutura",
+    "structurecompass.structure.found.tooltip": "%s foi localizado, a bússola está apontando para a estrutura",
+    "structurecompass.structure.failed": "%s não pode ser localizado, talvez tente novamente mais tarde",
+    "structurecompass.structure.failed.tooltip": "%s não pode ser localizado, talvez tente novamente mais tarde",
+    "structurecompass.structure.wrong_dimension.tooltip": "Você não está na dimensão em que %s foi encontrado",
+    "structurecompass.structure.unset.tooltip": "Nenhuma estrutura foi definida, clique com o botão direito do mouse para selecionar uma estrutura"
+  
+    "_comment": "keybinds",
+    "category.structurecompass.main": "Bússola de Estrutura",
+    "key.structurecompass.hide": "Ocultar Bússola de Estrutura HUD"
+}
