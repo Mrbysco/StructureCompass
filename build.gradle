@@ -87,10 +87,6 @@ repositories {
     maven {
         url = "https://maven.blamejared.com"
     }
-    maven {
-        name = "CraftTweaker"
-        url "https://maven.blamejared.com"
-    }
 }
 
 dependencies {
