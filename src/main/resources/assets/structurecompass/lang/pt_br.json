@@ -24,7 +24,7 @@
     "structurecompass.structure.failed": "%s não pode ser localizado, talvez tente novamente mais tarde",
     "structurecompass.structure.failed.tooltip": "%s não pode ser localizado, talvez tente novamente mais tarde",
     "structurecompass.structure.wrong_dimension.tooltip": "Você não está na dimensão em que %s foi encontrado",
-    "structurecompass.structure.unset.tooltip": "Nenhuma estrutura foi definida, clique com o botão direito do mouse para selecionar uma estrutura"
+    "structurecompass.structure.unset.tooltip": "Nenhuma estrutura foi definida, clique com o botão direito do mouse para selecionar uma estrutura",
   
     "_comment": "keybinds",
     "category.structurecompass.main": "Bússola de Estrutura",
