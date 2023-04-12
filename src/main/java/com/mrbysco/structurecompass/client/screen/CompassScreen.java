@@ -219,6 +219,18 @@ public class CompassScreen extends Screen {
 		}
 	}
 
+	/**
+	 * Clear the search field when right-clicked on it
+	 */
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		boolean flag = super.mouseClicked(mouseX, mouseY, button);
+		if (button == 1 && search.isMouseOver(mouseX, mouseY)) {
+			search.setValue("");
+		}
+		return flag;
+	}
+
 	@Override
 	public void resize(Minecraft mc, int width, int height) {
 		String s = this.search.getValue();
