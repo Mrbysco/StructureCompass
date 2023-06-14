@@ -1,9 +1,9 @@
 package com.mrbysco.structurecompass.client.screen.widget;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.structurecompass.client.screen.CompassScreen;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget.ListEntry;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -37,8 +37,8 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 	}
 
 	@Override
-	protected void renderBackground(PoseStack mStack) {
-		this.parent.renderBackground(mStack);
+	protected void renderBackground(GuiGraphics guiGraphics) {
+		this.parent.renderBackground(guiGraphics);
 	}
 
 	public class ListEntry extends ObjectSelectionList.Entry<ListEntry> {
@@ -51,12 +51,12 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		@Override
-		public void render(PoseStack mStack, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
+		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
 			String structureName = structureLocation.toString();
 			Component name = Component.literal(structureName);
 			Font font = this.parent.getFontRenderer();
-			font.draw(mStack, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
-					(this.parent.width / 2) - (font.width(structureName) / 2) + 3, top + 6, 0xFFFFFF);
+			guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
+					(this.parent.width / 2) - (font.width(structureName) / 2) + 3, top + 6, 0xFFFFFF, false);
 		}
 
 		@Override

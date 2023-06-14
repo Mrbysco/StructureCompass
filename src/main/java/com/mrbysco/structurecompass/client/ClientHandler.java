@@ -54,8 +54,8 @@ public class ClientHandler {
 					} else {
 						boolean livingExists = livingBaseIn != null;
 						Entity entity = livingExists ? livingBaseIn : stack.getFrame();
-						if (clientLevel == null && entity.level instanceof ClientLevel) {
-							clientLevel = (ClientLevel) entity.level;
+						if (clientLevel == null && entity.level() instanceof ClientLevel) {
+							clientLevel = (ClientLevel) entity.level();
 						}
 
 						double d0;

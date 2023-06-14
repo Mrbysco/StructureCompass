@@ -1,12 +1,12 @@
 package com.mrbysco.structurecompass.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
 import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.SetStructureMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -192,16 +192,16 @@ public class CompassScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		this.structureWidget.render(poseStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		this.structureWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
 
 		Component text = Component.translatable("structurecompass.screen.search");
-		drawCenteredString(poseStack, getFontRenderer(), text, this.width / 2 + PADDING,
+		guiGraphics.drawCenteredString(getFontRenderer(), text, this.width / 2 + PADDING,
 				search.getY() - getFontRenderer().lineHeight - 2, 0xFFFFFF);
 
-		this.search.render(poseStack, mouseX, mouseY, partialTicks);
+		this.search.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	public Font getFontRenderer() {
@@ -216,7 +216,6 @@ public class CompassScreen extends Screen {
 	private void updateCache() {
 		if (selected == null) {
 			this.loadButton.active = false;
-			return;
 		} else {
 			this.loadButton.active = true;
 		}

@@ -51,7 +51,7 @@ public class KeyHandler {
 				CompoundTag tag = stack.getTag();
 				if (tag != null && tag.contains(Reference.structure_location) && tag.contains(Reference.structure_dimension)) {
 					final ResourceLocation structureDimension = ResourceLocation.tryParse(tag.getString(Reference.structure_dimension));
-					if (player.level.dimension().location().equals(structureDimension)) {
+					if (player.level().dimension().location().equals(structureDimension)) {
 						final BlockPos structurePos = BlockPos.of(tag.getLong(Reference.structure_location));
 						int distance = player.blockPosition().distManhattan(structurePos);
 						player.displayClientMessage(Component.translatable("structurecompass.locate.distance", distance).withStyle(ChatFormatting.YELLOW), true);

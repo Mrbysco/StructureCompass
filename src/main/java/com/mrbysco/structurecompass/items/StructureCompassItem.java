@@ -56,16 +56,16 @@ public class StructureCompassItem extends Item {
 	 * Locates nearby structures
 	 */
 	private void locateStructure(ItemStack stack, Player player) {
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			if (stack.hasTag() && stack.getTag().contains(Reference.structure_tag)) {
-				ServerLevel level = (ServerLevel) player.level;
+				ServerLevel level = (ServerLevel) player.level();
 				CompoundTag tag = stack.getTag();
 
 				String boundStructure = tag.getString(Reference.structure_tag);
 				ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
-					Registry<Structure> registry = player.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
+					Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
 					ResourceKey<Structure> structureKey = ResourceKey.create(Registries.STRUCTURE, structureLocation);
 					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {

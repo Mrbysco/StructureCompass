@@ -15,6 +15,6 @@ Adds a compass that can locate structures
 [[dependencies.structurecompass]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.19.4,1.20)"
+versionRange="[1.20,1.21)"
 ordering="NONE"
 side="BOTH"
