@@ -116,7 +116,7 @@ public class CompassScreen extends Screen {
 
 		addWidget(search);
 		addWidget(structureWidget);
-		search.setFocus(false);
+		search.setFocused(false);
 		search.setCanLoseFocus(true);
 		if (this.compassStack.hasTag() && this.compassStack.getTag().contains(Reference.structure_tag)) {
 			String structure = this.compassStack.getTag().getString(Reference.structure_tag);

@@ -57,7 +57,7 @@ public class StructureCompass {
 		event.registerCreativeModeTab(new ResourceLocation(Reference.MOD_ID, "tab"), builder ->
 				builder.icon(() -> new ItemStack(Items.COMPASS))
 						.title(Component.translatable("itemGroup.structurecompass"))
-						.displayItems((features, output, hasPermissions) -> {
+						.displayItems((displayParameters, output) -> {
 							output.accept(StructureItems.STRUCTURE_COMPASS.get());
 						}));
 	}
