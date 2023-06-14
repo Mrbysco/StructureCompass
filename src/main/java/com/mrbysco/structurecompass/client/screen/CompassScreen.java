@@ -96,23 +96,22 @@ public class CompassScreen extends Screen {
 		int structureWidth = this.width - this.listWidth - (PADDING * 3);
 		int closeButtonWidth = Math.min(structureWidth, 200);
 		int y = this.height - 20 - PADDING;
-		this.addRenderableWidget(new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				Component.translatable("gui.cancel"), b -> CompassScreen.this.onClose()));
+		this.addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), b -> CompassScreen.this.onClose())
+				.bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		y -= 18 + PADDING;
-		this.addRenderableWidget(this.loadButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				Component.translatable("structurecompass.screen.selection.select"), b -> {
+		this.addRenderableWidget(this.loadButton = Button.builder(Component.translatable("structurecompass.screen.selection.select"), b -> {
 			if (selected != null) {
 				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
 			}
-		}));
+		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		y -= 14 + PADDING;
 		search = new EditBox(getFontRenderer(), centerWidth - listWidth / 2 + PADDING + 1, y, listWidth - 2, 14,
 				Component.translatable("structurecompass.screen.search"));
 
 		int fullButtonHeight = PADDING + 20 + PADDING;
-		this.structureWidget = new StructureListWidget(this, width, fullButtonHeight, search.y - getFontRenderer().lineHeight - PADDING);
+		this.structureWidget = new StructureListWidget(this, width, fullButtonHeight, search.getY() - getFontRenderer().lineHeight - PADDING);
 		this.structureWidget.setLeftPos(0);
 
 		addWidget(search);
@@ -126,9 +125,13 @@ public class CompassScreen extends Screen {
 
 		final int width = listWidth / numButtons;
 		int x = centerWidth + PADDING - width;
-		addRenderableWidget(SortType.A_TO_Z.button = new Button(x, PADDING, width - buttonMargin, 20, SortType.A_TO_Z.getButtonText(), b -> resortStructures(SortType.A_TO_Z)));
+		addRenderableWidget(SortType.A_TO_Z.button = Button.builder(SortType.A_TO_Z.getButtonText(), b ->
+						resortStructures(SortType.A_TO_Z))
+				.bounds(x, PADDING, width - buttonMargin, 20).build());
 		x += width + buttonMargin;
-		addRenderableWidget(SortType.Z_TO_A.button = new Button(x, PADDING, width - buttonMargin, 20, SortType.Z_TO_A.getButtonText(), b -> resortStructures(SortType.Z_TO_A)));
+		addRenderableWidget(SortType.Z_TO_A.button = Button.builder(SortType.Z_TO_A.getButtonText(), b ->
+						resortStructures(SortType.Z_TO_A))
+				.bounds(x, PADDING, width - buttonMargin, 20).build());
 
 		resortStructures(SortType.A_TO_Z);
 		updateCache();
@@ -194,7 +197,7 @@ public class CompassScreen extends Screen {
 
 		Component text = Component.translatable("structurecompass.screen.search");
 		drawCenteredString(poseStack, getFontRenderer(), text, this.width / 2 + PADDING,
-				search.y - getFontRenderer().lineHeight - 2, 0xFFFFFF);
+				search.getY() - getFontRenderer().lineHeight - 2, 0xFFFFFF);
 
 		this.search.render(poseStack, mouseX, mouseY, partialTicks);
 

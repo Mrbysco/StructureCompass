@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[44,)"
 issueTrackerURL="https://github.com/Mrbysco/StructureCompass/issues"
 license="MIT"
 
@@ -15,6 +15,6 @@ Adds a compass that can locate structures
 [[dependencies.structurecompass]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.19,1.20)"
+versionRange="[1.19.3,1.20)"
 ordering="NONE"
 side="BOTH"

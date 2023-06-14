@@ -1,1 +1,1 @@
-* Right clicking on the search field will now clear the search field (As suggested by flamegoat)
+* Initial update to 1.19.3

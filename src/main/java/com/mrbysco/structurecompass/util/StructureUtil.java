@@ -10,11 +10,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.placement.ConcentricRingsStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
@@ -28,7 +30,7 @@ import java.util.Set;
 public class StructureUtil {
 	public static List<ResourceLocation> getAvailableStructureList(Level level) {
 		List<ResourceLocation> structureList = new ArrayList<>();
-		Registry<Structure> registry = level.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
+		Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
 		registry.keySet().forEach(location -> {
 			if (!isBlacklisted(location) && !structureList.contains(location)) {
 				structureList.add(location);
@@ -62,12 +64,14 @@ public class StructureUtil {
 	}
 
 	public static Pair<BlockPos, Holder<Structure>> findNearestMapStructure(ServerLevel serverLevel,
-																			HolderSet<Structure> structureHolderSet, BlockPos pos, int range, boolean findUnexplored) {
+																			HolderSet<Structure> structureHolderSet,
+																			BlockPos pos, int range, boolean findUnexplored) {
+		ChunkGeneratorStructureState chunkgeneratorstructurestate = serverLevel.getChunkSource().getGeneratorState();
 		ChunkGenerator generator = serverLevel.getChunkSource().getGenerator();
 		Map<StructurePlacement, Set<Holder<Structure>>> map = new Object2ObjectArrayMap<>();
 
 		for (Holder<Structure> holder : structureHolderSet) {
-			for (StructurePlacement structureplacement : generator.getPlacementsForStructure(holder, serverLevel.getChunkSource().randomState())) {
+			for (StructurePlacement structureplacement : chunkgeneratorstructurestate.getPlacementsForStructure(holder)) {
 				map.computeIfAbsent(structureplacement, (placement) -> new ObjectArraySet()).add(holder);
 			}
 		}

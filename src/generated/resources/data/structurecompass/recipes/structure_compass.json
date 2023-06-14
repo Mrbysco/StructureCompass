@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:compass"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "D": {
+      "item": "minecraft:dark_oak_log"
+    },
+    "M": {
+      "item": "minecraft:mossy_cobblestone"
+    },
+    "O": {
+      "item": "minecraft:oak_log"
+    },
+    "P": {
+      "item": "minecraft:carved_pumpkin"
+    },
+    "S": {
+      "item": "minecraft:sandstone"
+    },
+    "T": {
+      "item": "minecraft:terracotta"
+    },
+    "W": {
+      "item": "minecraft:snow_block"
+    }
+  },
+  "pattern": [
+    "WTS",
+    "O#D",
+    "MCP"
+  ],
+  "result": {
+    "item": "structurecompass:structure_compass"
+  }
+}

@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -64,8 +65,8 @@ public class StructureCompassItem extends Item {
 				ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
-					Registry<Structure> registry = player.getLevel().registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
-					ResourceKey<Structure> structureKey = ResourceKey.create(Registry.STRUCTURE_REGISTRY, structureLocation);
+					Registry<Structure> registry = player.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
+					ResourceKey<Structure> structureKey = ResourceKey.create(Registries.STRUCTURE, structureLocation);
 					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {
 
