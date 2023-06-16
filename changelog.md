@@ -1,0 +1,1 @@
+* Backport right-click to empty text box
