@@ -1,1 +1,1 @@
-* Initial update to 1.19.3
+* Adjust structure locating to fix it not working in some modded dimensions
