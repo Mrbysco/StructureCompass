@@ -64,72 +64,9 @@ public class StructureUtil {
 	}
 
 	public static Pair<BlockPos, Holder<Structure>> findNearestMapStructure(ServerLevel serverLevel,
-																			HolderSet<Structure> structureHolderSet,
-																			BlockPos pos, int range, boolean findUnexplored) {
-		ChunkGeneratorStructureState chunkgeneratorstructurestate = serverLevel.getChunkSource().getGeneratorState();
+																			HolderSet<Structure> structureHolderSet, BlockPos pos, int range, boolean findUnexplored) {
 		ChunkGenerator generator = serverLevel.getChunkSource().getGenerator();
-		Map<StructurePlacement, Set<Holder<Structure>>> map = new Object2ObjectArrayMap<>();
-
-		for (Holder<Structure> holder : structureHolderSet) {
-			for (StructurePlacement structureplacement : chunkgeneratorstructurestate.getPlacementsForStructure(holder)) {
-				map.computeIfAbsent(structureplacement, (placement) -> new ObjectArraySet()).add(holder);
-			}
-		}
-
-		if (map.isEmpty()) {
-			return null;
-		} else {
-			Pair<BlockPos, Holder<Structure>> pair2 = null;
-			double d2 = StructureConfig.COMMON.compassRange.get();
-			StructureManager structuremanager = serverLevel.structureManager();
-			List<Map.Entry<StructurePlacement, Set<Holder<Structure>>>> list = new ArrayList<>(map.size());
-
-			for (Map.Entry<StructurePlacement, Set<Holder<Structure>>> entry : map.entrySet()) {
-				StructurePlacement structurePlacement = entry.getKey();
-				if (structurePlacement instanceof ConcentricRingsStructurePlacement concentricringsstructureplacement) {
-					Pair<BlockPos, Holder<Structure>> pair = generator.getNearestGeneratedStructure(entry.getValue(),
-							serverLevel, structuremanager, pos, findUnexplored, concentricringsstructureplacement);
-					if (pair != null) {
-						BlockPos blockpos = pair.getFirst();
-						double d0 = pos.distManhattan(blockpos);
-						if (d0 < d2) {
-							d2 = d0;
-							pair2 = pair;
-						}
-					}
-				} else if (structurePlacement instanceof RandomSpreadStructurePlacement) {
-					list.add(entry);
-				}
-			}
-
-			if (!list.isEmpty()) {
-				int i = SectionPos.blockToSectionCoord(pos.getX());
-				int j = SectionPos.blockToSectionCoord(pos.getZ());
-
-				for (int k = 0; k <= range; ++k) {
-					boolean flag = false;
-
-					for (Map.Entry<StructurePlacement, Set<Holder<Structure>>> entry1 : list) {
-						RandomSpreadStructurePlacement randomSpreadStructurePlacement = (RandomSpreadStructurePlacement) entry1.getKey();
-						Pair<BlockPos, Holder<Structure>> pair1 = ChunkGenerator.getNearestGeneratedStructure(entry1.getValue(),
-								serverLevel, structuremanager, i, j, k, findUnexplored, serverLevel.getSeed(), randomSpreadStructurePlacement);
-						if (pair1 != null) {
-							flag = true;
-							double d1 = pos.distManhattan(pair1.getFirst());
-							if (d1 < d2) {
-								d2 = d1;
-								pair2 = pair1;
-							}
-						}
-					}
-
-					if (flag) {
-						return pair2;
-					}
-				}
-			}
-
-			return pair2;
-		}
+		Pair<BlockPos, Holder<Structure>> nearest = generator.findNearestMapStructure(serverLevel, structureHolderSet, pos, range, findUnexplored);
+		return nearest.getFirst().distManhattan(pos) <= StructureConfig.COMMON.compassRange.get() ? nearest : null;
 	}
 }
