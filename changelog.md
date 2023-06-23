@@ -1,1 +1,1 @@
-* Right clicking on the search field will now clear the search field (As suggested by flamegoat)
+* Adjust structure locating to fix it not working in some modded dimensions
