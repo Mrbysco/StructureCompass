@@ -1,1 +1,1 @@
-* Adjust structure locating to fix it not working in some modded dimensions
+* Add the Structure Compass to the `minecraft:compasses` item tag
