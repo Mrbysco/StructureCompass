@@ -1,1 +1,1 @@
-* Add the Structure Compass to the `minecraft:compasses` item tag
+* Close the selection gui when pressing `select` and send a message in chat prompting the user to right-click the compass again to locate the new selected structure
