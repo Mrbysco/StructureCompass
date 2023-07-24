@@ -5,6 +5,7 @@ import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
 import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.SetStructureMessage;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
@@ -104,6 +105,10 @@ public class CompassScreen extends Screen {
 			if (selected != null) {
 				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
 			}
+
+			if(this.minecraft.player != null)
+				this.minecraft.player.sendSystemMessage(Component.translatable("structurecompass.screen.selection.selected", selected.getStructureLocation()).withStyle(ChatFormatting.GOLD));
+			this.onClose();
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		y -= 14 + PADDING;

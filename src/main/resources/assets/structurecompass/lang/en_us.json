@@ -5,6 +5,7 @@
   "_comment": "Screen",
   "structurecompass.screen.selection.title": "Structure Selection",
   "structurecompass.screen.selection.select": "Select",
+  "structurecompass.screen.selection.selected": "Structure selected, right-click the compass to locate it",
   "structurecompass.screen.search": "Search",
   "structurecompass.screen.search.a_to_z": "A-Z",
   "structurecompass.screen.search.z_to_a": "Z-A",
