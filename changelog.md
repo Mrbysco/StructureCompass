@@ -1,1 +1,1 @@
-* Adjust structure locating to fix it not working in some modded dimensions
+* Close the selection gui when pressing `select` and send a message in chat prompting the user to right-click the compass again to locate the new selected structure
