@@ -82,7 +82,8 @@ public class StructureCompassItem extends Item {
 							tag.putBoolean(Reference.structure_found, false);
 							tag.remove(Reference.structure_location);
 							tag.remove(Reference.structure_dimension);
-							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.RED));
+							int range = StructureConfig.COMMON.compassRange.get();
+							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure, range).withStyle(ChatFormatting.RED));
 						} else {
 							tag.putBoolean(Reference.structure_found, true);
 							tag.putLong(Reference.structure_location, structurePos.asLong());
