@@ -1,1 +1,1 @@
-* Close the selection gui when pressing `select` and send a message in chat prompting the user to right-click the compass again to locate the new selected structure
+* Update structure compass fail message to include the configured block radius
