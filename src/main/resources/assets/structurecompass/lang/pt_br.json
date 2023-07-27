@@ -22,7 +22,7 @@
     "_comment": "tooltips",
     "structurecompass.structure.found": "%s foi localizado a %s quarteirões de distância, a bússola está apontando para a estrutura",
     "structurecompass.structure.found.tooltip": "%s foi localizado, a bússola está apontando para a estrutura",
-    "structurecompass.structure.failed": "%s não pode ser localizado, talvez tente novamente mais tarde",
+    "structurecompass.structure.failed": "%s can not be located within a %s block radius. Please explore further and try again later",
     "structurecompass.structure.failed.tooltip": "%s não pode ser localizado, talvez tente novamente mais tarde",
     "structurecompass.structure.wrong_dimension.tooltip": "Você não está na dimensão em que %s foi encontrado",
     "structurecompass.structure.unset.tooltip": "Nenhuma estrutura foi definida, clique com o botão direito do mouse para selecionar uma estrutura",
