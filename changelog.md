@@ -1,1 +1,1 @@
-* Update structure compass fail message to include the configured block radius
+* Add a message informing the user that the Structure Compass is trying to locate the structure
