@@ -20,6 +20,7 @@
   "structurecompass.locate.toggled": "Structure Compass hud toggled %s",
 
   "_comment": "tooltips",
+  "structurecompass.structure.locating": "Attempting to locate %s, please wait...",
   "structurecompass.structure.found": "%s has been located %s blocks away, compass is pointing towards the structure",
   "structurecompass.structure.found.tooltip": "%s has been located, compass is pointing towards the structure",
   "structurecompass.structure.failed": "%s can not be located within a %s block radius. Please explore further and try again later",
