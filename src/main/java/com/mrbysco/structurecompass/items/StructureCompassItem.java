@@ -64,6 +64,7 @@ public class StructureCompassItem extends Item {
 				ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
+					player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation).withStyle(ChatFormatting.YELLOW));
 					Registry<Structure> registry = player.getLevel().registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
 					ResourceKey<Structure> structureKey = ResourceKey.create(Registry.STRUCTURE_REGISTRY, structureLocation);
 					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
