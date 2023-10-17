@@ -1,1 +1,1 @@
-* Add a message informing the user that the Structure Compass is trying to locate the structure
+* Re-enable Game Stages support
