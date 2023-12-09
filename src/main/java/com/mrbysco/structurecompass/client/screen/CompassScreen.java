@@ -205,7 +205,11 @@ public class CompassScreen extends Screen {
 				search.getY() - getFontRenderer().lineHeight - 2, 0xFFFFFF);
 
 		this.search.render(guiGraphics, mouseX, mouseY, partialTicks);
+	}
 
+	@Override
+	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		this.renderDirtBackground(guiGraphics);
 	}
 
 	public Font getFontRenderer() {
