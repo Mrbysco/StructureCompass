@@ -37,8 +37,8 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 	}
 
 	@Override
-	protected void renderBackground(GuiGraphics guiGraphics) {
-		this.parent.renderBackground(guiGraphics);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	public class ListEntry extends ObjectSelectionList.Entry<ListEntry> {

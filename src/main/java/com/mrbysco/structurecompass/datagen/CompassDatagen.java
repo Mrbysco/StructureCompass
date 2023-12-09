@@ -5,8 +5,8 @@ import com.mrbysco.structurecompass.init.StructureItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -15,15 +15,14 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CompassDatagen {
@@ -36,22 +35,22 @@ public class CompassDatagen {
 		ExistingFileHelper helper = event.getExistingFileHelper();
 
 		if (event.includeServer()) {
-			generator.addProvider(event.includeServer(), new CompassRecipeProvider(packOutput));
+			generator.addProvider(event.includeServer(), new CompassRecipeProvider(packOutput, lookupProvider));
 
 			CompassBlockTagProvider blockTags;
-			generator.addProvider(event.includeServer(), blockTags =  new CompassBlockTagProvider(packOutput, lookupProvider, helper));
+			generator.addProvider(event.includeServer(), blockTags = new CompassBlockTagProvider(packOutput, lookupProvider, helper));
 			generator.addProvider(event.includeServer(), new CompassItemTagProvider(packOutput, lookupProvider, blockTags, helper));
 		}
 	}
 
 	public static class CompassRecipeProvider extends RecipeProvider {
 
-		public CompassRecipeProvider(PackOutput packOutput) {
-			super(packOutput);
+		public CompassRecipeProvider(PackOutput packOutput, CompletableFuture<net.minecraft.core.HolderLookup.Provider> lookupProvider) {
+			super(packOutput, lookupProvider);
 		}
 
 		@Override
-		protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+		protected void buildRecipes(RecipeOutput recipeOutput) {
 			ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, StructureItems.STRUCTURE_COMPASS.get())
 					.pattern("WTS")
 					.pattern("O#D")
@@ -65,7 +64,7 @@ public class CompassDatagen {
 					.define('M', Blocks.MOSSY_COBBLESTONE)
 					.define('C', Blocks.COBBLESTONE)
 					.define('P', Blocks.CARVED_PUMPKIN)
-					.unlockedBy("has_compass", has(Items.COMPASS)).save(consumer);
+					.unlockedBy("has_compass", has(Items.COMPASS)).save(recipeOutput);
 		}
 	}
 

@@ -16,9 +16,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.StringUtils;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.StringUtils;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -144,7 +144,6 @@ public class CompassScreen extends Screen {
 
 	@Override
 	public void tick() {
-		search.tick();
 		structureWidget.setSelected(selected);
 
 		if (!search.getValue().equals(lastFilterText)) {
@@ -198,6 +197,7 @@ public class CompassScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.structureWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
 
 		Component text = Component.translatable("structurecompass.screen.search");
@@ -206,7 +206,6 @@ public class CompassScreen extends Screen {
 
 		this.search.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	public Font getFontRenderer() {

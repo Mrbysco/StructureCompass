@@ -7,10 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public class SetStructureMessage {
 	public InteractionHand hand;
@@ -30,8 +27,7 @@ public class SetStructureMessage {
 		return new SetStructureMessage(packetBuffer.readInt() == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, packetBuffer.readResourceLocation());
 	}
 
-	public void handle(Supplier<Context> context) {
-		NetworkEvent.Context ctx = context.get();
+	public void handle(Context ctx) {
 		ctx.enqueueWork(() -> {
 			if (ctx.getDirection().getReceptionSide().isServer() && ctx.getSender() != null) {
 				ItemStack stack = ctx.getSender().getItemInHand(hand);

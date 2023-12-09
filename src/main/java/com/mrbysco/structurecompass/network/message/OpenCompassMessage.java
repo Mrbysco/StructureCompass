@@ -4,13 +4,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.DistExecutor.SafeRunnable;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class OpenCompassMessage {
 	public InteractionHand hand;
@@ -44,27 +42,14 @@ public class OpenCompassMessage {
 		return new OpenCompassMessage(hand, stack, allStructures);
 	}
 
-	public void handle(Supplier<Context> context) {
-		Context ctx = context.get();
+	public void handle(Context ctx) {
 		ctx.enqueueWork(() -> {
 			if (ctx.getDirection().getReceptionSide().isClient()) {
-				Compass.openScreen(this.hand, this.compass, this.structureList).run();
+				if (FMLEnvironment.dist.isClient()) {
+					com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(hand, compass, structureList);
+				}
 			}
 		});
 		ctx.setPacketHandled(true);
-	}
-
-	private static class Compass {
-		private static SafeRunnable openScreen(InteractionHand hand, ItemStack compassStack, List<ResourceLocation> structureList) {
-			return new SafeRunnable() {
-				@Serial
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void run() {
-					com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(hand, compassStack, structureList);
-				}
-			};
-		}
 	}
 }
