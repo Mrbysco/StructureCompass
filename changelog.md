@@ -1,1 +1,1 @@
-* Re-enable Game Stages support
+* Initial update to 1.20.2 (NeoForge)
