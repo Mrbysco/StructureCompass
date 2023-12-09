@@ -1,1 +1,1 @@
-* Fix rendering of Structure Compass GUI
+* Fix rendering of Structure Compass GUI 
