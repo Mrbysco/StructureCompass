@@ -1,1 +1,1 @@
-* Re-enable Game Stages support
+* Add some extra null to the method that locates structures 
