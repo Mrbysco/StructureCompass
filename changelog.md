@@ -1,1 +1,1 @@
-* Fix rendering of Structure Compass GUI 
+* Add some extra null to the method that locates structures 
