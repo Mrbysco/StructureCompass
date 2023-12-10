@@ -57,6 +57,7 @@ public class StructureUtil {
 																			HolderSet<Structure> structureHolderSet, BlockPos pos, int range, boolean findUnexplored) {
 		ChunkGenerator generator = serverLevel.getChunkSource().getGenerator();
 		Pair<BlockPos, Holder<Structure>> nearest = generator.findNearestMapStructure(serverLevel, structureHolderSet, pos, range, findUnexplored);
+		if (nearest == null) return null;
 		return nearest.getFirst().distManhattan(pos) <= StructureConfig.COMMON.compassRange.get() ? nearest : null;
 	}
 }
