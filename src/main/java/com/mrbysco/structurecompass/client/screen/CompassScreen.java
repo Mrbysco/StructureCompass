@@ -222,11 +222,7 @@ public class CompassScreen extends Screen {
 	}
 
 	private void updateCache() {
-		if (selected == null) {
-			this.loadButton.active = false;
-		} else {
-			this.loadButton.active = true;
-		}
+		this.loadButton.active = selected != null;
 	}
 
 	/**
