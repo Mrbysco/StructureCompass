@@ -28,8 +28,9 @@ public class ActionSetStructureStaging implements IUndoableAction {
 
 	@Override
 	public void undo() {
-		Set<String> stages = GameStagesHelper.STRUCTURE_STAGES.computeIfAbsent(structureLocation, s -> new HashSet<>());
-		stages.removeAll(List.of(stages));
+		Set<String> strings = GameStagesHelper.STRUCTURE_STAGES.computeIfAbsent(structureLocation, s -> new HashSet<>());
+		List.of(this.stages).forEach(strings::remove);
+		GameStagesHelper.STRUCTURE_STAGES.put(structureLocation, strings);
 	}
 
 	@Override
@@ -41,6 +42,7 @@ public class ActionSetStructureStaging implements IUndoableAction {
 	public void apply() {
 		Set<String> strings = GameStagesHelper.STRUCTURE_STAGES.computeIfAbsent(structureLocation, s -> new HashSet<>());
 		strings.addAll(Arrays.asList(stages));
+		GameStagesHelper.STRUCTURE_STAGES.put(structureLocation, strings);
 	}
 
 	@Override
