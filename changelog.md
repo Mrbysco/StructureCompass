@@ -1,1 +1,1 @@
-* Add some extra null to the method that locates structures 
+* Initial update to 1.20.4
