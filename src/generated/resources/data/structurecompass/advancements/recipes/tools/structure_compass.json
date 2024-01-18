@@ -30,6 +30,5 @@
     "recipes": [
       "structurecompass:structure_compass"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

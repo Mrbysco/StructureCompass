@@ -1,25 +1,21 @@
 package com.mrbysco.structurecompass.network;
 
 import com.mrbysco.structurecompass.Reference;
-import com.mrbysco.structurecompass.network.message.OpenCompassMessage;
-import com.mrbysco.structurecompass.network.message.SetStructureMessage;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.NetworkRegistry;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import com.mrbysco.structurecompass.network.handler.ClientPayloadHandler;
+import com.mrbysco.structurecompass.network.handler.ServerPayloadHandler;
+import com.mrbysco.structurecompass.network.message.OpenCompassPayload;
+import com.mrbysco.structurecompass.network.message.SetStructurePayload;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 
 public class PacketHandler {
-	private static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(Reference.MOD_ID, "main"),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals
-	);
 
-	private static int id = 0;
-
-	public static void init() {
-		CHANNEL.registerMessage(id++, SetStructureMessage.class, SetStructureMessage::encode, SetStructureMessage::decode, SetStructureMessage::handle);
-		CHANNEL.registerMessage(id++, OpenCompassMessage.class, OpenCompassMessage::encode, OpenCompassMessage::decode, OpenCompassMessage::handle);
+	public static void setupPackets(final RegisterPayloadHandlerEvent event) {
+		final IPayloadRegistrar registrar = event.registrar(Reference.MOD_ID);
+		
+		registrar.play(OpenCompassPayload.ID, OpenCompassPayload::new, handler -> handler
+				.client(ClientPayloadHandler.getInstance()::handleData));
+		registrar.play(SetStructurePayload.ID, SetStructurePayload::new, handler -> handler
+				.server(ServerPayloadHandler.getInstance()::handleStructureData));
 	}
 }

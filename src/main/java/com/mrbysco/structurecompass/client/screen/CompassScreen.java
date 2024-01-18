@@ -2,8 +2,7 @@ package com.mrbysco.structurecompass.client.screen;
 
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
-import com.mrbysco.structurecompass.network.PacketHandler;
-import com.mrbysco.structurecompass.network.message.SetStructureMessage;
+import com.mrbysco.structurecompass.network.message.SetStructurePayload;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -103,10 +102,10 @@ public class CompassScreen extends Screen {
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.loadButton = Button.builder(Component.translatable("structurecompass.screen.selection.select"), b -> {
 			if (selected != null) {
-				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
+				PacketDistributor.SERVER.noArg().send(new SetStructurePayload(usedHand, selected.getStructureLocation()));
 			}
 
-			if(this.minecraft.player != null && selected != null)
+			if (this.minecraft.player != null && selected != null)
 				this.minecraft.player.sendSystemMessage(Component.translatable("structurecompass.screen.selection.selected", selected.getStructureLocation()).withStyle(ChatFormatting.GOLD));
 			this.onClose();
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
@@ -117,7 +116,7 @@ public class CompassScreen extends Screen {
 
 		int fullButtonHeight = PADDING + 20 + PADDING;
 		this.structureWidget = new StructureListWidget(this, width, fullButtonHeight, search.getY() - getFontRenderer().lineHeight - PADDING);
-		this.structureWidget.setLeftPos(0);
+		this.structureWidget.setX(0);
 
 		addWidget(search);
 		addWidget(structureWidget);

@@ -3,8 +3,7 @@ package com.mrbysco.structurecompass.items;
 import com.mojang.datafixers.util.Pair;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.config.StructureConfig;
-import com.mrbysco.structurecompass.network.PacketHandler;
-import com.mrbysco.structurecompass.network.message.OpenCompassMessage;
+import com.mrbysco.structurecompass.network.message.OpenCompassPayload;
 import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -26,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -43,7 +41,7 @@ public class StructureCompassItem extends Item {
 		if (playerIn.isShiftKeyDown()) {
 			if (!worldIn.isClientSide) {
 				List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList(worldIn);
-				PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerIn), new OpenCompassMessage(hand, stack, allStructures));
+				((ServerPlayer) playerIn).connection.send(new OpenCompassPayload(hand, stack, allStructures));
 			}
 		} else {
 			locateStructure(stack, playerIn);

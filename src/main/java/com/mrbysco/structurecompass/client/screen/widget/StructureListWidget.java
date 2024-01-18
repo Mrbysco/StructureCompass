@@ -15,7 +15,7 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 	private final int listWidth;
 
 	public StructureListWidget(CompassScreen parent, int listWidth, int top, int bottom) {
-		super(parent.getMinecraft(), listWidth, parent.height, top, bottom, parent.getFontRenderer().lineHeight * 2 + 8);
+		super(parent.getMinecraft(), listWidth, bottom - top, top, parent.getFontRenderer().lineHeight * 2 + 8);
 		this.parent = parent;
 		this.listWidth = listWidth;
 		this.refreshList();
@@ -34,11 +34,6 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 	public void refreshList() {
 		this.clearEntries();
 		parent.buildStructureList(this::addEntry, location -> new ListEntry(location, this.parent));
-	}
-
-	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	public class ListEntry extends ObjectSelectionList.Entry<ListEntry> {
