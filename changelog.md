@@ -1,1 +1,1 @@
-* Initial update to 1.20.4
+* Added a config option that makes structure locating asynchronous
