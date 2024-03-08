@@ -1,1 +1,1 @@
-* Add some extra null to the method that locates structures 
+* Added a config option that makes structure locating asynchonous
