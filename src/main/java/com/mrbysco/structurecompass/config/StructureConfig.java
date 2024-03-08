@@ -15,6 +15,7 @@ public class StructureConfig {
 	public static class Common {
 		public final IntValue compassRange;
 		public final BooleanValue locateUnexplored;
+		public final BooleanValue locateAsync;
 		public final ConfigValue<List<? extends String>> structureBlacklist;
 
 		Common(ForgeConfigSpec.Builder builder) {
@@ -28,6 +29,10 @@ public class StructureConfig {
 			locateUnexplored = builder
 					.comment("Defines if the structure compass should locate unexplored structures [default: false]")
 					.define("locateUnexplored", false);
+
+			locateAsync = builder
+					.comment("Defines if the structure compass should locate structures asynchronously [default: false]")
+					.define("locateAsync", false);
 
 			structureBlacklist = builder
 					.comment("Defines which structures can't be searched with the Structure Compass\n" +

@@ -5,6 +5,7 @@ import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.config.StructureConfig;
 import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.OpenCompassMessage;
+import com.mrbysco.structurecompass.util.AsyncLocator;
 import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -76,25 +77,22 @@ public class StructureCompassItem extends Item {
 							findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
 						}
 
-						Pair<BlockPos, Holder<Structure>> pair = StructureUtil.findNearestMapStructure(level,
-								featureHolderSet, player.blockPosition(), 100, findUnexplored);
-						BlockPos structurePos = pair != null ? pair.getFirst() : null;
-						if (structurePos == null) {
-							tag.putBoolean(Reference.structure_found, false);
-							tag.remove(Reference.structure_location);
-							tag.remove(Reference.structure_dimension);
-							int range = StructureConfig.COMMON.compassRange.get();
-							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure, range).withStyle(ChatFormatting.RED));
+						if (StructureConfig.COMMON.locateAsync.get()) {
+							var async = AsyncLocator.locate(level,
+									featureHolderSet, player.blockPosition(), 100, findUnexplored);
+							async.thenOnServerThread(pair -> bindPosition(
+									stack,
+									tag,
+									boundStructure,
+									player,
+									level,
+									pair
+							));
 						} else {
-							tag.putBoolean(Reference.structure_found, true);
-							tag.putLong(Reference.structure_location, structurePos.asLong());
-							tag.putString(Reference.structure_dimension, level.dimension().location().toString());
-							int distance = player.blockPosition().distManhattan(structurePos);
-							player.sendSystemMessage(Component.translatable("structurecompass.structure.found", boundStructure, distance).withStyle(ChatFormatting.GREEN));
+							Pair<BlockPos, Holder<Structure>> pair = StructureUtil.findNearestMapStructure(level,
+									featureHolderSet, player.blockPosition(), 100, findUnexplored);
+							bindPosition(stack, tag, boundStructure, player, level, pair);
 						}
-
-						stack.setTag(tag);
-						player.getCooldowns().addCooldown(this, 100);
 					}
 				} else {
 					player.sendSystemMessage(Component.translatable("structurecompass.locate.fail").withStyle(ChatFormatting.RED));
@@ -103,6 +101,26 @@ public class StructureCompassItem extends Item {
 				player.sendSystemMessage(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW));
 			}
 		}
+	}
+
+	private void bindPosition(ItemStack stack, CompoundTag tag, String boundStructure, Player player, Level level, Pair<BlockPos, Holder<Structure>> pair) {
+		BlockPos structurePos = pair != null ? pair.getFirst() : null;
+		if (structurePos == null) {
+			tag.putBoolean(Reference.structure_found, false);
+			tag.remove(Reference.structure_location);
+			tag.remove(Reference.structure_dimension);
+			int range = StructureConfig.COMMON.compassRange.get();
+			player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure, range).withStyle(ChatFormatting.RED));
+		} else {
+			tag.putBoolean(Reference.structure_found, true);
+			tag.putLong(Reference.structure_location, structurePos.asLong());
+			tag.putString(Reference.structure_dimension, level.dimension().location().toString());
+			int distance = player.blockPosition().distManhattan(structurePos);
+			player.sendSystemMessage(Component.translatable("structurecompass.structure.found", boundStructure, distance).withStyle(ChatFormatting.GREEN));
+		}
+
+		stack.setTag(tag);
+		player.getCooldowns().addCooldown(this, 100);
 	}
 
 	@Override
