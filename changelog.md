@@ -1,1 +1,1 @@
-* Added a config option that makes structure locating asynchronous
+* Fix server disconnect when locating a structure
