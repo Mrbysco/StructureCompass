@@ -1,1 +1,1 @@
-* Fix server disconnect when locating a structure
+* Fix server disconnect when locating a structure 
