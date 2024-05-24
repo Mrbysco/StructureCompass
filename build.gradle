@@ -72,7 +72,7 @@ dependencies {
 
     runtimeOnly "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
 
-//    implementation "com.blamejared.crafttweaker:CraftTweaker-neoforge-${mc_version}:${crafttweaker_version}"
+    implementation "com.blamejared.crafttweaker:CraftTweaker-neoforge-${mc_version}:${crafttweaker_version}"
 
 //    implementation "net.darkhax.bookshelf:Bookshelf-Forge-${mc_version}:${bookshelf_version}"
 //    implementation "net.darkhax.gamestages:GameStages-Forge-${mc_version}:${gamestages_version}"
