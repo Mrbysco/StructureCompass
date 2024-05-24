@@ -36,7 +36,7 @@ public class SetStructureMessage {
 			if (ctx.getDirection().getReceptionSide().isServer() && ctx.getSender() != null) {
 				ItemStack stack = ctx.getSender().getItemInHand(hand);
 				if (stack.getItem() instanceof StructureCompassItem) {
-					CompoundTag tag = new CompoundTag();
+					CompoundTag tag = stack.getOrCreateTag();
 					tag.putString(Reference.structure_tag, structureLocation.toString());
 					stack.setTag(tag);
 				}
