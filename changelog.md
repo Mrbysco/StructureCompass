@@ -1,1 +1,2 @@
-* Fix a mistake in the async implementation
+* Fix enchantments being removed upon setting a structure
+* Re-enable CraftTweaker support
