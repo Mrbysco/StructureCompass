@@ -21,7 +21,7 @@ public class ServerPayloadHandler {
 					context.player().ifPresent(player -> {
 						ItemStack stack = player.getItemInHand(payload.hand());
 						if (stack.getItem() instanceof StructureCompassItem) {
-							CompoundTag tag = new CompoundTag();
+							CompoundTag tag = stack.getOrCreateTag();
 							tag.putString(Reference.structure_tag, payload.structureLocation().toString());
 							stack.setTag(tag);
 						}
