@@ -1,1 +1,1 @@
-* Add a message informing the user that the Structure Compass is trying to locate the structure
+* Fix enchantments being removed upon setting a structure
