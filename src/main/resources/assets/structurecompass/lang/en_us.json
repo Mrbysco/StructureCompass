@@ -30,5 +30,8 @@
 
   "_comment": "keybinds",
   "category.structurecompass.main": "Structure Compass",
-  "key.structurecompass.hide": "Hide Structure Compass HUD"
+  "key.structurecompass.hide": "Hide Structure Compass HUD",
+
+  "_comment": "networking",
+  "structurecompass.networking.set_structure.failed": "Failed to set structure: %s"
 }
