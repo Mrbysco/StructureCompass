@@ -1,2 +1,1 @@
-* Fix enchantments being removed upon setting a structure
-* Re-enable CraftTweaker support
+* Initial update to 1.20.6
