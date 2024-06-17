@@ -4,14 +4,15 @@ import com.mojang.logging.LogUtils;
 import com.mrbysco.structurecompass.client.ClientHandler;
 import com.mrbysco.structurecompass.client.KeyHandler;
 import com.mrbysco.structurecompass.config.StructureConfig;
-import com.mrbysco.structurecompass.init.StructureItems;
 import com.mrbysco.structurecompass.network.PacketHandler;
+import com.mrbysco.structurecompass.registry.StructureComponents;
+import com.mrbysco.structurecompass.registry.StructureItems;
 import com.mrbysco.structurecompass.util.AsyncLocator;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -21,19 +22,20 @@ import org.slf4j.Logger;
 public class StructureCompass {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public StructureCompass(IEventBus eventBus) {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StructureConfig.commonSpec);
+	public StructureCompass(IEventBus eventBus, Dist dist, ModContainer container) {
+		container.registerConfig(ModConfig.Type.COMMON, StructureConfig.commonSpec);
 		eventBus.register(StructureConfig.class);
 
 		eventBus.addListener(PacketHandler::setupPackets);
 
+		StructureComponents.DATA_COMPONENT_TYPES.register(eventBus);
 		StructureItems.ITEMS.register(eventBus);
 		StructureItems.CREATIVE_MODE_TABS.register(eventBus);
 
 		NeoForge.EVENT_BUS.addListener(this::serverAboutToStart);
 		NeoForge.EVENT_BUS.addListener(this::onServerStopping);
 
-		if (FMLEnvironment.dist.isClient()) {
+		if (dist.isClient()) {
 			eventBus.addListener(ClientHandler::onClientSetup);
 			eventBus.addListener(ClientHandler::registerKeyMappings);
 

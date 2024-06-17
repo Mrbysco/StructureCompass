@@ -3,6 +3,7 @@ package com.mrbysco.structurecompass.client.screen;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
 import com.mrbysco.structurecompass.network.message.SetStructurePayload;
+import com.mrbysco.structurecompass.registry.StructureComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -102,11 +103,11 @@ public class CompassScreen extends Screen {
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.loadButton = Button.builder(Component.translatable("structurecompass.screen.selection.select"), b -> {
 			if (selected != null) {
-				PacketDistributor.SERVER.noArg().send(new SetStructurePayload(usedHand, selected.getStructureLocation()));
+				PacketDistributor.sendToServer(new SetStructurePayload(usedHand, selected.getStructureLocation()));
 			}
 
 			if (this.minecraft.player != null && selected != null)
-				this.minecraft.player.sendSystemMessage(Component.translatable("structurecompass.screen.selection.selected", selected.getStructureLocation()).withStyle(ChatFormatting.GOLD));
+				this.minecraft.player.sendSystemMessage(Component.translatable("structurecompass.screen.selection.selected").withStyle(ChatFormatting.GOLD));
 			this.onClose();
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
@@ -122,8 +123,8 @@ public class CompassScreen extends Screen {
 		addWidget(structureWidget);
 		search.setFocused(false);
 		search.setCanLoseFocus(true);
-		if (this.compassStack.hasTag() && this.compassStack.getTag().contains(Reference.structure_tag)) {
-			String structure = this.compassStack.getTag().getString(Reference.structure_tag);
+		if (this.compassStack.has(StructureComponents.STRUCTURE)) {
+			String structure = this.compassStack.get(StructureComponents.STRUCTURE).toString();
 			search.setValue(structure);
 		}
 
@@ -208,7 +209,8 @@ public class CompassScreen extends Screen {
 
 	@Override
 	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.renderDirtBackground(guiGraphics);
+		super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+//		this.renderDirtBackground(guiGraphics);
 	}
 
 	public Font getFontRenderer() {

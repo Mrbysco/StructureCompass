@@ -3,8 +3,8 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.134'
-    id 'net.darkhax.curseforgegradle' version '1.1.18'
+    id 'net.neoforged.gradle.userdev' version '7.0.142'
+    id 'net.darkhax.curseforgegradle' version '1.1.24'
     id 'com.modrinth.minotaur' version "2.+"
 }
 
@@ -15,8 +15,8 @@ base {
     archivesName = "${mod_archive_name}-${mc_version}"
 }
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+// Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
@@ -122,13 +122,13 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.releaseType = 'beta'
         mainFile.addGameVersion "NeoForge"
         mainFile.addGameVersion "${mc_version}"
-        mainFile.addGameVersion "Java 17"
+        mainFile.addGameVersion "Java 21"
         mainFile.addGameVersion('Server', 'Client')
 
         mainFile.changelog = file("$project.rootDir/changelog.md")
         mainFile.changelogType = 'markdown'
 
-        mainFile.addOptional("crafttweaker"/*, "bookshelf-lib", "game-stages"*/)
+//        mainFile.addOptional("crafttweaker, "bookshelf-lib", "game-stages")
     }
 }
 
@@ -146,7 +146,7 @@ if (System.getenv().MODRINTH_KEY) {
 
         dependencies {
 //            optional.project "bookshelf-lib"
-            optional.project "crafttweaker"
+//            optional.project "crafttweaker"
 //            optional.project "game-stages"
         }
     }

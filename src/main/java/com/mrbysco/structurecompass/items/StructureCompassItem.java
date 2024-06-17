@@ -1,9 +1,10 @@
 package com.mrbysco.structurecompass.items;
 
 import com.mojang.datafixers.util.Pair;
-import com.mrbysco.structurecompass.Reference;
+import com.mrbysco.structurecompass.component.StructureInfo;
 import com.mrbysco.structurecompass.config.StructureConfig;
 import com.mrbysco.structurecompass.network.message.OpenCompassPayload;
+import com.mrbysco.structurecompass.registry.StructureComponents;
 import com.mrbysco.structurecompass.util.AsyncLocator;
 import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.ChatFormatting;
@@ -12,7 +13,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +27,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class StructureCompassItem extends Item {
@@ -55,13 +54,9 @@ public class StructureCompassItem extends Item {
 	 * Locates nearby structures
 	 */
 	private void locateStructure(ItemStack stack, Player player) {
-		if (!player.level().isClientSide) {
-			if (stack.hasTag() && stack.getTag().contains(Reference.structure_tag)) {
-				ServerLevel level = (ServerLevel) player.level();
-				CompoundTag tag = stack.getTag();
-
-				String boundStructure = tag.getString(Reference.structure_tag);
-				ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
+		if (player.level() instanceof ServerLevel level) {
+			if (stack.has(StructureComponents.STRUCTURE)) {
+				ResourceLocation structureLocation = stack.get(StructureComponents.STRUCTURE);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
 					player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation.toString()).withStyle(ChatFormatting.YELLOW));
@@ -71,7 +66,7 @@ public class StructureCompassItem extends Item {
 					if (featureHolderSet != null) {
 
 						boolean findUnexplored = false;
-						if (StructureConfig.COMMON.locateUnexplored.get() != null) {
+						if (StructureConfig.COMMON.locateUnexplored.get()) {
 							findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
 						}
 
@@ -80,8 +75,7 @@ public class StructureCompassItem extends Item {
 									featureHolderSet, player.blockPosition(), 100, findUnexplored);
 							async.thenOnServerThread(pair -> bindPosition(
 									stack,
-									tag,
-									boundStructure,
+									structureLocation,
 									player,
 									level,
 									pair
@@ -89,7 +83,7 @@ public class StructureCompassItem extends Item {
 						} else {
 							Pair<BlockPos, Holder<Structure>> pair = StructureUtil.findNearestMapStructure(level,
 									featureHolderSet, player.blockPosition(), 100, findUnexplored);
-							bindPosition(stack, tag, boundStructure, player, level, pair);
+							bindPosition(stack, structureLocation, player, level, pair);
 						}
 					}
 				} else {
@@ -101,35 +95,30 @@ public class StructureCompassItem extends Item {
 		}
 	}
 
-	private void bindPosition(ItemStack stack, CompoundTag tag, String boundStructure, Player player, Level level, Pair<BlockPos, Holder<Structure>> pair) {
+	private void bindPosition(ItemStack stack, ResourceLocation boundStructure, Player player, Level level, Pair<BlockPos, Holder<Structure>> pair) {
 		BlockPos structurePos = pair != null ? pair.getFirst() : null;
 		if (structurePos == null) {
-			tag.putBoolean(Reference.structure_found, false);
-			tag.remove(Reference.structure_location);
-			tag.remove(Reference.structure_dimension);
+			stack.remove(StructureComponents.STRUCTURE_INFO);
 			int range = StructureConfig.COMMON.compassRange.get();
-			player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure, range).withStyle(ChatFormatting.RED));
+			player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure.toString(), range).withStyle(ChatFormatting.RED));
 		} else {
-			tag.putBoolean(Reference.structure_found, true);
-			tag.putLong(Reference.structure_location, structurePos.asLong());
-			tag.putString(Reference.structure_dimension, level.dimension().location().toString());
+			StructureInfo info = new StructureInfo(structurePos, level.dimension());
+			stack.set(StructureComponents.STRUCTURE_INFO, info);
 			int distance = player.blockPosition().distManhattan(structurePos);
-			player.sendSystemMessage(Component.translatable("structurecompass.structure.found", boundStructure, distance).withStyle(ChatFormatting.GREEN));
+			player.sendSystemMessage(Component.translatable("structurecompass.structure.found", boundStructure.toString(), distance).withStyle(ChatFormatting.GREEN));
 		}
 
-		stack.setTag(tag);
 		player.getCooldowns().addCooldown(this, 100);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
-		if (stack.hasTag()) {
-			CompoundTag tag = stack.getTag();
-			final String structureName = tag.getString(Reference.structure_tag);
-			final boolean structureFound = tag.getBoolean(Reference.structure_found);
-			if (structureFound) {
-				final ResourceLocation structureDimension = ResourceLocation.tryParse(tag.getString(Reference.structure_dimension));
-				if (level != null && level.dimension().location().equals(structureDimension)) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+		if (stack.has(StructureComponents.STRUCTURE)) {
+			final String structureName = stack.get(StructureComponents.STRUCTURE).toString();
+			if (stack.has(StructureComponents.STRUCTURE_INFO)) {
+				StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
+				if (context != null && net.minecraft.client.Minecraft.getInstance().player != null &&
+						net.minecraft.client.Minecraft.getInstance().player.level().dimension().location().equals(info.dimension().location())) {
 					tooltip.add(Component.translatable("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
 				} else {
 					tooltip.add(Component.translatable("structurecompass.structure.wrong_dimension.tooltip", structureName).withStyle(ChatFormatting.RED));

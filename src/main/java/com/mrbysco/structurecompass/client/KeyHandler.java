@@ -1,19 +1,18 @@
 package com.mrbysco.structurecompass.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mrbysco.structurecompass.Reference;
-import com.mrbysco.structurecompass.init.StructureItems;
+import com.mrbysco.structurecompass.component.StructureInfo;
+import com.mrbysco.structurecompass.registry.StructureComponents;
+import com.mrbysco.structurecompass.registry.StructureItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyHandler {
@@ -37,8 +36,8 @@ public class KeyHandler {
 	}
 
 	@SubscribeEvent
-	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		final Player player = event.player;
+	public void onPlayerTick(PlayerTickEvent.Post event) {
+		final Player player = event.getEntity();
 		if (player.tickCount % 10 == 0 && player.isHolding(StructureItems.STRUCTURE_COMPASS.get())) {
 			if (!hidden) {
 				ItemStack stack = player.getMainHandItem();
@@ -48,12 +47,11 @@ public class KeyHandler {
 						return;
 					}
 				}
-				CompoundTag tag = stack.getTag();
-				if (tag != null && tag.contains(Reference.structure_location) && tag.contains(Reference.structure_dimension)) {
-					final ResourceLocation structureDimension = ResourceLocation.tryParse(tag.getString(Reference.structure_dimension));
+				if (stack.has(StructureComponents.STRUCTURE_INFO)) {
+					StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
+					final ResourceLocation structureDimension = info.dimension().location();
 					if (player.level().dimension().location().equals(structureDimension)) {
-						final BlockPos structurePos = BlockPos.of(tag.getLong(Reference.structure_location));
-						int distance = player.blockPosition().distManhattan(structurePos);
+						int distance = player.blockPosition().distManhattan(info.pos());
 						player.displayClientMessage(Component.translatable("structurecompass.locate.distance", distance).withStyle(ChatFormatting.YELLOW), true);
 					}
 				}

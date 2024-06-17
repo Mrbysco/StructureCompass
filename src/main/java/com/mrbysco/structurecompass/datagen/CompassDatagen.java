@@ -1,7 +1,7 @@
 package com.mrbysco.structurecompass.datagen;
 
 import com.mrbysco.structurecompass.Reference;
-import com.mrbysco.structurecompass.init.StructureItems;
+import com.mrbysco.structurecompass.registry.StructureItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -16,7 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -24,7 +24,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class CompassDatagen {
 
 	@SubscribeEvent

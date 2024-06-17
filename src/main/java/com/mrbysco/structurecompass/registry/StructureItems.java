@@ -1,4 +1,4 @@
-package com.mrbysco.structurecompass.init;
+package com.mrbysco.structurecompass.registry;
 
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.items.StructureCompassItem;
