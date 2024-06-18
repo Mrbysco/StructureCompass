@@ -40,7 +40,7 @@ public class ClientHandler {
 
 	public static void onClientSetup(final FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
-			ItemProperties.register(StructureItems.STRUCTURE_COMPASS.get(), new ResourceLocation("angle"),
+			ItemProperties.register(StructureItems.STRUCTURE_COMPASS.get(), ResourceLocation.withDefaultNamespace("angle"),
 					new ItemPropertyFunction() {
 						@OnlyIn(Dist.CLIENT)
 						private double rotation;
