@@ -19,6 +19,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import javax.annotation.Nullable;
@@ -40,6 +41,55 @@ public class CompassDatagen {
 			CompassBlockTagProvider blockTags;
 			generator.addProvider(event.includeServer(), blockTags = new CompassBlockTagProvider(packOutput, lookupProvider, helper));
 			generator.addProvider(event.includeServer(), new CompassItemTagProvider(packOutput, lookupProvider, blockTags, helper));
+		}
+		if (event.includeClient()) {
+			generator.addProvider(event.includeClient(), new CompassLangProvider(packOutput));
+		}
+	}
+
+	public static class CompassLangProvider extends LanguageProvider {
+
+		public CompassLangProvider(PackOutput packOutput) {
+			super(packOutput, Reference.MOD_ID, "en_us");
+		}
+
+		@Override
+		protected void addTranslations() {
+			add("itemGroup.structurecompass", "Structure Compass");
+			addItem(StructureItems.STRUCTURE_COMPASS, "Structure Compass");
+			add("structurecompass.screen.selection.title", "Structure Selection");
+			add("structurecompass.screen.selection.select", "Select");
+			add("structurecompass.screen.selection.selected", "Structure selected, right-click the compass to locate it");
+			add("structurecompass.screen.search", "Search");
+			add("structurecompass.screen.search.a_to_z", "A-Z");
+			add("structurecompass.screen.search.z_to_a", "Z-A");
+			add("structurecompass.locate.invalid", "Bound structure invalid. Please re-bind");
+			add("structurecompass.locate.fail", "Bound structure could not be located nearby");
+			add("structurecompass.locate.distance", "Bound structure is %s blocks away");
+			add("structurecompass.locate.toggled", "Structure Compass hud toggled %s");
+			add("structurecompass.structure.locating", "Attempting to locate %s, please wait...");
+			add("structurecompass.structure.found", "%s has been located %s blocks away, compass is pointing towards the structure");
+			add("structurecompass.structure.found.tooltip", "%s has been located, compass is pointing towards the structure");
+			add("structurecompass.structure.failed", "%s can not be located within a %s block radius. Please explore further and try again later");
+			add("structurecompass.structure.failed.tooltip", "%s can not be located, perhaps try again later");
+			add("structurecompass.structure.wrong_dimension.tooltip", "You are not in the dimension in which %s was found");
+			add("structurecompass.structure.unset.tooltip", "No structure has been set, shift right-click to select a structure");
+			add("category.structurecompass.main", "Structure Compass");
+			add("key.structurecompass.hide", "Hide Structure Compass HUD");
+			add("structurecompass.networking.set_structure.failed", "Failed to set structure: %s");
+		}
+
+		/**
+		 * Add the translation for a config entry
+		 *
+		 * @param path        The path of the config entry
+		 * @param name        The name of the config entry
+		 * @param description The description of the config entry (optional in case of targeting "title" or similar entries that have no tooltip)
+		 */
+		private void addConfig(String path, String name, @org.jetbrains.annotations.Nullable String description) {
+			this.add(Reference.MOD_ID + ".configuration." + path, name);
+			if (description != null && !description.isEmpty())
+				this.add(Reference.MOD_ID + ".configuration." + path + ".tooltip", description);
 		}
 	}
 
