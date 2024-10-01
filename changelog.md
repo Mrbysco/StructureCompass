@@ -1,1 +1,1 @@
-* Fix enchantments being removed upon setting a structure
+* Update `locateUnexplored` config description (Courtesy of [AdamRaichu](https://github.com/Mrbysco/StructureCompass/pull/20))
