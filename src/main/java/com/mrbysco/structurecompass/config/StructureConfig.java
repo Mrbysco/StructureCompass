@@ -27,7 +27,7 @@ public class StructureConfig {
 					.defineInRange("compassRange", 10000, 0, Integer.MAX_VALUE);
 
 			locateUnexplored = builder
-					.comment("Defines if the structure compass should locate unexplored structures [default: false]")
+					.comment("Defines if the structure compass should only locate unexplored structures. A structure is tagged as explored when the compass is used to find it. [default: false]]")
 					.define("locateUnexplored", false);
 
 			locateAsync = builder
