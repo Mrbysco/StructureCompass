@@ -133,7 +133,7 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.changelog = file("$project.rootDir/changelog.md")
         mainFile.changelogType = 'markdown'
 
-        mainFile.addOptional("crafttweaker")
+//        mainFile.addOptional("crafttweaker")
 //        mainFile.addOptional("bookshelf-lib", "game-stages")
     }
 }
@@ -151,7 +151,7 @@ if (System.getenv().MODRINTH_KEY) {
         loaders = ["neoforge"]
 
         dependencies {
-            optional.project "crafttweaker"
+//            optional.project "crafttweaker"
 //            optional.project "bookshelf-lib"
 //            optional.project "game-stages"
         }
