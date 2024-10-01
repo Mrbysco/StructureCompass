@@ -3,6 +3,17 @@
   "item.structurecompass.structure_compass": "Bússola de Estrutura",
   "itemGroup.structurecompass": "Bússola de Estrutura",
   "key.structurecompass.hide": "Ocultar Bússola de Estrutura HUD",
+  "structurecompass.configuration.compassRange": "Compass Range",
+  "structurecompass.configuration.compassRange.tooltip": "Sets the range in blocks in which the structure compasses can locate structures",
+  "structurecompass.configuration.general": "General",
+  "structurecompass.configuration.general.tooltip": "General Settings",
+  "structurecompass.configuration.locateAsync": "Locate Asynchronously",
+  "structurecompass.configuration.locateAsync.tooltip": "Defines if the structure compass should locate structures asynchronously",
+  "structurecompass.configuration.locateUnexplored": "Locate Unexplored",
+  "structurecompass.configuration.locateUnexplored.tooltip": "Defines if the structure compass should only locate unexplored structures. A structure is tagged as explored when the compass is used to find it.",
+  "structurecompass.configuration.structureBlacklist": "Structure Blacklist",
+  "structurecompass.configuration.structureBlacklist.tooltip": "Defines which structures can't be searched with the Structure Compass\n(Supports wildcard *, Example: 'minecraft:*' will blacklist anything in the minecraft domain)",
+  "structurecompass.configuration.title": "Structure Compass Config",
   "structurecompass.locate.distance": "A estrutura vinculada está a %s quarteirões de distância",
   "structurecompass.locate.fail": "A estrutura vinculada não pôde ser localizada nas proximidades",
   "structurecompass.locate.invalid": "Estrutura vinculada inválida. Por favor, volte a ligar",
@@ -20,5 +31,6 @@
   "structurecompass.structure.found.tooltip": "%s foi localizado, a bússola está apontando para a estrutura",
   "structurecompass.structure.locating": "Attempting to locate %s, please wait...",
   "structurecompass.structure.unset.tooltip": "Nenhuma estrutura foi definida, clique com o botão direito do mouse para selecionar uma estrutura",
-  "structurecompass.structure.wrong_dimension.tooltip": "Você não está na dimensão em que %s foi encontrado"
+  "structurecompass.structure.wrong_dimension.tooltip": "Você não está na dimensão em que %s foi encontrado",
+  "_comment": "keybinds"
 }

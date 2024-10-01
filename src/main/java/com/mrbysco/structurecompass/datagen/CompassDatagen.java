@@ -77,6 +77,13 @@ public class CompassDatagen {
 			add("category.structurecompass.main", "Structure Compass");
 			add("key.structurecompass.hide", "Hide Structure Compass HUD");
 			add("structurecompass.networking.set_structure.failed", "Failed to set structure: %s");
+
+			addConfig("title", "Structure Compass Config", null);
+			addConfig("general", "General", "General Settings");
+			addConfig("compassRange", "Compass Range", "Sets the range in blocks in which the structure compasses can locate structures");
+			addConfig("locateUnexplored", "Locate Unexplored", "Defines if the structure compass should only locate unexplored structures. A structure is tagged as explored when the compass is used to find it.");
+			addConfig("locateAsync", "Locate Asynchronously", "Defines if the structure compass should locate structures asynchronously");
+			addConfig("structureBlacklist", "Structure Blacklist", "Defines which structures can't be searched with the Structure Compass\n(Supports wildcard *, Example: 'minecraft:*' will blacklist anything in the minecraft domain)");
 		}
 
 		/**

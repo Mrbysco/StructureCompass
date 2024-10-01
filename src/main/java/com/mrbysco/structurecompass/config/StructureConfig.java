@@ -26,7 +26,7 @@ public class StructureConfig {
 					.defineInRange("compassRange", 10000, 0, Integer.MAX_VALUE);
 
 			locateUnexplored = builder
-					.comment("Defines if the structure compass should only locate unexplored structures. A structure is tagged as explored when the compass is used to find it. [default: false]]")
+					.comment("Defines if the structure compass should only locate unexplored structures. A structure is tagged as explored when the compass is used to find it. [default: false]")
 					.define("locateUnexplored", false);
 
 			locateAsync = builder
@@ -36,7 +36,7 @@ public class StructureConfig {
 			structureBlacklist = builder
 					.comment("Defines which structures can't be searched with the Structure Compass\n" +
 							"(Supports wildcard *, Example: 'minecraft:*' will blacklist anything in the minecraft domain)")
-					.defineListAllowEmpty(List.of("structureBlacklist"), () -> List.of(""), o -> (o instanceof String));
+					.defineListAllowEmpty("structureBlacklist", () -> List.of(""), () -> "", o -> (o instanceof String));
 
 			builder.pop();
 		}
