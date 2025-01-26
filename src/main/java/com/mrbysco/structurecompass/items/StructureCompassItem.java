@@ -66,6 +66,7 @@ public class StructureCompassItem extends Item {
 				ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
+					player.sendMessage(new TranslatableComponent("structurecompass.structure.locating", structureLocation).withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
 					ResourceKey<ConfiguredStructureFeature<?, ?>> structureKey = ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, structureLocation);
 					Registry<ConfiguredStructureFeature<?, ?>> registry = level.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
 					HolderSet<ConfiguredStructureFeature<?, ?>> featureHolderSet = registry.getHolder(structureKey).map((holders) ->
@@ -84,7 +85,8 @@ public class StructureCompassItem extends Item {
 							tag.putBoolean(Reference.structure_found, false);
 							tag.remove(Reference.structure_location);
 							tag.remove(Reference.structure_dimension);
-							player.sendMessage(new TranslatableComponent("structurecompass.structure.failed", boundStructure).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+							int range = StructureConfig.COMMON.compassRange.get();
+							player.sendMessage(new TranslatableComponent("structurecompass.structure.failed", boundStructure, range).withStyle(ChatFormatting.RED), Util.NIL_UUID);
 						} else {
 							tag.putBoolean(Reference.structure_found, true);
 							tag.putLong(Reference.structure_location, structurePos.asLong());

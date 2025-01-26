@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class OpenCompassMessage {
-	public InteractionHand hand;
-	public ItemStack compass;
-	public List<ResourceLocation> structureList;
+	public final InteractionHand hand;
+	public final ItemStack compass;
+	public final List<ResourceLocation> structureList;
 
 	public OpenCompassMessage(InteractionHand hand, ItemStack compassStack, List<ResourceLocation> structureList) {
 		this.hand = hand;

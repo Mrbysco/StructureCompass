@@ -6,6 +6,8 @@ import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
 import com.mrbysco.structurecompass.compat.gamestages.GameStagesHelper;
 import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.SetStructureMessage;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
@@ -108,6 +110,9 @@ public class CompassScreen extends Screen {
 			if (selected != null) {
 				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
 			}
+			if (this.minecraft.player != null && selected != null)
+				this.minecraft.player.sendMessage(new TranslatableComponent("structurecompass.screen.selection.selected", selected.getStructureLocation()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+			this.onClose();
 		}));
 
 		y -= 14 + PADDING;

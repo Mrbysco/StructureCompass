@@ -13,8 +13,8 @@ import net.minecraftforge.network.NetworkEvent.Context;
 import java.util.function.Supplier;
 
 public class SetStructureMessage {
-	public InteractionHand hand;
-	public ResourceLocation structureLocation;
+	public final InteractionHand hand;
+	public final ResourceLocation structureLocation;
 
 	public SetStructureMessage(InteractionHand hand, ResourceLocation structureLocation) {
 		this.hand = hand;
@@ -36,7 +36,7 @@ public class SetStructureMessage {
 			if (ctx.getDirection().getReceptionSide().isServer() && ctx.getSender() != null) {
 				ItemStack stack = ctx.getSender().getItemInHand(hand);
 				if (stack.getItem() instanceof StructureCompassItem) {
-					CompoundTag tag = new CompoundTag();
+					CompoundTag tag = stack.getOrCreateTag();
 					tag.putString(Reference.structure_tag, structureLocation.toString());
 					stack.setTag(tag);
 				}
