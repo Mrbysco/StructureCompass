@@ -6,6 +6,7 @@ import com.mrbysco.structurecompass.registry.StructureComponents;
 import com.mrbysco.structurecompass.registry.StructureItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +31,7 @@ public class KeyHandler {
 		if (ClientHandler.KEY_TOGGLE.consumeClick()) {
 			if (player != null) {
 				hidden = !hidden;
-				player.sendSystemMessage(Component.translatable("structurecompass.locate.toggled", hidden ? "off" : "on"));
+				player.displayClientMessage(Component.translatable("structurecompass.locate.toggled", hidden ? "off" : "on"), false);
 			}
 		}
 	}
@@ -49,9 +50,10 @@ public class KeyHandler {
 				}
 				if (stack.has(StructureComponents.STRUCTURE_INFO)) {
 					StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
-					final ResourceLocation structureDimension = info.dimension().location();
+					GlobalPos globalPos = info.globalPos();
+					final ResourceLocation structureDimension = globalPos.dimension().location();
 					if (player.level().dimension().location().equals(structureDimension)) {
-						int distance = player.blockPosition().distManhattan(info.pos());
+						int distance = player.blockPosition().distManhattan(globalPos.pos());
 						player.displayClientMessage(Component.translatable("structurecompass.locate.distance", distance).withStyle(ChatFormatting.YELLOW), true);
 					}
 				}

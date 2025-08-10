@@ -39,7 +39,7 @@ public class StructureCompass {
 
 		if (dist.isClient()) {
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-			eventBus.addListener(ClientHandler::onClientSetup);
+			eventBus.addListener(ClientHandler::registerRangeSelectProperties);
 			eventBus.addListener(ClientHandler::registerKeyMappings);
 
 			NeoForge.EVENT_BUS.register(new KeyHandler());

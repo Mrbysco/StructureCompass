@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "structurecompass:item/structure_compass_28"
+  }
+}

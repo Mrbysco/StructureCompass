@@ -15,8 +15,8 @@ public class StructureItems {
 	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Reference.MOD_ID);
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Reference.MOD_ID);
 
-	public static final DeferredItem<StructureCompassItem> STRUCTURE_COMPASS = ITEMS.register("structure_compass", () ->
-			new StructureCompassItem(itemBuilder().stacksTo(1)));
+	public static final DeferredItem<StructureCompassItem> STRUCTURE_COMPASS = ITEMS.registerItem("structure_compass",
+			StructureCompassItem::new, itemBuilder().stacksTo(1));
 
 	private static Item.Properties itemBuilder() {
 		return new Item.Properties();

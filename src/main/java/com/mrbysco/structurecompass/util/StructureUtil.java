@@ -20,7 +20,7 @@ import java.util.List;
 public class StructureUtil {
 	public static List<ResourceLocation> getAvailableStructureList(Level level) {
 		List<ResourceLocation> structureList = new ArrayList<>();
-		Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+		Registry<Structure> registry = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
 		registry.keySet().forEach(location -> {
 			if (!isBlacklisted(location) && !structureList.contains(location)) {
 				structureList.add(location);

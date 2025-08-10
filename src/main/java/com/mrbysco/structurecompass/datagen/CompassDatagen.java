@@ -1,49 +1,74 @@
 package com.mrbysco.structurecompass.datagen;
 
 import com.mrbysco.structurecompass.Reference;
+import com.mrbysco.structurecompass.client.property.StructureCompassAngle;
 import com.mrbysco.structurecompass.registry.StructureItems;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.renderer.item.RangeSelectItemModel.Entry;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class CompassDatagen {
 
 	@SubscribeEvent
-	public static void gatherData(GatherDataEvent event) {
+	public static void gatherData(GatherDataEvent.Client event) {
 		DataGenerator generator = event.getGenerator();
 		PackOutput packOutput = generator.getPackOutput();
 		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-		ExistingFileHelper helper = event.getExistingFileHelper();
 
-		if (event.includeServer()) {
-			generator.addProvider(event.includeServer(), new CompassRecipeProvider(packOutput, lookupProvider));
+		generator.addProvider(true, new CompassRecipeProvider.Runner(packOutput, lookupProvider));
 
-			CompassBlockTagProvider blockTags;
-			generator.addProvider(event.includeServer(), blockTags = new CompassBlockTagProvider(packOutput, lookupProvider, helper));
-			generator.addProvider(event.includeServer(), new CompassItemTagProvider(packOutput, lookupProvider, blockTags, helper));
+		CompassBlockTagProvider blockTags;
+		generator.addProvider(true, blockTags = new CompassBlockTagProvider(packOutput, lookupProvider));
+		generator.addProvider(true, new CompassItemTagProvider(packOutput, lookupProvider, blockTags));
+
+		generator.addProvider(true, new CompassModelProvider(packOutput));
+		generator.addProvider(true, new CompassLangProvider(packOutput));
+	}
+
+	public static class CompassModelProvider extends ModelProvider {
+
+		public CompassModelProvider(PackOutput output) {
+			super(output, Reference.MOD_ID);
 		}
-		if (event.includeClient()) {
-			generator.addProvider(event.includeClient(), new CompassLangProvider(packOutput));
+
+		@Override
+		protected void registerModels(@NotNull BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
+			generateStructureCompass(itemModels, StructureItems.STRUCTURE_COMPASS.get());
+		}
+
+		public void generateStructureCompass(ItemModelGenerators itemModels, Item item) {
+			List<Entry> list = itemModels.createCompassModels(item);
+			itemModels.itemModelOutput
+					.accept(
+							item,
+							ItemModelUtils.rangeSelect(new StructureCompassAngle(false), 32.0F, list)
+					);
 		}
 	}
 
@@ -102,13 +127,13 @@ public class CompassDatagen {
 
 	public static class CompassRecipeProvider extends RecipeProvider {
 
-		public CompassRecipeProvider(PackOutput packOutput, CompletableFuture<net.minecraft.core.HolderLookup.Provider> lookupProvider) {
-			super(packOutput, lookupProvider);
+		public CompassRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+			super(provider, recipeOutput);
 		}
 
 		@Override
-		protected void buildRecipes(RecipeOutput recipeOutput) {
-			ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, StructureItems.STRUCTURE_COMPASS.get())
+		protected void buildRecipes() {
+			shaped(RecipeCategory.TOOLS, StructureItems.STRUCTURE_COMPASS.get())
 					.pattern("WTS")
 					.pattern("O#D")
 					.pattern("MCP")
@@ -121,13 +146,29 @@ public class CompassDatagen {
 					.define('M', Blocks.MOSSY_COBBLESTONE)
 					.define('C', Blocks.COBBLESTONE)
 					.define('P', Blocks.CARVED_PUMPKIN)
-					.unlockedBy("has_compass", has(Items.COMPASS)).save(recipeOutput);
+					.unlockedBy("has_compass", has(Items.COMPASS)).save(output);
+		}
+
+		public static class Runner extends RecipeProvider.Runner {
+			public Runner(PackOutput output, CompletableFuture<Provider> completableFuture) {
+				super(output, completableFuture);
+			}
+
+			@Override
+			protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+				return new CompassRecipeProvider(provider, recipeOutput);
+			}
+
+			@Override
+			public String getName() {
+				return "Structure Compass Recipes";
+			}
 		}
 	}
 
 	public static class CompassBlockTagProvider extends BlockTagsProvider {
-		public CompassBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-			super(output, lookupProvider, Reference.MOD_ID, existingFileHelper);
+		public CompassBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+			super(output, lookupProvider, Reference.MOD_ID);
 		}
 
 		@Override
@@ -138,8 +179,8 @@ public class CompassDatagen {
 	public static class CompassItemTagProvider extends ItemTagsProvider {
 
 		public CompassItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
-									  TagsProvider<Block> blockTagProvider, ExistingFileHelper existingFileHelper) {
-			super(output, lookupProvider, blockTagProvider.contentsGetter(), Reference.MOD_ID, existingFileHelper);
+		                              TagsProvider<Block> blockTagProvider) {
+			super(output, lookupProvider, blockTagProvider.contentsGetter(), Reference.MOD_ID);
 		}
 
 		@Override

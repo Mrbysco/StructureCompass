@@ -9,6 +9,7 @@ import com.mrbysco.structurecompass.util.AsyncLocator;
 import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -19,13 +20,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -35,19 +37,20 @@ public class StructureCompassItem extends Item {
 		super(builder);
 	}
 
+	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
+	public InteractionResult use(@NotNull Level level, @NotNull Player playerIn, @NotNull InteractionHand hand) {
 		ItemStack stack = playerIn.getItemInHand(hand);
 		if (playerIn.isShiftKeyDown()) {
-			if (!worldIn.isClientSide) {
-				List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList(worldIn);
+			if (!level.isClientSide) {
+				List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList(level);
 				((ServerPlayer) playerIn).connection.send(new OpenCompassPayload(hand, stack, allStructures));
 			}
 		} else {
 			locateStructure(stack, playerIn);
 		}
 
-		return super.use(worldIn, playerIn, hand);
+		return super.use(level, playerIn, hand);
 	}
 
 	/*
@@ -59,10 +62,10 @@ public class StructureCompassItem extends Item {
 				ResourceLocation structureLocation = stack.get(StructureComponents.STRUCTURE);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
-					player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation.toString()).withStyle(ChatFormatting.YELLOW));
-					Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+					player.displayClientMessage(Component.translatable("structurecompass.structure.locating", structureLocation.toString()).withStyle(ChatFormatting.YELLOW), false);
+					Registry<Structure> registry = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
 					ResourceKey<Structure> structureKey = ResourceKey.create(Registries.STRUCTURE, structureLocation);
-					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
+					HolderSet<Structure> featureHolderSet = registry.get(structureKey).map(HolderSet::direct).orElse(null);
 					if (featureHolderSet != null) {
 
 						boolean findUnexplored = false;
@@ -87,10 +90,10 @@ public class StructureCompassItem extends Item {
 						}
 					}
 				} else {
-					player.sendSystemMessage(Component.translatable("structurecompass.locate.fail").withStyle(ChatFormatting.RED));
+					player.displayClientMessage(Component.translatable("structurecompass.locate.fail").withStyle(ChatFormatting.RED), false);
 				}
 			} else {
-				player.sendSystemMessage(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW));
+				player.displayClientMessage(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW), false);
 			}
 		}
 	}
@@ -100,25 +103,26 @@ public class StructureCompassItem extends Item {
 		if (structurePos == null) {
 			stack.remove(StructureComponents.STRUCTURE_INFO);
 			int range = StructureConfig.COMMON.compassRange.get();
-			player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure.toString(), range).withStyle(ChatFormatting.RED));
+			player.displayClientMessage(Component.translatable("structurecompass.structure.failed", boundStructure.toString(), range).withStyle(ChatFormatting.RED), false);
 		} else {
-			StructureInfo info = new StructureInfo(structurePos, level.dimension());
+			StructureInfo info = new StructureInfo(GlobalPos.of(level.dimension(), structurePos));
 			stack.set(StructureComponents.STRUCTURE_INFO, info);
 			int distance = player.blockPosition().distManhattan(structurePos);
-			player.sendSystemMessage(Component.translatable("structurecompass.structure.found", boundStructure.toString(), distance).withStyle(ChatFormatting.GREEN));
+			player.displayClientMessage(Component.translatable("structurecompass.structure.found", boundStructure.toString(), distance).withStyle(ChatFormatting.GREEN), false);
 		}
 
-		player.getCooldowns().addCooldown(this, 100);
+		player.getCooldowns().addCooldown(stack, 100);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip,
+	                            @NotNull TooltipFlag flagIn) {
 		if (stack.has(StructureComponents.STRUCTURE)) {
 			final String structureName = stack.get(StructureComponents.STRUCTURE).toString();
 			if (stack.has(StructureComponents.STRUCTURE_INFO)) {
 				StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
 				if (context != null && net.minecraft.client.Minecraft.getInstance().player != null &&
-						net.minecraft.client.Minecraft.getInstance().player.level().dimension().location().equals(info.dimension().location())) {
+						net.minecraft.client.Minecraft.getInstance().player.level().dimension().location().equals(info.globalPos().dimension().location())) {
 					tooltip.add(Component.translatable("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
 				} else {
 					tooltip.add(Component.translatable("structurecompass.structure.wrong_dimension.tooltip", structureName).withStyle(ChatFormatting.RED));

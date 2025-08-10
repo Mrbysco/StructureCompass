@@ -107,7 +107,7 @@ public class CompassScreen extends Screen {
 			}
 
 			if (this.minecraft.player != null && selected != null)
-				this.minecraft.player.sendSystemMessage(Component.translatable("structurecompass.screen.selection.selected").withStyle(ChatFormatting.GOLD));
+				this.minecraft.player.displayClientMessage(Component.translatable("structurecompass.screen.selection.selected").withStyle(ChatFormatting.GOLD), false);
 			this.onClose();
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 

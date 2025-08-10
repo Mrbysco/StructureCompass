@@ -9,6 +9,7 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 	private final CompassScreen parent;
@@ -22,8 +23,8 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 	}
 
 	@Override
-	protected int getScrollbarPosition() {
-		return this.listWidth;
+	protected int scrollBarX() {
+		return this.getX() + this.listWidth - 6;
 	}
 
 	@Override
@@ -46,7 +47,8 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		@Override
-		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
+		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight,
+		                   int mouseX, int mouseY, boolean hovering, float partialTicks) {
 			String structureName = structureLocation.toString();
 			Component name = Component.literal(structureName);
 			Font font = this.parent.getFontRenderer();
@@ -55,7 +57,7 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		@Override
-		public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
+		public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 			parent.setSelected(this);
 			StructureListWidget.this.setSelected(this);
 			return false;
@@ -65,6 +67,7 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 			return structureLocation;
 		}
 
+		@NotNull
 		@Override
 		public Component getNarration() {
 			return Component.literal(getStructureLocation().getPath());
