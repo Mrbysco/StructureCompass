@@ -12,7 +12,7 @@ public record SetStructurePayload(InteractionHand hand,
 	public static final StreamCodec<RegistryFriendlyByteBuf, SetStructurePayload> CODEC = CustomPacketPayload.codec(
 			SetStructurePayload::write,
 			SetStructurePayload::new);
-	public static final Type<SetStructurePayload> ID = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "set_structure"));
+	public static final Type<SetStructurePayload> ID = new Type<>(Reference.modLoc("set_structure"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {

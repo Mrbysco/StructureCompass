@@ -16,7 +16,7 @@ public record OpenCompassPayload(InteractionHand hand, ItemStack compassStack,
 	public static final StreamCodec<RegistryFriendlyByteBuf, OpenCompassPayload> CODEC = CustomPacketPayload.codec(
 			OpenCompassPayload::write,
 			OpenCompassPayload::new);
-	public static final Type<OpenCompassPayload> ID = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "open_compass"));
+	public static final Type<OpenCompassPayload> ID = new Type<>(Reference.modLoc("open_compass"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {

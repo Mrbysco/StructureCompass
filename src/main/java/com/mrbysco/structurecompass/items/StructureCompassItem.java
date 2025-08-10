@@ -25,11 +25,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class StructureCompassItem extends Item {
 
@@ -115,23 +117,23 @@ public class StructureCompassItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip,
-	                            @NotNull TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+	                            @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
 		if (stack.has(StructureComponents.STRUCTURE)) {
 			final String structureName = stack.get(StructureComponents.STRUCTURE).toString();
 			if (stack.has(StructureComponents.STRUCTURE_INFO)) {
 				StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
 				if (context != null && net.minecraft.client.Minecraft.getInstance().player != null &&
 						net.minecraft.client.Minecraft.getInstance().player.level().dimension().location().equals(info.globalPos().dimension().location())) {
-					tooltip.add(Component.translatable("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
+					tooltipAdder.accept(Component.translatable("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
 				} else {
-					tooltip.add(Component.translatable("structurecompass.structure.wrong_dimension.tooltip", structureName).withStyle(ChatFormatting.RED));
+					tooltipAdder.accept(Component.translatable("structurecompass.structure.wrong_dimension.tooltip", structureName).withStyle(ChatFormatting.RED));
 				}
 			} else {
-				tooltip.add(Component.translatable("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.RED));
+				tooltipAdder.accept(Component.translatable("structurecompass.structure.failed.tooltip", structureName).withStyle(ChatFormatting.RED));
 			}
 		} else {
-			tooltip.add(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.GOLD));
+			tooltipAdder.accept(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.GOLD));
 		}
 	}
 }

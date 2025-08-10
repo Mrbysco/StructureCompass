@@ -5,6 +5,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -22,10 +23,11 @@ public class StructureCompassAngle implements RangeSelectItemModelProperty {
 	}
 
 	@Override
-	public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity livingEntity, int seed) {
+	public float get(@NotNull ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity livingEntity, int seed) {
 		return this.state.get(stack, level, livingEntity, seed);
 	}
 
+	@NotNull
 	@Override
 	public MapCodec<? extends RangeSelectItemModelProperty> type() {
 		return MAP_CODEC;
