@@ -18,7 +18,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.StringUtils;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,7 +103,7 @@ public class CompassScreen extends Screen {
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.loadButton = Button.builder(Component.translatable("structurecompass.screen.selection.select"), b -> {
 			if (selected != null) {
-				PacketDistributor.sendToServer(new SetStructurePayload(usedHand, selected.getStructureLocation()));
+				ClientPacketDistributor.sendToServer(new SetStructurePayload(usedHand, selected.getStructureLocation()));
 			}
 
 			if (this.minecraft.player != null && selected != null)

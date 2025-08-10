@@ -15,16 +15,14 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class CompassDatagen {
 
 	@SubscribeEvent
@@ -43,9 +41,8 @@ public class CompassDatagen {
 
 		generator.addProvider(true, new CompassRecipeProvider.Runner(packOutput, lookupProvider));
 
-		CompassBlockTagProvider blockTags;
-		generator.addProvider(true, blockTags = new CompassBlockTagProvider(packOutput, lookupProvider));
-		generator.addProvider(true, new CompassItemTagProvider(packOutput, lookupProvider, blockTags));
+		generator.addProvider(true, new CompassBlockTagProvider(packOutput, lookupProvider));
+		generator.addProvider(true, new CompassItemTagProvider(packOutput, lookupProvider));
 
 		generator.addProvider(true, new CompassModelProvider(packOutput));
 		generator.addProvider(true, new CompassLangProvider(packOutput));
@@ -178,9 +175,8 @@ public class CompassDatagen {
 
 	public static class CompassItemTagProvider extends ItemTagsProvider {
 
-		public CompassItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
-		                              TagsProvider<Block> blockTagProvider) {
-			super(output, lookupProvider, blockTagProvider.contentsGetter(), Reference.MOD_ID);
+		public CompassItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+			super(output, lookupProvider, Reference.MOD_ID);
 		}
 
 		@Override
