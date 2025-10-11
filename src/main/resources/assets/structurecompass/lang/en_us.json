@@ -18,6 +18,7 @@
   "structurecompass.locate.fail": "Bound structure could not be located nearby",
   "structurecompass.locate.distance": "Bound structure is %s blocks away",
   "structurecompass.locate.toggled": "Structure Compass hud toggled %s",
+  "structurecompass.locate.structure_prohibited": "You are not allowed to locate this structure",
 
   "_comment": "tooltips",
   "structurecompass.structure.locating": "Attempting to locate %s, please wait...",
