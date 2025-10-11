@@ -10,6 +10,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.StructureTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -41,6 +43,7 @@ public class CompassDatagen {
 			CompassBlockTagProvider blockTags;
 			generator.addProvider(event.includeServer(), blockTags = new CompassBlockTagProvider(packOutput, lookupProvider, helper));
 			generator.addProvider(event.includeServer(), new CompassItemTagProvider(packOutput, lookupProvider, blockTags, helper));
+			generator.addProvider(event.includeServer(), new CompassStructureProvider(packOutput, lookupProvider, helper));
 		}
 		if (event.includeClient()) {
 			generator.addProvider(event.includeClient(), new CompassLangProvider(packOutput));
@@ -67,6 +70,7 @@ public class CompassDatagen {
 			add("structurecompass.locate.fail", "Bound structure could not be located nearby");
 			add("structurecompass.locate.distance", "Bound structure is %s blocks away");
 			add("structurecompass.locate.toggled", "Structure Compass hud toggled %s");
+			add("structurecompass.locate.structure_prohibited", "You are not allowed to locate this structure");
 			add("structurecompass.structure.locating", "Attempting to locate %s, please wait...");
 			add("structurecompass.structure.found", "%s has been located %s blocks away, compass is pointing towards the structure");
 			add("structurecompass.structure.found.tooltip", "%s has been located, compass is pointing towards the structure");
@@ -138,13 +142,26 @@ public class CompassDatagen {
 	public static class CompassItemTagProvider extends ItemTagsProvider {
 
 		public CompassItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
-									  TagsProvider<Block> blockTagProvider, ExistingFileHelper existingFileHelper) {
+		                              TagsProvider<Block> blockTagProvider, ExistingFileHelper existingFileHelper) {
 			super(output, lookupProvider, blockTagProvider.contentsGetter(), Reference.MOD_ID, existingFileHelper);
 		}
 
 		@Override
 		public void addTags(HolderLookup.Provider lookupProvider) {
 			this.tag(ItemTags.COMPASSES).add(StructureItems.STRUCTURE_COMPASS.get());
+		}
+	}
+
+	public static class CompassStructureProvider extends StructureTagsProvider {
+
+		public CompassStructureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
+		                                ExistingFileHelper existingFileHelper) {
+			super(output, lookupProvider, Reference.MOD_ID, existingFileHelper);
+		}
+
+		@Override
+		public void addTags(HolderLookup.Provider lookupProvider) {
+			this.tag(Tags.Structures.HIDDEN_FROM_LOCATOR_SELECTION);
 		}
 	}
 }

@@ -26,8 +26,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
+import java.util.Optional;
 
 public class StructureCompassItem extends Item {
 
@@ -59,11 +61,17 @@ public class StructureCompassItem extends Item {
 				ResourceLocation structureLocation = stack.get(StructureComponents.STRUCTURE);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
-					player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation.toString()).withStyle(ChatFormatting.YELLOW));
 					Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
 					ResourceKey<Structure> structureKey = ResourceKey.create(Registries.STRUCTURE, structureLocation);
 					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {
+						Optional<Holder.Reference<Structure>> optionalHolder = registry.getHolder(structureKey);
+						if (optionalHolder.isPresent() && optionalHolder.get().is(Tags.Structures.HIDDEN_FROM_LOCATOR_SELECTION)) {
+							stack.remove(StructureComponents.STRUCTURE);
+							player.sendSystemMessage(Component.translatable("structurecompass.locate.structure_prohibited").withStyle(ChatFormatting.RED));
+							return;
+						}
+						player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation.toString()).withStyle(ChatFormatting.YELLOW));
 
 						boolean findUnexplored = false;
 						if (StructureConfig.COMMON.locateUnexplored.get()) {
