@@ -31,6 +31,7 @@ import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class StructureCompassItem extends Item {
 
@@ -66,11 +67,17 @@ public class StructureCompassItem extends Item {
 				ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
-					player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation).withStyle(ChatFormatting.YELLOW));
 					Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
 					ResourceKey<Structure> structureKey = ResourceKey.create(Registries.STRUCTURE, structureLocation);
 					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
 					if (featureHolderSet != null) {
+						Optional<Holder.Reference<Structure>> optionalHolder = registry.getHolder(structureKey);
+						if (optionalHolder.isPresent() && optionalHolder.get().is(Reference.HIDDEN_FROM_LOCATOR_SELECTION)) {
+							tag.remove(Reference.structure_tag);
+							player.sendSystemMessage(Component.translatable("structurecompass.locate.structure_prohibited").withStyle(ChatFormatting.RED));
+							return;
+						}
+						player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation).withStyle(ChatFormatting.YELLOW));
 
 						boolean findUnexplored = false;
 						if (StructureConfig.COMMON.locateUnexplored.get() != null) {

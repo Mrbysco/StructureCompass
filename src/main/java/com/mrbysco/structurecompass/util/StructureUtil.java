@@ -1,6 +1,7 @@
 package com.mrbysco.structurecompass.util;
 
 import com.mojang.datafixers.util.Pair;
+import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.StructureCompass;
 import com.mrbysco.structurecompass.config.StructureConfig;
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,9 @@ public class StructureUtil {
 	public static List<ResourceLocation> getAvailableStructureList(Level level) {
 		List<ResourceLocation> structureList = new ArrayList<>();
 		Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
-		registry.keySet().forEach(location -> {
+		registry.holders().forEach(holder -> {
+			if (holder.is(Reference.HIDDEN_FROM_LOCATOR_SELECTION)) return;
+			ResourceLocation location = holder.key().location();
 			if (!isBlacklisted(location) && !structureList.contains(location)) {
 				structureList.add(location);
 			}
@@ -54,7 +57,7 @@ public class StructureUtil {
 	}
 
 	public static Pair<BlockPos, Holder<Structure>> findNearestMapStructure(ServerLevel serverLevel,
-																			HolderSet<Structure> structureHolderSet, BlockPos pos, int range, boolean findUnexplored) {
+	                                                                        HolderSet<Structure> structureHolderSet, BlockPos pos, int range, boolean findUnexplored) {
 		ChunkGenerator generator = serverLevel.getChunkSource().getGenerator();
 		Pair<BlockPos, Holder<Structure>> nearest = generator.findNearestMapStructure(serverLevel, structureHolderSet, pos, range, findUnexplored);
 		if (nearest == null) return null;

@@ -10,11 +10,13 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.StructureTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -39,8 +41,9 @@ public class CompassDatagen {
 			generator.addProvider(event.includeServer(), new CompassRecipeProvider(packOutput));
 
 			CompassBlockTagProvider blockTags;
-			generator.addProvider(event.includeServer(), blockTags =  new CompassBlockTagProvider(packOutput, lookupProvider, helper));
+			generator.addProvider(event.includeServer(), blockTags = new CompassBlockTagProvider(packOutput, lookupProvider, helper));
 			generator.addProvider(event.includeServer(), new CompassItemTagProvider(packOutput, lookupProvider, blockTags, helper));
+			generator.addProvider(event.includeServer(), new CompassStructureProvider(packOutput, lookupProvider, helper));
 		}
 	}
 
@@ -82,13 +85,26 @@ public class CompassDatagen {
 	public static class CompassItemTagProvider extends ItemTagsProvider {
 
 		public CompassItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
-									  TagsProvider<Block> blockTagProvider, ExistingFileHelper existingFileHelper) {
+		                              TagsProvider<Block> blockTagProvider, ExistingFileHelper existingFileHelper) {
 			super(output, lookupProvider, blockTagProvider.contentsGetter(), Reference.MOD_ID, existingFileHelper);
 		}
 
 		@Override
 		public void addTags(HolderLookup.Provider lookupProvider) {
 			this.tag(ItemTags.COMPASSES).add(StructureItems.STRUCTURE_COMPASS.get());
+		}
+	}
+
+	public static class CompassStructureProvider extends StructureTagsProvider {
+
+		public CompassStructureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
+		                                ExistingFileHelper existingFileHelper) {
+			super(output, lookupProvider, Reference.MOD_ID, existingFileHelper);
+		}
+
+		@Override
+		public void addTags(HolderLookup.Provider lookupProvider) {
+			this.tag(Reference.HIDDEN_FROM_LOCATOR_SELECTION);
 		}
 	}
 }
