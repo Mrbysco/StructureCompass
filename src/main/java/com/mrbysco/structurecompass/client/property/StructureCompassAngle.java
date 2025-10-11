@@ -3,11 +3,10 @@ package com.mrbysco.structurecompass.client.property;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class StructureCompassAngle implements RangeSelectItemModelProperty {
 	public static final MapCodec<StructureCompassAngle> MAP_CODEC = StructureCompassAngleState.MAP_CODEC.xmap(StructureCompassAngle::new,
@@ -23,8 +22,8 @@ public class StructureCompassAngle implements RangeSelectItemModelProperty {
 	}
 
 	@Override
-	public float get(@NotNull ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity livingEntity, int seed) {
-		return this.state.get(stack, level, livingEntity, seed);
+	public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
+		return this.state.get(stack, level, owner, seed);
 	}
 
 	@NotNull

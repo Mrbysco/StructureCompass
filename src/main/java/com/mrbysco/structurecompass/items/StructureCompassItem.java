@@ -46,7 +46,7 @@ public class StructureCompassItem extends Item {
 	public InteractionResult use(@NotNull Level level, @NotNull Player playerIn, @NotNull InteractionHand hand) {
 		ItemStack stack = playerIn.getItemInHand(hand);
 		if (playerIn.isShiftKeyDown()) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList(level);
 				((ServerPlayer) playerIn).connection.send(new OpenCompassPayload(hand, stack, allStructures));
 			}

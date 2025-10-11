@@ -12,6 +12,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -119,8 +120,8 @@ public class CompassScreen extends Screen {
 		this.structureWidget = new StructureListWidget(this, width, fullButtonHeight, search.getY() - getFontRenderer().lineHeight - PADDING);
 		this.structureWidget.setX(0);
 
-		addWidget(search);
-		addWidget(structureWidget);
+		addRenderableWidget(search);
+		addRenderableWidget(structureWidget);
 		search.setFocused(false);
 		search.setCanLoseFocus(true);
 		if (this.compassStack.has(StructureComponents.STRUCTURE)) {
@@ -144,8 +145,6 @@ public class CompassScreen extends Screen {
 
 	@Override
 	public void tick() {
-		structureWidget.setSelected(selected);
-
 		if (!search.getValue().equals(lastFilterText)) {
 			reloadStructures();
 			sorted = false;
@@ -198,13 +197,10 @@ public class CompassScreen extends Screen {
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		this.structureWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
 
 		Component text = Component.translatable("structurecompass.screen.search");
 		guiGraphics.drawCenteredString(getFontRenderer(), text, this.width / 2 + PADDING,
 				search.getY() - getFontRenderer().lineHeight - 2, 0xFFFFFF);
-
-		this.search.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -218,7 +214,9 @@ public class CompassScreen extends Screen {
 	}
 
 	public void setSelected(StructureListWidget.ListEntry entry) {
-		this.selected = entry == this.selected ? null : entry;
+		if (this.selected != entry) {
+			this.selected = entry;
+		}
 		updateCache();
 	}
 
@@ -230,9 +228,9 @@ public class CompassScreen extends Screen {
 	 * Clear the search field when right-clicked on it
 	 */
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		boolean flag = super.mouseClicked(mouseX, mouseY, button);
-		if (button == 1 && search.isMouseOver(mouseX, mouseY)) {
+	public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+		boolean flag =  super.mouseClicked(event, isDoubleClick);
+		if (event.button() == 1 && search.isMouseOver(event.x(), event.y())) {
 			search.setValue("");
 		}
 		return flag;

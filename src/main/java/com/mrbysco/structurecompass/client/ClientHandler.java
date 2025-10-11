@@ -17,17 +17,19 @@ import java.util.List;
 
 public class ClientHandler {
 
+	public static final KeyMapping.Category STRUCTURE_CATEGORY = new KeyMapping.Category(Reference.modLoc("category"));
 	public static final KeyMapping KEY_TOGGLE = new KeyMapping(
 			"key." + Reference.MOD_ID + ".hide",
 			InputConstants.Type.KEYSYM,
 			GLFW.GLFW_KEY_UNKNOWN,
-			"category." + Reference.MOD_ID + ".main");
+			STRUCTURE_CATEGORY);
 
 	public static void registerRangeSelectProperties(final RegisterRangeSelectItemModelPropertyEvent event) {
 		event.register(Reference.modLoc("structure_compass_angle"), StructureCompassAngle.MAP_CODEC);
 	}
 
 	public static void registerKeyMappings(final RegisterKeyMappingsEvent event) {
+		event.registerCategory(STRUCTURE_CATEGORY);
 		event.register(KEY_TOGGLE);
 	}
 

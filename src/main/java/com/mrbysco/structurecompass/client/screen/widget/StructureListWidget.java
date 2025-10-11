@@ -5,10 +5,12 @@ import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget.Lis
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
 public class StructureListWidget extends ObjectSelectionList<ListEntry> {
@@ -47,20 +49,34 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		@Override
-		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight,
-		                   int mouseX, int mouseY, boolean hovering, float partialTicks) {
+		public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
 			String structureName = structureLocation.toString();
 			Component name = Component.literal(structureName);
 			Font font = this.parent.getFontRenderer();
+			int top = getContentY();
 			guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
-					(this.parent.width / 2) - (font.width(structureName) / 2) + 3, top + 6, 0xFFFFFF, false);
+					(this.parent.width / 2) - (font.width(structureName) / 2) + 3, top + 6, ARGB.opaque(0xFFFFFF), false);
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+		public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
 			parent.setSelected(this);
 			StructureListWidget.this.setSelected(this);
 			return false;
+		}
+
+
+		@Override
+		public void setFocused(boolean focused) {
+			if (focused) {
+				parent.setSelected(this);
+				StructureListWidget.this.setSelected(this);
+			}
+		}
+
+		@Override
+		public boolean isFocused() {
+			return StructureListWidget.this.getSelected() == this;
 		}
 
 		public ResourceLocation getStructureLocation() {

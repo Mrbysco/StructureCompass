@@ -26,7 +26,7 @@ public class KeyHandler {
 
 		if (minecraft.screen != null && event.getAction() != GLFW.GLFW_PRESS) return;
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) return;
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) return;
 
 		if (ClientHandler.KEY_TOGGLE.consumeClick()) {
 			if (player != null) {
