@@ -37,6 +37,7 @@ public class ClientHandler {
 			GLFW.GLFW_KEY_UNKNOWN,
 			"category." + Reference.MOD_ID + ".main");
 
+	@SuppressWarnings("deprecation")
 	public static void onClientSetup(final FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
 			ItemProperties.register(StructureItems.STRUCTURE_COMPASS.get(), new ResourceLocation("angle"), new ItemPropertyFunction() {
