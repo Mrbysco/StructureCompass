@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,9 @@ public class StructureUtil {
 	public static List<ResourceLocation> getAvailableStructureList(Level level) {
 		List<ResourceLocation> structureList = new ArrayList<>();
 		Registry<Structure> registry = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
-		registry.keySet().forEach(location -> {
+		registry.asHolderIdMap().forEach(holder -> {
+			if (holder.is(Tags.Structures.HIDDEN_FROM_LOCATOR_SELECTION)) return;
+			ResourceLocation location = holder.getKey().location();
 			if (!isBlacklisted(location) && !structureList.contains(location)) {
 				structureList.add(location);
 			}
@@ -54,7 +57,7 @@ public class StructureUtil {
 	}
 
 	public static Pair<BlockPos, Holder<Structure>> findNearestMapStructure(ServerLevel serverLevel,
-																			HolderSet<Structure> structureHolderSet, BlockPos pos, int range, boolean findUnexplored) {
+	                                                                        HolderSet<Structure> structureHolderSet, BlockPos pos, int range, boolean findUnexplored) {
 		ChunkGenerator generator = serverLevel.getChunkSource().getGenerator();
 		Pair<BlockPos, Holder<Structure>> nearest = generator.findNearestMapStructure(serverLevel, structureHolderSet, pos, range, findUnexplored);
 		if (nearest == null) return null;
