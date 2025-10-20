@@ -8,6 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -62,5 +63,9 @@ public class StructureUtil {
 		Pair<BlockPos, Holder<Structure>> nearest = generator.findNearestMapStructure(serverLevel, structureHolderSet, pos, range, findUnexplored);
 		if (nearest == null) return null;
 		return nearest.getFirst().distManhattan(pos) <= StructureConfig.COMMON.compassRange.get() ? nearest : null;
+	}
+
+	public static Component getStructureName(ResourceLocation structureLocation) {
+		return Component.translatableWithFallback(structureLocation.toLanguageKey("structure"), structureLocation.toString());
 	}
 }
