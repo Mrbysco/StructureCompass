@@ -4,6 +4,7 @@ import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
 import com.mrbysco.structurecompass.network.message.SetStructurePayload;
 import com.mrbysco.structurecompass.registry.StructureComponents;
+import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -174,7 +176,11 @@ public class CompassScreen extends Screen {
 
 	private void reloadStructures() {
 		this.structures = this.unsortedStructures.stream().
-				filter(struc -> StringUtils.toLowerCase(struc.toString()).contains(StringUtils.toLowerCase(search.getValue()))).collect(Collectors.toList());
+				filter(struc -> {
+							Component structureName = StructureUtil.getStructureName(struc);
+							return StringUtils.toLowerCase(structureName.getString()).contains(StringUtils.toLowerCase(search.getValue()));
+						}
+				).collect(Collectors.toList());
 		checkStages();
 		lastFilterText = search.getValue();
 	}
