@@ -25,9 +25,9 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ClientHandler {
@@ -38,6 +38,7 @@ public class ClientHandler {
 			GLFW.GLFW_KEY_UNKNOWN,
 			"category." + Reference.MOD_ID + ".main");
 
+	@SuppressWarnings("deprecation")
 	public static void onClientSetup(final FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
 			ItemProperties.register(StructureItems.STRUCTURE_COMPASS.get(), ResourceLocation.withDefaultNamespace("angle"),
@@ -105,9 +106,11 @@ public class ClientHandler {
 							return Math.atan2((double) pos.getZ() - entityIn.getZ(), (double) pos.getX() - entityIn.getX());
 						}
 
+						@Nullable
 						public StructurePos getStructurePos(ItemStack stack) {
 							if (stack.has(StructureComponents.STRUCTURE) && stack.has(StructureComponents.STRUCTURE_INFO)) {
 								StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
+								assert info != null;
 								return new StructurePos(info.pos(), info.dimension().location());
 							}
 							return null;
