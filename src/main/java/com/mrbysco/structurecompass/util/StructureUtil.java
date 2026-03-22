@@ -8,7 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StructureUtil {
-	public static List<ResourceLocation> getAvailableStructureList(Level level) {
-		List<ResourceLocation> structureList = new ArrayList<>();
+	public static List<Identifier> getAvailableStructureList(Level level) {
+		List<Identifier> structureList = new ArrayList<>();
 		Registry<Structure> registry = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
 		registry.asHolderIdMap().forEach(holder -> {
 			if (holder.is(Tags.Structures.HIDDEN_FROM_LOCATOR_SELECTION)) return;
-			ResourceLocation location = holder.getKey().location();
+			Identifier location = holder.getKey().identifier();
 			if (!isBlacklisted(location) && !structureList.contains(location)) {
 				structureList.add(location);
 			}
@@ -33,7 +33,7 @@ public class StructureUtil {
 		return structureList;
 	}
 
-	public static boolean isBlacklisted(ResourceLocation structureLocation) {
+	public static boolean isBlacklisted(Identifier structureLocation) {
 		if (structureLocation == null) {
 			StructureCompass.LOGGER.error("Checking blacklist but fed location is null!");
 			return false;

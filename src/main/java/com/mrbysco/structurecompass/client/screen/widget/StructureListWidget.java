@@ -9,7 +9,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,10 +40,10 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 	}
 
 	public class ListEntry extends ObjectSelectionList.Entry<ListEntry> {
-		private final ResourceLocation structureLocation;
+		private final Identifier structureLocation;
 		private final CompassScreen parent;
 
-		ListEntry(ResourceLocation location, CompassScreen parent) {
+		ListEntry(Identifier location, CompassScreen parent) {
 			this.structureLocation = location;
 			this.parent = parent;
 		}
@@ -79,7 +79,7 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 			return StructureListWidget.this.getSelected() == this;
 		}
 
-		public ResourceLocation getStructureLocation() {
+		public Identifier getStructureLocation() {
 			return structureLocation;
 		}
 

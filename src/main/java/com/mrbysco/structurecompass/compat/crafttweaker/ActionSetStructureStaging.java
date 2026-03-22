@@ -4,7 +4,7 @@
 //import com.blamejared.crafttweaker.api.zencode.IScriptLoadSource;
 //import com.mrbysco.structurecompass.Reference;
 //import com.mrbysco.structurecompass.compat.gamestages.GameStagesHelper;
-//import net.minecraft.resources.ResourceLocation;
+//import net.minecraft.resources.Identifier;
 //import org.apache.logging.log4j.Logger;
 //
 //import java.util.Arrays;
@@ -13,10 +13,10 @@
 //import java.util.Set;
 //
 //public class ActionSetStructureStaging implements IUndoableAction {
-//	private final ResourceLocation structureLocation;
+//	private final Identifier structureLocation;
 //	private final String[] stages;
 //
-//	public ActionSetStructureStaging(ResourceLocation structureLocation, String[] stages) {
+//	public ActionSetStructureStaging(Identifier structureLocation, String[] stages) {
 //		this.structureLocation = structureLocation;
 //		this.stages = stages;
 //	}

@@ -5,7 +5,6 @@ import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
 import com.mrbysco.structurecompass.network.message.SetStructurePayload;
 import com.mrbysco.structurecompass.registry.StructureComponents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -14,7 +13,7 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
@@ -47,8 +46,8 @@ public class CompassScreen extends Screen {
 	private StructureListWidget structureWidget;
 	private StructureListWidget.ListEntry selected = null;
 	private int listWidth;
-	private List<ResourceLocation> structures;
-	private final List<ResourceLocation> unsortedStructures;
+	private List<Identifier> structures;
+	private final List<Identifier> unsortedStructures;
 	private Button loadButton;
 
 	private final InteractionHand usedHand;
@@ -62,13 +61,13 @@ public class CompassScreen extends Screen {
 	private boolean sorted = false;
 	private SortType sortType = SortType.NORMAL;
 
-	public CompassScreen(InteractionHand hand, ItemStack compass, List<ResourceLocation> allStructures) {
+	public CompassScreen(InteractionHand hand, ItemStack compass, List<Identifier> allStructures) {
 		super(Component.translatable(Reference.MOD_PREFIX + "compass.screen"));
 		this.usedHand = hand;
 		this.compassStack = compass;
 
-		List<ResourceLocation> structureList = new ArrayList<>();
-		for (ResourceLocation id : allStructures) {
+		List<Identifier> structureList = new ArrayList<>();
+		for (Identifier id : allStructures) {
 			if (id != null) {
 				structureList.add(id);
 			}
@@ -90,7 +89,7 @@ public class CompassScreen extends Screen {
 	@Override
 	protected void init() {
 		int centerWidth = this.width / 2;
-		for (ResourceLocation structureLocation : structures) {
+		for (Identifier structureLocation : structures) {
 			listWidth = Math.max(listWidth, getFontRenderer().width(structureLocation.toString()) + 10);
 		}
 		listWidth = Math.max(Math.min(listWidth, width / 3), 200);
@@ -167,7 +166,7 @@ public class CompassScreen extends Screen {
 		}
 	}
 
-	public <T extends ObjectSelectionList.Entry<T>> void buildStructureList(Consumer<T> ListViewConsumer, Function<ResourceLocation, T> newEntry) {
+	public <T extends ObjectSelectionList.Entry<T>> void buildStructureList(Consumer<T> ListViewConsumer, Function<Identifier, T> newEntry) {
 		structures.forEach(mod -> ListViewConsumer.accept(newEntry.apply(mod)));
 	}
 
@@ -237,11 +236,11 @@ public class CompassScreen extends Screen {
 	}
 
 	@Override
-	public void resize(Minecraft mc, int width, int height) {
+	public void resize(int width, int height) {
 		String s = this.search.getValue();
 		SortType sort = this.sortType;
 		StructureListWidget.ListEntry selected = this.selected;
-		this.init(mc, width, height);
+		this.init(width, height);
 		this.search.setValue(s);
 		this.selected = selected;
 		if (!this.search.getValue().isEmpty())

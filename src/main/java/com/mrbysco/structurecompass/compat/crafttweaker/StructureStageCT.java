@@ -2,14 +2,14 @@
 //
 //import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 //import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-//import net.minecraft.resources.ResourceLocation;
+//import net.minecraft.resources.Identifier;
 //import org.openzen.zencode.java.ZenCodeType;
 //
 //@ZenRegister
 //@ZenCodeType.Name("mods.structurecompass.staging")
 //public class StructureStageCT {
 //	@ZenCodeType.Method
-//	public static void setStructureStages(ResourceLocation containerName, String... stages) {
+//	public static void setStructureStages(Identifier containerName, String... stages) {
 //		CraftTweakerAPI.apply(new ActionSetStructureStaging(containerName, stages));
 //	}
 //}

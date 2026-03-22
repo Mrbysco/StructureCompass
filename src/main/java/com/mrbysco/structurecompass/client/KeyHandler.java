@@ -8,7 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -51,8 +51,8 @@ public class KeyHandler {
 				if (stack.has(StructureComponents.STRUCTURE_INFO)) {
 					StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
 					GlobalPos globalPos = info.globalPos();
-					final ResourceLocation structureDimension = globalPos.dimension().location();
-					if (player.level().dimension().location().equals(structureDimension)) {
+					final Identifier structureDimension = globalPos.dimension().identifier();
+					if (player.level().dimension().identifier().equals(structureDimension)) {
 						int distance = player.blockPosition().distManhattan(globalPos.pos());
 						player.displayClientMessage(Component.translatable("structurecompass.locate.distance", distance).withStyle(ChatFormatting.YELLOW), true);
 					}

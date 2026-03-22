@@ -16,7 +16,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -47,7 +47,7 @@ public class StructureCompassItem extends Item {
 		ItemStack stack = playerIn.getItemInHand(hand);
 		if (playerIn.isShiftKeyDown()) {
 			if (!level.isClientSide()) {
-				List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList(level);
+				List<Identifier> allStructures = StructureUtil.getAvailableStructureList(level);
 				((ServerPlayer) playerIn).connection.send(new OpenCompassPayload(hand, stack, allStructures));
 			}
 		} else {
@@ -63,7 +63,7 @@ public class StructureCompassItem extends Item {
 	private void locateStructure(ItemStack stack, Player player) {
 		if (player.level() instanceof ServerLevel level) {
 			if (stack.has(StructureComponents.STRUCTURE)) {
-				ResourceLocation structureLocation = stack.get(StructureComponents.STRUCTURE);
+				Identifier structureLocation = stack.get(StructureComponents.STRUCTURE);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
 					Registry<Structure> registry = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
@@ -108,7 +108,7 @@ public class StructureCompassItem extends Item {
 		}
 	}
 
-	private void bindPosition(ItemStack stack, ResourceLocation boundStructure, Player player, Level level, Pair<BlockPos, Holder<Structure>> pair) {
+	private void bindPosition(ItemStack stack, Identifier boundStructure, Player player, Level level, Pair<BlockPos, Holder<Structure>> pair) {
 		BlockPos structurePos = pair != null ? pair.getFirst() : null;
 		if (structurePos == null) {
 			stack.remove(StructureComponents.STRUCTURE_INFO);
@@ -132,7 +132,7 @@ public class StructureCompassItem extends Item {
 			if (stack.has(StructureComponents.STRUCTURE_INFO)) {
 				StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
 				if (context != null && net.minecraft.client.Minecraft.getInstance().player != null &&
-						net.minecraft.client.Minecraft.getInstance().player.level().dimension().location().equals(info.globalPos().dimension().location())) {
+						net.minecraft.client.Minecraft.getInstance().player.level().dimension().identifier().equals(info.globalPos().dimension().identifier())) {
 					tooltipAdder.accept(Component.translatable("structurecompass.structure.found.tooltip", structureName).withStyle(ChatFormatting.GREEN));
 				} else {
 					tooltipAdder.accept(Component.translatable("structurecompass.structure.wrong_dimension.tooltip", structureName).withStyle(ChatFormatting.RED));

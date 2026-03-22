@@ -6,7 +6,7 @@ import com.mrbysco.structurecompass.client.property.StructureCompassAngle;
 import com.mrbysco.structurecompass.client.screen.CompassScreen;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -33,7 +33,7 @@ public class ClientHandler {
 		event.register(KEY_TOGGLE);
 	}
 
-	public static void openStructureScreen(InteractionHand hand, ItemStack stack, List<ResourceLocation> allStructures) {
+	public static void openStructureScreen(InteractionHand hand, ItemStack stack, List<Identifier> allStructures) {
 		CompassScreen screen = new CompassScreen(hand, stack, allStructures);
 		Minecraft.getInstance().setScreen(screen);
 	}
