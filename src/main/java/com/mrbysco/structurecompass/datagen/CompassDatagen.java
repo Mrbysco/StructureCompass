@@ -103,6 +103,7 @@ public class CompassDatagen {
 			add("category.structurecompass.main", "Structure Compass");
 			add("key.structurecompass.hide", "Hide Structure Compass HUD");
 			add("structurecompass.networking.set_structure.failed", "Failed to set structure: %s");
+			add("structurecompass.networking.open_compass.failed", "Failed to open compass screen: %s");
 
 			addConfig("title", "Structure Compass Config", null);
 			addConfig("general", "General", "General Settings");

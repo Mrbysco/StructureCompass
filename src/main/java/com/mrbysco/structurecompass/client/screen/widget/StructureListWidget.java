@@ -3,7 +3,7 @@ package com.mrbysco.structurecompass.client.screen.widget;
 import com.mrbysco.structurecompass.client.screen.CompassScreen;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget.ListEntry;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
@@ -49,12 +49,12 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+		public void extractContent(GuiGraphicsExtractor guiGraphicsExtractor, int i, int i1, boolean b, float v) {
 			String structureName = structureLocation.toString();
 			Component name = Component.literal(structureName);
 			Font font = this.parent.getFontRenderer();
 			int top = getContentY();
-			guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
+			guiGraphicsExtractor.text(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
 					(this.parent.width / 2) - (font.width(structureName) / 2) + 3, top + 6, ARGB.opaque(0xFFFFFF), false);
 		}
 
@@ -64,7 +64,6 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 			StructureListWidget.this.setSelected(this);
 			return false;
 		}
-
 
 		@Override
 		public void setFocused(boolean focused) {

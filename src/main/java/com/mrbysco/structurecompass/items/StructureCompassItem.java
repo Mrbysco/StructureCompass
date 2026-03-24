@@ -15,8 +15,8 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -73,10 +73,10 @@ public class StructureCompassItem extends Item {
 						Optional<Holder.Reference<Structure>> optionalHolder = registry.get(structureKey);
 						if (optionalHolder.isPresent() && optionalHolder.get().is(Tags.Structures.HIDDEN_FROM_LOCATOR_SELECTION)) {
 							stack.remove(StructureComponents.STRUCTURE);
-							player.displayClientMessage(Component.translatable("structurecompass.locate.structure_prohibited").withStyle(ChatFormatting.RED), false);
+							player.sendSystemMessage(Component.translatable("structurecompass.locate.structure_prohibited").withStyle(ChatFormatting.RED));
 							return;
 						}
-						player.displayClientMessage(Component.translatable("structurecompass.structure.locating", structureLocation.toString()).withStyle(ChatFormatting.YELLOW), false);
+						player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation.toString()).withStyle(ChatFormatting.YELLOW));
 
 						boolean findUnexplored = false;
 						if (StructureConfig.COMMON.locateUnexplored.get()) {
@@ -100,10 +100,10 @@ public class StructureCompassItem extends Item {
 						}
 					}
 				} else {
-					player.displayClientMessage(Component.translatable("structurecompass.locate.fail").withStyle(ChatFormatting.RED), false);
+					player.sendSystemMessage(Component.translatable("structurecompass.locate.fail").withStyle(ChatFormatting.RED));
 				}
 			} else {
-				player.displayClientMessage(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW), false);
+				player.sendSystemMessage(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW));
 			}
 		}
 	}
@@ -113,12 +113,12 @@ public class StructureCompassItem extends Item {
 		if (structurePos == null) {
 			stack.remove(StructureComponents.STRUCTURE_INFO);
 			int range = StructureConfig.COMMON.compassRange.get();
-			player.displayClientMessage(Component.translatable("structurecompass.structure.failed", boundStructure.toString(), range).withStyle(ChatFormatting.RED), false);
+			player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure.toString(), range).withStyle(ChatFormatting.RED));
 		} else {
 			StructureInfo info = new StructureInfo(GlobalPos.of(level.dimension(), structurePos));
 			stack.set(StructureComponents.STRUCTURE_INFO, info);
 			int distance = player.blockPosition().distManhattan(structurePos);
-			player.displayClientMessage(Component.translatable("structurecompass.structure.found", boundStructure.toString(), distance).withStyle(ChatFormatting.GREEN), false);
+			player.sendSystemMessage(Component.translatable("structurecompass.structure.found", boundStructure.toString(), distance).withStyle(ChatFormatting.GREEN));
 		}
 
 		player.getCooldowns().addCooldown(stack, 100);

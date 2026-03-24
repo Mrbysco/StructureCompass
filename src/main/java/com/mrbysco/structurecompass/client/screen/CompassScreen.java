@@ -6,7 +6,7 @@ import com.mrbysco.structurecompass.network.message.SetStructurePayload;
 import com.mrbysco.structurecompass.registry.StructureComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -107,7 +107,7 @@ public class CompassScreen extends Screen {
 			}
 
 			if (this.minecraft.player != null && selected != null)
-				this.minecraft.player.displayClientMessage(Component.translatable("structurecompass.screen.selection.selected").withStyle(ChatFormatting.GOLD), false);
+				this.minecraft.player.sendSystemMessage(Component.translatable("structurecompass.screen.selection.selected").withStyle(ChatFormatting.GOLD));
 			this.onClose();
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
@@ -194,17 +194,17 @@ public class CompassScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
 		Component text = Component.translatable("structurecompass.screen.search");
-		guiGraphics.drawCenteredString(getFontRenderer(), text, this.width / 2 + PADDING,
+		guiGraphics.centeredText(getFontRenderer(), text, this.width / 2 + PADDING,
 				search.getY() - getFontRenderer().lineHeight - 2, 0xFFFFFF);
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 //		this.renderDirtBackground(guiGraphics);
 	}
 

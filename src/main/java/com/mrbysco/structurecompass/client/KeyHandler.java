@@ -31,7 +31,7 @@ public class KeyHandler {
 		if (ClientHandler.KEY_TOGGLE.consumeClick()) {
 			if (player != null) {
 				hidden = !hidden;
-				player.displayClientMessage(Component.translatable("structurecompass.locate.toggled", hidden ? "off" : "on"), false);
+				player.sendSystemMessage(Component.translatable("structurecompass.locate.toggled", hidden ? "off" : "on"));
 			}
 		}
 	}
@@ -54,7 +54,7 @@ public class KeyHandler {
 					final Identifier structureDimension = globalPos.dimension().identifier();
 					if (player.level().dimension().identifier().equals(structureDimension)) {
 						int distance = player.blockPosition().distManhattan(globalPos.pos());
-						player.displayClientMessage(Component.translatable("structurecompass.locate.distance", distance).withStyle(ChatFormatting.YELLOW), true);
+						player.sendOverlayMessage(Component.translatable("structurecompass.locate.distance", distance).withStyle(ChatFormatting.YELLOW));
 					}
 				}
 			}
