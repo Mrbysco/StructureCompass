@@ -1,1 +1,1 @@
-* Add the ability to search for Structure Tags
+* Remove leftover debug line
