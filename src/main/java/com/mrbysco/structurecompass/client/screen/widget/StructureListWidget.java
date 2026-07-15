@@ -2,6 +2,7 @@ package com.mrbysco.structurecompass.client.screen.widget;
 
 import com.mrbysco.structurecompass.client.screen.CompassScreen;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget.ListEntry;
+import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -64,12 +65,11 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 
 		@Override
 		public void extractContent(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean hovering, float partialTick) {
-			String structureName = structureLocation.toString();
-			Component name = Component.literal(structureName);
+			Component name = StructureUtil.getStructureName(structureLocation, isTag);
 			Font font = this.parent.getFontRenderer();
 			int top = getContentY();
 			guiGraphicsExtractor.text(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
-					(this.parent.width / 2) - (font.width(structureName) / 2) + 3, top + 6, ARGB.opaque(0xFFFFFF), false);
+					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, ARGB.opaque(0xFFFFFF), false);
 
 			if (minecraft.hasShiftDown() && hovering) {
 				guiGraphicsExtractor.setTooltipForNextFrame(font, Component.literal(structureLocation.toString()), mouseX, mouseY);
