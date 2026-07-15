@@ -33,6 +33,18 @@ public class StructureUtil {
 		return structureList;
 	}
 
+	public static List<ResourceLocation> getAvailableTagList(Level level) {
+		List<ResourceLocation> tagList = new ArrayList<>();
+		Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+		registry.getTags().forEach(tag -> {
+			if (!tagList.contains(tag.getFirst().location())) {
+				tagList.add(tag.getFirst().location());
+			}
+		});
+
+		return tagList;
+	}
+
 	public static boolean isBlacklisted(ResourceLocation structureLocation) {
 		if (structureLocation == null) {
 			StructureCompass.LOGGER.error("Checking blacklist but fed location is null!");

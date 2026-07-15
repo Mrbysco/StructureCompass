@@ -2,6 +2,7 @@ package com.mrbysco.structurecompass.client.screen;
 
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.screen.widget.StructureListWidget;
+import com.mrbysco.structurecompass.client.screen.widget.ToggleButton;
 import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.SetStructureMessage;
 import net.minecraft.ChatFormatting;
@@ -29,6 +30,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class CompassScreen extends Screen {
+	private Component showTagsText = Component.translatable("structurecompass.screen.search.show_tags");
+	private Component hideTagsText = Component.translatable("structurecompass.screen.search.hide_tags");
+
 	private enum SortType {
 		NORMAL,
 		A_TO_Z,
@@ -48,7 +52,10 @@ public class CompassScreen extends Screen {
 	private int listWidth;
 	private List<ResourceLocation> structures;
 	private final List<ResourceLocation> unsortedStructures;
+	private List<ResourceLocation> tags;
+	private final List<ResourceLocation> unsortedTags;
 	private Button loadButton;
+	private ToggleButton showTags;
 
 	private final InteractionHand usedHand;
 	private final ItemStack compassStack;
@@ -61,7 +68,7 @@ public class CompassScreen extends Screen {
 	private boolean sorted = false;
 	private SortType sortType = SortType.NORMAL;
 
-	public CompassScreen(InteractionHand hand, ItemStack compass, List<ResourceLocation> allStructures) {
+	public CompassScreen(InteractionHand hand, ItemStack compass, List<ResourceLocation> allStructures, List<ResourceLocation> allTags) {
 		super(Component.translatable(Reference.MOD_PREFIX + "compass.screen"));
 		this.usedHand = hand;
 		this.compassStack = compass;
@@ -79,6 +86,9 @@ public class CompassScreen extends Screen {
 
 		this.structures = Collections.unmodifiableList(structureList);
 		this.unsortedStructures = Collections.unmodifiableList(allStructures);
+
+		this.tags = Collections.unmodifiableList(allTags);
+		this.unsortedTags = Collections.unmodifiableList(allTags);
 	}
 
 	@Override
@@ -103,10 +113,10 @@ public class CompassScreen extends Screen {
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.loadButton = Button.builder(Component.translatable("structurecompass.screen.selection.select"), b -> {
 			if (selected != null) {
-				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation()));
+				PacketHandler.CHANNEL.send(PacketDistributor.SERVER.noArg(), new SetStructureMessage(usedHand, selected.getStructureLocation(), selected.isTag()));
 			}
 
-			if(this.minecraft.player != null && selected != null)
+			if (this.minecraft.player != null && selected != null)
 				this.minecraft.player.sendSystemMessage(Component.translatable("structurecompass.screen.selection.selected", selected.getStructureLocation()).withStyle(ChatFormatting.GOLD));
 			this.onClose();
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
@@ -114,6 +124,11 @@ public class CompassScreen extends Screen {
 		y -= 14 + PADDING;
 		search = new EditBox(getFontRenderer(), centerWidth - listWidth / 2 + PADDING + 1, y, listWidth - 2, 14,
 				Component.translatable("structurecompass.screen.search"));
+
+		this.addRenderableWidget(this.showTags = new ToggleButton.Builder(false, showTagsText, hideTagsText, b -> {
+			ToggleButton toggleButton = ((ToggleButton) b);
+			toggleButton.setValue(!toggleButton.getValue());
+		}).bounds(centerWidth + listWidth / 2 - 24, PADDING, 80, 20).build());
 
 		int fullButtonHeight = PADDING + 20 + PADDING;
 		this.structureWidget = new StructureListWidget(this, width, fullButtonHeight, search.getY() - getFontRenderer().lineHeight - PADDING);
@@ -125,6 +140,9 @@ public class CompassScreen extends Screen {
 		search.setCanLoseFocus(true);
 		if (this.compassStack.hasTag() && this.compassStack.getTag().contains(Reference.structure_tag)) {
 			String structure = this.compassStack.getTag().getString(Reference.structure_tag);
+			if (this.compassStack.getTag().getBoolean(Reference.structure_is_tag)) {
+				this.showTags.setValue(true);
+			}
 			search.setValue(structure);
 		}
 
@@ -145,7 +163,10 @@ public class CompassScreen extends Screen {
 	@Override
 	public void tick() {
 		search.tick();
-		structureWidget.setSelected(selected);
+
+		if (structureWidget.getSelected() != selected) {
+			structureWidget.setSelected(selected);
+		}
 
 		if (!search.getValue().equals(lastFilterText)) {
 			reloadStructures();
@@ -156,8 +177,10 @@ public class CompassScreen extends Screen {
 			reloadStructures();
 			if (sortType == SortType.A_TO_Z) {
 				Collections.sort(structures);
+				Collections.sort(tags);
 			} else if (sortType == SortType.Z_TO_A) {
 				structures.sort(Collections.reverseOrder());
+				tags.sort(Collections.reverseOrder());
 			}
 			checkStages();
 			structureWidget.refreshList();
@@ -173,9 +196,16 @@ public class CompassScreen extends Screen {
 		structures.forEach(mod -> ListViewConsumer.accept(newEntry.apply(mod)));
 	}
 
+	public <T extends ObjectSelectionList.Entry<T>> void buildTagList(Consumer<T> ListViewConsumer, Function<ResourceLocation, T> newEntry) {
+		if (showTags.getValue())
+			tags.forEach(mod -> ListViewConsumer.accept(newEntry.apply(mod)));
+	}
+
 	private void reloadStructures() {
 		this.structures = this.unsortedStructures.stream().
 				filter(struc -> StringUtils.toLowerCase(struc.toString()).contains(StringUtils.toLowerCase(search.getValue()))).collect(Collectors.toList());
+		this.tags = this.unsortedTags.stream().
+				filter(tag -> StringUtils.toLowerCase(tag.toString()).contains(StringUtils.toLowerCase(search.getValue()))).collect(Collectors.toList());
 		checkStages();
 		lastFilterText = search.getValue();
 	}
@@ -213,8 +243,14 @@ public class CompassScreen extends Screen {
 		return font;
 	}
 
-	public void setSelected(StructureListWidget.ListEntry entry) {
-		this.selected = entry == this.selected ? null : entry;
+	public void setSelected(StructureListWidget.ListEntry previousEntry, StructureListWidget.ListEntry entry) {
+		if (this.selected == previousEntry) {
+			this.selected = entry;
+		} else {
+			if (this.selected == null || entry != null) {
+				this.selected = entry;
+			}
+		}
 		updateCache();
 	}
 
@@ -236,12 +272,14 @@ public class CompassScreen extends Screen {
 
 	@Override
 	public void resize(Minecraft mc, int width, int height) {
+		boolean showTags = this.showTags.getValue();
 		String s = this.search.getValue();
 		SortType sort = this.sortType;
 		StructureListWidget.ListEntry selected = this.selected;
 		this.init(mc, width, height);
 		this.search.setValue(s);
 		this.selected = selected;
+		this.showTags.setValue(showTags);
 		if (!this.search.getValue().isEmpty())
 			reloadStructures();
 		if (sort != SortType.NORMAL)

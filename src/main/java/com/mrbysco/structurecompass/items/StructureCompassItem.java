@@ -5,7 +5,6 @@ import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.config.StructureConfig;
 import com.mrbysco.structurecompass.network.PacketHandler;
 import com.mrbysco.structurecompass.network.message.OpenCompassMessage;
-import com.mrbysco.structurecompass.util.AsyncLocator;
 import com.mrbysco.structurecompass.util.StructureUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -19,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +31,6 @@ import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 public class StructureCompassItem extends Item {
 
@@ -45,7 +44,9 @@ public class StructureCompassItem extends Item {
 		if (playerIn.isShiftKeyDown()) {
 			if (!worldIn.isClientSide) {
 				List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList(worldIn);
-				PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerIn), new OpenCompassMessage(hand, stack, allStructures));
+				List<ResourceLocation> allTags = StructureUtil.getAvailableTagList(worldIn);
+				PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerIn),
+						new OpenCompassMessage(hand, stack, allStructures, allTags));
 			}
 		} else {
 			locateStructure(stack, playerIn);
@@ -60,6 +61,7 @@ public class StructureCompassItem extends Item {
 	private void locateStructure(ItemStack stack, Player player) {
 		if (!player.level().isClientSide) {
 			if (stack.hasTag() && stack.getTag().contains(Reference.structure_tag)) {
+				boolean isTag = stack.getTag().getBoolean(Reference.structure_is_tag);
 				ServerLevel level = (ServerLevel) player.level();
 				CompoundTag tag = stack.getTag();
 
@@ -67,39 +69,44 @@ public class StructureCompassItem extends Item {
 				ResourceLocation structureLocation = ResourceLocation.tryParse(boundStructure);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
+					String location = isTag ? "#" + structureLocation : structureLocation.toString();
+					player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", location).withStyle(ChatFormatting.YELLOW));
 					Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
 					ResourceKey<Structure> structureKey = ResourceKey.create(Registries.STRUCTURE, structureLocation);
-					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
+					HolderSet<Structure> featureHolderSet;
+					if (isTag) {
+						featureHolderSet = registry.getTag(TagKey.create(Registries.STRUCTURE, structureLocation)).orElse(null);
+					} else {
+						featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
+					}
 					if (featureHolderSet != null) {
-						Optional<Holder.Reference<Structure>> optionalHolder = registry.getHolder(structureKey);
-						if (optionalHolder.isPresent() && optionalHolder.get().is(Reference.HIDDEN_FROM_LOCATOR_SELECTION)) {
-							tag.remove(Reference.structure_tag);
-							player.sendSystemMessage(Component.translatable("structurecompass.locate.structure_prohibited").withStyle(ChatFormatting.RED));
-							return;
-						}
-						player.sendSystemMessage(Component.translatable("structurecompass.structure.locating", structureLocation).withStyle(ChatFormatting.YELLOW));
-
 						boolean findUnexplored = false;
 						if (StructureConfig.COMMON.locateUnexplored.get() != null) {
 							findUnexplored = StructureConfig.COMMON.locateUnexplored.get();
 						}
 
-						if (StructureConfig.COMMON.locateAsync.get()) {
-							var async = AsyncLocator.locate(level,
-									featureHolderSet, player.blockPosition(), 100, findUnexplored);
-							async.thenOnServerThread(pair -> bindPosition(
-									stack,
-									tag,
-									boundStructure,
-									player,
-									level,
-									pair
-							));
+						Pair<BlockPos, Holder<Structure>> pair = StructureUtil.findNearestMapStructure(level,
+								featureHolderSet, player.blockPosition(), 100, findUnexplored);
+						BlockPos structurePos = pair != null ? pair.getFirst() : null;
+						if (structurePos == null) {
+							tag.putBoolean(Reference.structure_found, false);
+							tag.remove(Reference.structure_location);
+							tag.remove(Reference.structure_dimension);
+							tag.remove(Reference.structure_is_tag);
+							int range = StructureConfig.COMMON.compassRange.get();
+
+							player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", location, range).withStyle(ChatFormatting.RED));
 						} else {
-							Pair<BlockPos, Holder<Structure>> pair = StructureUtil.findNearestMapStructure(level,
-									featureHolderSet, player.blockPosition(), 100, findUnexplored);
-							bindPosition(stack, tag, boundStructure, player, level, pair);
+							tag.putBoolean(Reference.structure_found, true);
+							tag.putLong(Reference.structure_location, structurePos.asLong());
+							tag.putString(Reference.structure_dimension, level.dimension().location().toString());
+							tag.putBoolean(Reference.structure_is_tag, isTag);
+							int distance = player.blockPosition().distManhattan(structurePos);
+							player.sendSystemMessage(Component.translatable("structurecompass.structure.found", location, distance).withStyle(ChatFormatting.GREEN));
 						}
+
+						stack.setTag(tag);
+						player.getCooldowns().addCooldown(this, 100);
 					}
 				} else {
 					player.sendSystemMessage(Component.translatable("structurecompass.locate.fail").withStyle(ChatFormatting.RED));
@@ -108,26 +115,6 @@ public class StructureCompassItem extends Item {
 				player.sendSystemMessage(Component.translatable("structurecompass.structure.unset.tooltip").withStyle(ChatFormatting.YELLOW));
 			}
 		}
-	}
-
-	private void bindPosition(ItemStack stack, CompoundTag tag, String boundStructure, Player player, Level level, Pair<BlockPos, Holder<Structure>> pair) {
-		BlockPos structurePos = pair != null ? pair.getFirst() : null;
-		if (structurePos == null) {
-			tag.putBoolean(Reference.structure_found, false);
-			tag.remove(Reference.structure_location);
-			tag.remove(Reference.structure_dimension);
-			int range = StructureConfig.COMMON.compassRange.get();
-			player.sendSystemMessage(Component.translatable("structurecompass.structure.failed", boundStructure, range).withStyle(ChatFormatting.RED));
-		} else {
-			tag.putBoolean(Reference.structure_found, true);
-			tag.putLong(Reference.structure_location, structurePos.asLong());
-			tag.putString(Reference.structure_dimension, level.dimension().location().toString());
-			int distance = player.blockPosition().distManhattan(structurePos);
-			player.sendSystemMessage(Component.translatable("structurecompass.structure.found", boundStructure, distance).withStyle(ChatFormatting.GREEN));
-		}
-
-		stack.setTag(tag);
-		player.getCooldowns().addCooldown(this, 100);
 	}
 
 	@Override

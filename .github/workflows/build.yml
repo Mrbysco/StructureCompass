@@ -35,12 +35,3 @@ jobs:
         env:
           MODRINTH_KEY: ${{ secrets.MODRINTH_KEY }}
         run: ./gradlew modrinth --stacktrace
-    needs:
-    with:
-    permissions:
-    name:
-    uses:
-    strategy:
-    if:
-    secrets:
-    concurrency:
