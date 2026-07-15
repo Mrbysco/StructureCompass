@@ -27,6 +27,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,18 +39,19 @@ public class StructureCompassItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand hand) {
 		ItemStack stack = playerIn.getItemInHand(hand);
 		if (playerIn.isShiftKeyDown()) {
-			if (!worldIn.isClientSide) {
-				List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList(worldIn);
-				((ServerPlayer) playerIn).connection.send(new OpenCompassPayload(hand, stack, allStructures));
+			if (!level.isClientSide) {
+				List<ResourceLocation> allStructures = StructureUtil.getAvailableStructureList(level);
+				List<ResourceLocation> allTags = StructureUtil.getAvailableTagList(level);
+				PacketDistributor.sendToPlayer((ServerPlayer) playerIn, new OpenCompassPayload(hand, stack, allStructures, allTags));
 			}
 		} else {
 			locateStructure(stack, playerIn);
 		}
 
-		return super.use(worldIn, playerIn, hand);
+		return super.use(level, playerIn, hand);
 	}
 
 	/*
@@ -59,9 +61,10 @@ public class StructureCompassItem extends Item {
 		if (player.level() instanceof ServerLevel level) {
 			if (stack.has(StructureComponents.STRUCTURE)) {
 				ResourceLocation structureLocation = stack.get(StructureComponents.STRUCTURE);
+				boolean isTag = stack.getOrDefault(StructureComponents.IS_TAG, false);
 
 				if (structureLocation != null && !StructureUtil.isBlacklisted(structureLocation)) {
-					Component structureName = StructureUtil.getStructureName(structureLocation);
+					Component structureName = StructureUtil.getStructureName(structureLocation, isTag);
 					Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
 					ResourceKey<Structure> structureKey = ResourceKey.create(Registries.STRUCTURE, structureLocation);
 					HolderSet<Structure> featureHolderSet = registry.getHolder(structureKey).map((holders) -> HolderSet.direct(holders)).orElse(null);
@@ -105,7 +108,8 @@ public class StructureCompassItem extends Item {
 	}
 
 	private void bindPosition(ItemStack stack, ResourceLocation boundStructure, Player player, Level level, Pair<BlockPos, Holder<Structure>> pair) {
-		Component structureName = StructureUtil.getStructureName(boundStructure);
+		boolean isTag = stack.getOrDefault(StructureComponents.IS_TAG, false);
+		Component structureName = StructureUtil.getStructureName(boundStructure, isTag);
 		BlockPos structurePos = pair != null ? pair.getFirst() : null;
 		if (structurePos == null) {
 			stack.remove(StructureComponents.STRUCTURE_INFO);
@@ -125,7 +129,8 @@ public class StructureCompassItem extends Item {
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
 		if (stack.has(StructureComponents.STRUCTURE)) {
 			final ResourceLocation structureLocation = stack.get(StructureComponents.STRUCTURE);
-			Component structureName = StructureUtil.getStructureName(structureLocation);
+			boolean isTag = stack.getOrDefault(StructureComponents.IS_TAG, false);
+			Component structureName = StructureUtil.getStructureName(structureLocation, isTag);
 			if (stack.has(StructureComponents.STRUCTURE_INFO)) {
 				StructureInfo info = stack.get(StructureComponents.STRUCTURE_INFO);
 

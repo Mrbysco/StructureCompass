@@ -34,6 +34,24 @@ public class StructureUtil {
 		return structureList;
 	}
 
+	public static List<ResourceLocation> getAvailableTagList(Level level) {
+		List<ResourceLocation> tagList = new ArrayList<>();
+		Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+		registry.getTags().forEach(tag -> {
+			if (!tagList.contains(tag.getFirst().location())) {
+				tagList.add(tag.getFirst().location());
+			}
+		});
+
+		// Remove hidden tag
+		tagList.removeIf(tag -> tag.equals(
+				Tags.Structures.HIDDEN_FROM_LOCATOR_SELECTION.location()
+		));
+		System.out.println(tagList);
+
+		return tagList;
+	}
+
 	public static boolean isBlacklisted(ResourceLocation structureLocation) {
 		if (structureLocation == null) {
 			StructureCompass.LOGGER.error("Checking blacklist but fed location is null!");
@@ -65,7 +83,25 @@ public class StructureUtil {
 		return nearest.getFirst().distManhattan(pos) <= StructureConfig.COMMON.compassRange.get() ? nearest : null;
 	}
 
-	public static Component getStructureName(ResourceLocation structureLocation) {
+	public static Component getStructureName(ResourceLocation structureLocation, boolean isTag) {
+		if (isTag) {
+			return Component.translatableWithFallback(getTagTranslationKey(structureLocation), "#" + structureLocation.toString());
+		}
 		return Component.translatableWithFallback(structureLocation.toLanguageKey("structure"), structureLocation.toString());
+	}
+
+	private static String getTagTranslationKey(ResourceLocation tagIdentifier) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("tag.");
+
+		ResourceLocation registryIdentifier = Registries.STRUCTURE.location();
+
+		stringBuilder.append(registryIdentifier.toShortLanguageKey().replace("/", "."))
+				.append(".")
+				.append(tagIdentifier.getNamespace())
+				.append(".")
+				.append(tagIdentifier.getPath().replace("/", "."));
+
+		return stringBuilder.toString();
 	}
 }

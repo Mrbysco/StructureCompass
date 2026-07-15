@@ -123,8 +123,8 @@ public class ClientHandler {
 		event.register(KEY_TOGGLE);
 	}
 
-	public static void openStructureScreen(InteractionHand hand, ItemStack stack, List<ResourceLocation> allStructures) {
-		CompassScreen screen = new CompassScreen(hand, stack, allStructures);
+	public static void openStructureScreen(InteractionHand hand, ItemStack stack, List<ResourceLocation> allStructures, List<ResourceLocation> allTags) {
+		CompassScreen screen = new CompassScreen(hand, stack, allStructures, allTags);
 		Minecraft.getInstance().setScreen(screen);
 	}
 
