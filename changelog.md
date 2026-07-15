@@ -1,1 +1,1 @@
-* Add support for localized structures `structure.<namespace>.<path>`
+* Add the ability to search for Structure Tags
