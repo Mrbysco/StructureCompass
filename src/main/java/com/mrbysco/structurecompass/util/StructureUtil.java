@@ -47,7 +47,6 @@ public class StructureUtil {
 		tagList.removeIf(tag -> tag.equals(
 				Tags.Structures.HIDDEN_FROM_LOCATOR_SELECTION.location()
 		));
-		System.out.println(tagList);
 
 		return tagList;
 	}
