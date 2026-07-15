@@ -9,6 +9,8 @@
   "structurecompass.screen.search": "Search",
   "structurecompass.screen.search.a_to_z": "A-Z",
   "structurecompass.screen.search.z_to_a": "Z-A",
+  "structurecompass.screen.search.show_tags": "Show Tags",
+  "structurecompass.screen.search.hide_tags": "Hide Tags",
 
   "_comment": "Item names",
   "item.structurecompass.structure_compass": "Structure Compass",

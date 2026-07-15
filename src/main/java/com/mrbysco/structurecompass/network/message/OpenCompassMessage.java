@@ -15,12 +15,13 @@ import java.util.function.Supplier;
 public class OpenCompassMessage {
 	public InteractionHand hand;
 	public ItemStack compass;
-	public List<ResourceLocation> structureList;
+	public List<ResourceLocation> structureList, tagList;
 
-	public OpenCompassMessage(InteractionHand hand, ItemStack compassStack, List<ResourceLocation> structureList) {
+	public OpenCompassMessage(InteractionHand hand, ItemStack compassStack, List<ResourceLocation> structureList, List<ResourceLocation> tagList) {
 		this.hand = hand;
 		this.compass = compassStack;
 		this.structureList = structureList;
+		this.tagList = tagList;
 	}
 
 	public void encode(FriendlyByteBuf buf) {
@@ -29,6 +30,10 @@ public class OpenCompassMessage {
 
 		buf.writeInt(this.structureList.size());
 		for (ResourceLocation location : this.structureList) {
+			buf.writeResourceLocation(location);
+		}
+		buf.writeInt(this.tagList.size());
+		for (ResourceLocation location : this.tagList) {
 			buf.writeResourceLocation(location);
 		}
 	}
@@ -41,28 +46,33 @@ public class OpenCompassMessage {
 		for (int i = 0; i < size; i++) {
 			allStructures.add(packetBuffer.readResourceLocation());
 		}
-		return new OpenCompassMessage(hand, stack, allStructures);
+		int tagSize = packetBuffer.readInt();
+		List<ResourceLocation> allTags = new ArrayList<>();
+		for (int i = 0; i < tagSize; i++) {
+			allTags.add(packetBuffer.readResourceLocation());
+		}
+		return new OpenCompassMessage(hand, stack, allStructures, allTags);
 	}
 
 	public void handle(Supplier<Context> context) {
 		Context ctx = context.get();
 		ctx.enqueueWork(() -> {
 			if (ctx.getDirection().getReceptionSide().isClient()) {
-				Compass.openScreen(this.hand, this.compass, this.structureList).run();
+				Compass.openScreen(this.hand, this.compass, this.structureList, this.tagList).run();
 			}
 		});
 		ctx.setPacketHandled(true);
 	}
 
 	private static class Compass {
-		private static SafeRunnable openScreen(InteractionHand hand, ItemStack compassStack, List<ResourceLocation> structureList) {
+		private static SafeRunnable openScreen(InteractionHand hand, ItemStack compassStack, List<ResourceLocation> structureList, List<ResourceLocation> tagList) {
 			return new SafeRunnable() {
 				@Serial
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public void run() {
-					com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(hand, compassStack, structureList);
+					com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(hand, compassStack, structureList, tagList);
 				}
 			};
 		}
