@@ -103,7 +103,7 @@ public class CompassScreen extends Screen {
 		for (Identifier structureLocation : structures) {
 			listWidth = Math.max(listWidth, getFontRenderer().width(structureLocation.toString()) + 10);
 		}
-		listWidth = Math.clamp(listWidth, 200, width / 3);
+		listWidth = Math.max(Math.min(listWidth, width / 3), 200);
 		listWidth += listWidth % numButtons != 0 ? (numButtons - listWidth % numButtons) : 0;
 		int structureWidth = this.width - this.listWidth - (PADDING * 3);
 		int closeButtonWidth = Math.min(structureWidth, 200);
@@ -244,9 +244,11 @@ public class CompassScreen extends Screen {
 	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-		Component text = Component.translatable("structurecompass.screen.search");
-		guiGraphics.centeredText(getFontRenderer(), text, this.width / 2 + PADDING,
-				search.getY() - getFontRenderer().lineHeight - 2, 0xFFFFFF);
+		if (this.search != null) {
+			Component text = Component.translatable("structurecompass.screen.search");
+			guiGraphics.centeredText(getFontRenderer(), text, this.width / 2 + PADDING,
+					search.getY() - getFontRenderer().lineHeight - 2, 0xFFFFFF);
+		}
 	}
 
 	@Override
