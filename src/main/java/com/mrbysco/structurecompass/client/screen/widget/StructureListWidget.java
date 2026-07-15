@@ -12,6 +12,7 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 	private final CompassScreen parent;
@@ -36,41 +37,52 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 
 	public void refreshList() {
 		this.clearEntries();
+		parent.buildTagList(this::addEntry, location -> new ListEntry(location, this.parent, true));
 		parent.buildStructureList(this::addEntry, location -> new ListEntry(location, this.parent));
+	}
+
+	@Override
+	public void setSelected(@Nullable StructureListWidget.ListEntry selected) {
+		this.parent.setSelected(getSelected(), selected);
+		super.setSelected(selected);
 	}
 
 	public class ListEntry extends ObjectSelectionList.Entry<ListEntry> {
 		private final Identifier structureLocation;
+		private final boolean isTag;
 		private final CompassScreen parent;
 
-		ListEntry(Identifier location, CompassScreen parent) {
+		public ListEntry(Identifier location, CompassScreen parent, boolean isTag) {
 			this.structureLocation = location;
 			this.parent = parent;
+			this.isTag = isTag;
+		}
+
+		public ListEntry(Identifier location, CompassScreen parent) {
+			this(location, parent, false);
 		}
 
 		@Override
-		public void extractContent(GuiGraphicsExtractor guiGraphicsExtractor, int i, int i1, boolean b, float v) {
+		public void extractContent(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean hovering, float partialTick) {
 			String structureName = structureLocation.toString();
 			Component name = Component.literal(structureName);
 			Font font = this.parent.getFontRenderer();
 			int top = getContentY();
 			guiGraphicsExtractor.text(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
 					(this.parent.width / 2) - (font.width(structureName) / 2) + 3, top + 6, ARGB.opaque(0xFFFFFF), false);
+
+			if (minecraft.hasShiftDown() && hovering) {
+				guiGraphicsExtractor.setTooltipForNextFrame(font, Component.literal(structureLocation.toString()), mouseX, mouseY);
+			}
 		}
 
 		@Override
 		public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
-			parent.setSelected(this);
-			StructureListWidget.this.setSelected(this);
-			return false;
-		}
-
-		@Override
-		public void setFocused(boolean focused) {
-			if (focused) {
-				parent.setSelected(this);
+			if (event.button() == 0) {
 				StructureListWidget.this.setSelected(this);
+				return true;
 			}
+			return false;
 		}
 
 		@Override
@@ -78,11 +90,15 @@ public class StructureListWidget extends ObjectSelectionList<ListEntry> {
 			return StructureListWidget.this.getSelected() == this;
 		}
 
+		@NotNull
 		public Identifier getStructureLocation() {
 			return structureLocation;
 		}
 
-		@NotNull
+		public boolean isTag() {
+			return isTag;
+		}
+
 		@Override
 		public Component getNarration() {
 			return Component.literal(getStructureLocation().getPath());

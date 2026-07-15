@@ -13,7 +13,7 @@ public class ClientPayloadHandler {
 
 	public void handleData(final OpenCompassPayload data, final IPayloadContext context) {
 		context.enqueueWork(() -> {
-					com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(data.hand(), data.compassStack(), data.structureList());
+					com.mrbysco.structurecompass.client.ClientHandler.openStructureScreen(data.hand(), data.compassStack(), data.structureList(), data.tagList());
 				})
 				.exceptionally(e -> {
 					// Handle exception

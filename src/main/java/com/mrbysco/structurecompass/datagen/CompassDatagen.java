@@ -88,6 +88,8 @@ public class CompassDatagen {
 			add("structurecompass.screen.search", "Search");
 			add("structurecompass.screen.search.a_to_z", "A-Z");
 			add("structurecompass.screen.search.z_to_a", "Z-A");
+			add("structurecompass.screen.search.show_tags", "Show Tags");
+			add("structurecompass.screen.search.hide_tags", "Hide Tags");
 			add("structurecompass.locate.invalid", "Bound structure invalid. Please re-bind");
 			add("structurecompass.locate.fail", "Bound structure could not be located nearby");
 			add("structurecompass.locate.distance", "Bound structure is %s blocks away");

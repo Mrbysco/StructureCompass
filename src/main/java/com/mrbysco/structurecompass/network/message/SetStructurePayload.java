@@ -2,16 +2,23 @@ package com.mrbysco.structurecompass.network.message;
 
 import com.mrbysco.structurecompass.Reference;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 
-public record SetStructurePayload(InteractionHand hand,
-                                  Identifier structureLocation) implements CustomPacketPayload {
-	public static final StreamCodec<RegistryFriendlyByteBuf, SetStructurePayload> CODEC = CustomPacketPayload.codec(
-			SetStructurePayload::write,
+public record SetStructurePayload(InteractionHand hand, Identifier structureLocation,
+                                  boolean isTag) implements CustomPacketPayload {
+	public static final StreamCodec<RegistryFriendlyByteBuf, SetStructurePayload> CODEC = StreamCodec.composite(
+			Reference.INTERACTION_HAND,
+			SetStructurePayload::hand,
+			Identifier.STREAM_CODEC,
+			SetStructurePayload::structureLocation,
+			ByteBufCodecs.BOOL,
+			SetStructurePayload::isTag,
 			SetStructurePayload::new);
+
 	public static final Type<SetStructurePayload> ID = new Type<>(Reference.modLoc("set_structure"));
 
 	@Override
@@ -19,13 +26,4 @@ public record SetStructurePayload(InteractionHand hand,
 		return ID;
 	}
 
-
-	public SetStructurePayload(final RegistryFriendlyByteBuf packetBuffer) {
-		this(packetBuffer.readInt() == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, packetBuffer.readIdentifier());
-	}
-
-	public void write(RegistryFriendlyByteBuf buf) {
-		buf.writeInt(hand == InteractionHand.MAIN_HAND ? 0 : 1);
-		buf.writeIdentifier(structureLocation);
-	}
 }
