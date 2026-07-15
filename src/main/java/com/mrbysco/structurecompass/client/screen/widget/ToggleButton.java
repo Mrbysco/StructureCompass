@@ -25,7 +25,7 @@ public class ToggleButton extends Button {
 
 	public void setValue(boolean value) {
 		this.value = value;
-		this.setMessage(value ? Component.translatable("gui.yes") : Component.translatable("gui.no"));
+		this.setMessage(value ? trueMessage : falseMessage);
 	}
 
 	@Override
