@@ -128,6 +128,7 @@ public class CompassScreen extends Screen {
 		this.addRenderableWidget(this.showTags = new ToggleButton.Builder(false, showTagsText, hideTagsText, b -> {
 			ToggleButton toggleButton = ((ToggleButton) b);
 			toggleButton.setValue(!toggleButton.getValue());
+			this.updateTags();
 		}).bounds(centerWidth + listWidth / 2 - 24, PADDING, 80, 20).build());
 
 		int fullButtonHeight = PADDING + 20 + PADDING;
@@ -157,6 +158,12 @@ public class CompassScreen extends Screen {
 				.bounds(x, PADDING, width - buttonMargin, 20).build());
 
 		resortStructures(SortType.A_TO_Z);
+		updateCache();
+	}
+
+	private void updateTags() {
+		reloadStructures();
+		this.structureWidget.refreshList();
 		updateCache();
 	}
 

@@ -11,6 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.StructureTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -41,6 +42,10 @@ public class StructureUtil {
 				tagList.add(tag.getFirst().location());
 			}
 		});
+
+		tagList.removeIf(tag -> tag.equals(
+				Reference.HIDDEN_FROM_LOCATOR_SELECTION.location()
+		));
 
 		return tagList;
 	}
