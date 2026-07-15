@@ -1,1 +1,1 @@
-* Fix enchantments being removed upon setting a structure
+* Add the ability to search for Structure Tags
