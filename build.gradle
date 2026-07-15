@@ -126,7 +126,7 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.changelogType = 'markdown'
 
         mainFile.addOptional("crafttweaker")
-        mainFile.addOptional("bookshelf-lib", "game-stages")
+        mainFile.addOptional("bookshelf", "game-stages")
     }
 }
 
