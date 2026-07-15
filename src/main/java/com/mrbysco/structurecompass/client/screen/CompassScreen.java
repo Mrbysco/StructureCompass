@@ -126,7 +126,6 @@ public class CompassScreen extends Screen {
 		search = new EditBox(getFontRenderer(), centerWidth - listWidth / 2 + PADDING + 1, y, listWidth - 2, 14,
 				Component.translatable("structurecompass.screen.search"));
 
-		// Change checkbox to be next to Z-A sort button
 		this.addRenderableWidget(this.showTags = new ToggleButton(
 				centerWidth + listWidth / 2 - 24,
 				PADDING,
