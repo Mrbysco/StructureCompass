@@ -1,1 +1,1 @@
-* Add the ability to search for Structure Tags
+* Add the ability to search for Structure Tags 
