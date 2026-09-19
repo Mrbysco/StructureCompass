@@ -1,1 +1,1 @@
-* Remove leftover debug line
+* Update to 26.2
