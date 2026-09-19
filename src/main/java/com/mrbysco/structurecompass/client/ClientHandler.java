@@ -11,7 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLKeycode;
 
 import java.util.List;
 
@@ -20,8 +20,8 @@ public class ClientHandler {
 	public static final KeyMapping.Category STRUCTURE_CATEGORY = new KeyMapping.Category(Reference.modLoc("category"));
 	public static final KeyMapping KEY_TOGGLE = new KeyMapping(
 			"key." + Reference.MOD_ID + ".hide",
-			InputConstants.Type.KEYSYM,
-			GLFW.GLFW_KEY_UNKNOWN,
+			InputConstants.Type.KEYBOARD,
+			SDLKeycode.SDLK_UNKNOWN,
 			STRUCTURE_CATEGORY);
 
 	public static void registerRangeSelectProperties(final RegisterRangeSelectItemModelPropertyEvent event) {

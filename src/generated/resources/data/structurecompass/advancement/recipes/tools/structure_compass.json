@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "structurecompass:structure_compass"
+        "recipes": "structurecompass:structure_compass"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -3,27 +3,27 @@ package com.mrbysco.structurecompass.datagen;
 import com.mrbysco.structurecompass.Reference;
 import com.mrbysco.structurecompass.client.property.StructureCompassAngle;
 import com.mrbysco.structurecompass.registry.StructureItems;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.renderer.item.RangeSelectItemModel.Entry;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.StructureTagsProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -34,21 +34,18 @@ import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber
 public class CompassDatagen {
+	public static final RegistrySetBuilder RELOADABLE_BUILDER = new RegistrySetBuilder()
+			.add(RecipeProvider.asBootstrap(CompassRecipeProvider::new));
 
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent.Client event) {
-		DataGenerator generator = event.getGenerator();
-		PackOutput packOutput = generator.getPackOutput();
-		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+		event.createReloadableRegistryObjects(RELOADABLE_BUILDER);
 
-		generator.addProvider(true, new CompassRecipeProvider.Runner(packOutput, lookupProvider));
+		event.createProvider(CompassItemTagProvider::new);
+		event.createProvider(CompassStructureProvider::new);
 
-		generator.addProvider(true, new CompassBlockTagProvider(packOutput, lookupProvider));
-		generator.addProvider(true, new CompassItemTagProvider(packOutput, lookupProvider));
-		generator.addProvider(true, new CompassStructureProvider(packOutput, lookupProvider));
-
-		generator.addProvider(true, new CompassModelProvider(packOutput));
-		generator.addProvider(true, new CompassLangProvider(packOutput));
+		event.createProvider(CompassModelProvider::new);
+		event.createProvider(CompassLangProvider::new);
 	}
 
 	public static class CompassModelProvider extends ModelProvider {
@@ -102,7 +99,7 @@ public class CompassDatagen {
 			add("structurecompass.structure.failed.tooltip", "%s can not be located, perhaps try again later");
 			add("structurecompass.structure.wrong_dimension.tooltip", "You are not in the dimension in which %s was found");
 			add("structurecompass.structure.unset.tooltip", "No structure has been set, shift right-click to select a structure");
-			add("category.structurecompass.main", "Structure Compass");
+			add("key.category.structurecompass.category", "Structure Compass");
 			add("key.structurecompass.hide", "Hide Structure Compass HUD");
 			add("structurecompass.networking.set_structure.failed", "Failed to set structure: %s");
 			add("structurecompass.networking.open_compass.failed", "Failed to open compass screen: %s");
@@ -131,8 +128,8 @@ public class CompassDatagen {
 
 	public static class CompassRecipeProvider extends RecipeProvider {
 
-		public CompassRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
-			super(provider, recipeOutput);
+		public CompassRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+			super(recipeOutput, advancementOutput);
 		}
 
 		@Override
@@ -151,32 +148,6 @@ public class CompassDatagen {
 					.define('C', Blocks.COBBLESTONE)
 					.define('P', Blocks.CARVED_PUMPKIN)
 					.unlockedBy("has_compass", has(Items.COMPASS)).save(output);
-		}
-
-		public static class Runner extends RecipeProvider.Runner {
-			public Runner(PackOutput output, CompletableFuture<Provider> completableFuture) {
-				super(output, completableFuture);
-			}
-
-			@Override
-			protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
-				return new CompassRecipeProvider(provider, recipeOutput);
-			}
-
-			@Override
-			public String getName() {
-				return "Structure Compass Recipes";
-			}
-		}
-	}
-
-	public static class CompassBlockTagProvider extends BlockTagsProvider {
-		public CompassBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-			super(output, lookupProvider, Reference.MOD_ID);
-		}
-
-		@Override
-		protected void addTags(HolderLookup.Provider provider) {
 		}
 	}
 

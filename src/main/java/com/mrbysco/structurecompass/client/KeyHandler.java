@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import org.lwjgl.glfw.GLFW;
 
 public class KeyHandler {
 	public static boolean hidden = false;
@@ -24,9 +23,9 @@ public class KeyHandler {
 		final Minecraft minecraft = Minecraft.getInstance();
 		final Player player = minecraft.player;
 
-		if (minecraft.gui.screen() != null && event.getAction() != GLFW.GLFW_PRESS) return;
+		if (minecraft.gui.screen() != null && event.getAction() != 1) return;
 
-		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) return;
+		if (InputConstants.isKeyDown(292)) return;
 
 		if (ClientHandler.KEY_TOGGLE.consumeClick()) {
 			if (player != null) {

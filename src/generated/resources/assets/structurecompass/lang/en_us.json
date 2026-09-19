@@ -1,7 +1,7 @@
 {
-  "category.structurecompass.main": "Structure Compass",
   "item.structurecompass.structure_compass": "Structure Compass",
   "itemGroup.structurecompass": "Structure Compass",
+  "key.category.structurecompass.category": "Structure Compass",
   "key.structurecompass.hide": "Hide Structure Compass HUD",
   "structurecompass.configuration.compassRange": "Compass Range",
   "structurecompass.configuration.compassRange.tooltip": "Sets the range in blocks in which the structure compasses can locate structures",
