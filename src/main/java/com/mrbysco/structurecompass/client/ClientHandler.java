@@ -36,6 +36,6 @@ public class ClientHandler {
 
 	public static void openStructureScreen(InteractionHand hand, ItemStack stack, List<Identifier> allStructures, List<Identifier> allTags) {
 		CompassScreen screen = new CompassScreen(hand, stack, allStructures, allTags);
-		Minecraft.getInstance().setScreen(screen);
+		Minecraft.getInstance().gui.setScreen(screen);
 	}
 }

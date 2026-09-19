@@ -24,7 +24,7 @@ public class KeyHandler {
 		final Minecraft minecraft = Minecraft.getInstance();
 		final Player player = minecraft.player;
 
-		if (minecraft.screen != null && event.getAction() != GLFW.GLFW_PRESS) return;
+		if (minecraft.gui.screen() != null && event.getAction() != GLFW.GLFW_PRESS) return;
 
 		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) return;
 

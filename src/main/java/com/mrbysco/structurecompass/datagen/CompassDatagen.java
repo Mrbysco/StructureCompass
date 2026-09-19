@@ -188,7 +188,7 @@ public class CompassDatagen {
 
 		@Override
 		public void addTags(HolderLookup.Provider lookupProvider) {
-			this.tag(ItemTags.COMPASSES).add(StructureItems.STRUCTURE_COMPASS.get());
+			this.tag(ItemTags.COMPASSES).add(StructureItems.STRUCTURE_COMPASS.getKey());
 		}
 	}
 

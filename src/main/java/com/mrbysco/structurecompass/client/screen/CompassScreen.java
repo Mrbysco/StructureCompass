@@ -307,6 +307,6 @@ public class CompassScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(null);
+		this.minecraft.gui.setScreen(null);
 	}
 }
