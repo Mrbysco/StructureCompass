@@ -25,7 +25,7 @@ public class StructureCompass {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public StructureCompass(IEventBus eventBus, Dist dist, ModContainer container) {
-		container.registerConfig(ModConfig.Type.COMMON, StructureConfig.commonSpec);
+		container.registerConfig(ModConfig.Type.LOCAL, StructureConfig.commonSpec);
 		eventBus.register(StructureConfig.class);
 
 		eventBus.addListener(PacketHandler::setupPackets);
